@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiceNow AI Agents Explained: Architecture, Use Cases, and Developer Implementation | Sidhuservicenow</title>
+  <meta name="description" content="A developer-focused guide to ServiceNow AI Agents, agentic workflows, AI Agent Studio, tools, data, guardrails, testing, and practical implementation patterns.">
+  <meta name="author" content="Sidhartha Ananthula">
+  <link rel="stylesheet" href="../assets/style.css">
+
+  <style>
+    .article-image {
+      margin: 2.5rem 0 3rem;
+      text-align: center;
+    }
+    .agent-diagram {
+      margin: 2.5rem 0 3rem;
+      padding: 1.5rem;
+      border: 1px solid #dbe3ef;
+      border-radius: 18px;
+      background: #f8fafc;
+    }
+    .agent-diagram h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+    .diagram-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: stretch;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+    .diagram-box {
+      flex: 1 1 180px;
+      max-width: 270px;
+      padding: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #fff;
+      text-align: center;
+    }
+    .diagram-box strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .diagram-arrow {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .callout {
+      margin: 2rem 0;
+      padding: 1.25rem 1.5rem;
+      border-left: 4px solid #2563eb;
+      border-radius: 10px;
+      background: #f1f5ff;
+    }
+    .code-example {
+      overflow-x: auto;
+      margin: 1.5rem 0 2rem;
+      padding: 1.25rem;
+      border-radius: 12px;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: "JetBrains Mono", monospace;
+      font-size: .9rem;
+      line-height: 1.65;
+    }
+    .checklist {
+      padding-left: 1.25rem;
+    }
+    .checklist li {
+      margin-bottom: .65rem;
+    }
+    .sources {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e2e8f0;
+    }
+    .sources li {
+      margin-bottom: .7rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href="../index.html">Sidhuservicenow<span>.</span></a>
+      <nav>
+        <a href="../index.html">Home</a>
+        <a href="../blog.html">Blog</a>
+        <a href="../projects.html">Projects</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container article">
+    <p><a href="../blog.html">← Back to Blog</a></p>
+
+    <div class="eyebrow">SERVICENOW AI • AI AGENTS</div>
+
+    <h1>ServiceNow AI Agents Explained: Architecture, Use Cases, and Developer Implementation</h1>
+
+    <p class="lead">
+      AI Agents move beyond generating an answer: they can interpret a goal, use
+      enterprise context, select tools, perform actions, and participate in
+      multi-step workflows. This guide explains the ServiceNow approach from a
+      developer's perspective.
+    </p>
+
+    <p>September 2026 · 12 min read · ServiceNow AI · AI Engineering</p>
+
+    <div class="callout">
+      <strong>Quick definition:</strong> An AI agent is an AI-driven system that
+      can pursue a defined goal by gathering information, reasoning about the
+      next step, and using available tools to take action. ServiceNow describes
+      its AI Agents as working with data, workflows, and tools across enterprise
+      processes.
+    </div>
+
+    <h2>1. What makes an AI Agent different from a chatbot?</h2>
+
+    <p>
+      A chatbot generally focuses on conversation: the user asks a question and
+      the system generates a response. An AI agent can go further by using the
+      response as part of a larger workflow.
+    </p>
+
+    <p>For a developer, the difference is easiest to see as a progression:</p>
+
+    <ul>
+      <li><strong>Chat:</strong> understand a question and generate a response.</li>
+      <li><strong>Assist:</strong> use context to recommend or generate useful content.</li>
+      <li><strong>Agent:</strong> pursue a goal and use tools to perform work.</li>
+      <li><strong>Agentic workflow:</strong> coordinate one or more agents and tools around a business objective.</li>
+    </ul>
+
+    <p>
+      ServiceNow currently describes agentic workflows as the business objective
+      an organization wants its AI agents to accomplish. Examples include
+      triaging cases or categorizing incidents.
+    </p>
+
+    <h2>2. The ServiceNow AI Agent model</h2>
+
+    <p>
+      ServiceNow's current AI Agent architecture separates several important
+      concepts. An agent has a role and objective, uses tools to perform work,
+      accesses relevant data, and operates within an agentic workflow. AI Agent
+      Studio is the development environment ServiceNow provides for creating and
+      customizing agents.
+    </p>
+
+    <div class="agent-diagram">
+      <h3>ServiceNow AI Agent execution flow</h3>
+
+      <div class="diagram-row">
+        <div class="diagram-box">
+          <strong>1. User Intent</strong>
+          Request, incident, case, or business objective
+        </div>
+        <div class="diagram-box">
+          <strong>2. Agent Role</strong>
+          Goal, instructions, scope, and expected outcome
+        </div>
+      </div>
+
+      <div class="diagram-arrow">↓</div>
+
+      <div class="diagram-row">
+        <div class="diagram-box">
+          <strong>3. Context & Data</strong>
+          Knowledge, records, CMDB, cases, policies, and connected systems
+        </div>
+        <div class="diagram-box">
+          <strong>4. Planning & Reasoning</strong>
+          Determine the next action needed to progress toward the goal
+        </div>
+      </div>
+
+      <div class="diagram-arrow">↓</div>
+
+      <div class="diagram-row">
+        <div class="diagram-box">
+          <strong>5. Tools</strong>
+          Flows, subflows, scripts, skills, APIs, and integrations
+        </div>
+        <div class="diagram-box">
+          <strong>6. Guardrails</strong>
+          Permissions, approvals, scope, validation, and human oversight
+        </div>
+      </div>
+
+      <div class="diagram-arrow">↓</div>
+
+      <div class="diagram-row">
+        <div class="diagram-box">
+          <strong>7. Action</strong>
+          Update records, create tasks, call systems, or execute workflows
+        </div>
+        <div class="diagram-box">
+          <strong>8. Result</strong>
+          Verify the outcome, report status, and continue or stop
+        </div>
+      </div>
+    </div>
+
+    <h2>3. Agentic workflows vs. individual AI Agents</h2>
+
+    <p>
+      An AI Agent is a specialized digital worker. An agentic workflow describes
+      the broader business objective and the sequence or collaboration needed
+      to achieve it.
+    </p>
+
+    <p>
+      For example, consider an employee onboarding objective. One agent could
+      interpret the onboarding request, another could handle access-related
+      work, and existing ServiceNow workflows could execute approved changes.
+      The workflow provides the business context; the agents and tools perform
+      specialized work.
+    </p>
+
+    <h2>4. What are AI Agent tools?</h2>
+
+    <p>
+      Tools are what connect an agent's reasoning to actual platform actions.
+      ServiceNow describes AI Agent tools as technologies and resources that
+      agents can use, including flow actions, subflows, scripts, and skills.
+    </p>
+
+    <p>
+      This is one of the most important areas for ServiceNow developers. A
+      well-designed tool should expose a focused action with clear inputs,
+      predictable outputs, appropriate permissions, and a useful description.
+    </p>
+
+    <h3>Example tool design</h3>
+
+    <div class="code-example"><pre>// Conceptual ServiceNow tool
+var tool = {
+  name: "get_incident_context",
+  description: "Retrieve relevant context for an incident",
+  inputs: {
+    incident_number: "INC0012345"
+  },
+  output: {
+    short_description: "...",
+    priority: "2",
+    assignment_group: "...",
+    recent_work_notes: "..."
+  }
+};</pre></div>
+
+    <p>
+      The example above is intentionally conceptual. In a real implementation,
+      the action would be configured using the ServiceNow capabilities available
+      in your instance and application scope rather than treating this object
+      as a drop-in platform API.
+    </p>
+
+    <h2>5. Practical example: Incident Resolution Agent</h2>
+
+    <p>
+      Imagine an organization wants an agent to help resolve recurring
+      application incidents.
+    </p>
+
+    <h3>Step 1 — Define the goal</h3>
+
+    <p>
+      The goal might be: <em>Analyze an incident, find relevant enterprise
+      knowledge, identify likely remediation steps, and prepare or execute the
+      approved resolution workflow.</em>
+    </p>
+
+    <h3>Step 2 — Give the agent useful context</h3>
+
+    <ul>
+      <li>Incident record and related task information</li>
+      <li>Knowledge articles</li>
+      <li>Configuration item and CMDB context</li>
+      <li>Previous incidents and resolution history</li>
+      <li>Relevant policies and operational documentation</li>
+    </ul>
+
+    <h3>Step 3 — Give it tools</h3>
+
+    <ul>
+      <li>Read incident details</li>
+      <li>Search knowledge</li>
+      <li>Look up related configuration data</li>
+      <li>Create a resolution plan</li>
+      <li>Run an approved Flow Designer action</li>
+      <li>Update the incident after validation</li>
+    </ul>
+
+    <h3>Step 4 — Add approval boundaries</h3>
+
+    <p>
+      Not every action should be autonomous. A developer can separate
+      read-only actions from actions that modify records or affect external
+      systems. High-impact operations can require approval or human review.
+    </p>
+
+    <h3>Step 5 — Test before production</h3>
+
+    <p>
+      Test normal requests, ambiguous requests, missing data, unauthorized
+      requests, conflicting knowledge, failed tools, and unexpected tool
+      outputs. The objective is not simply to demonstrate that the happy path
+      works; it is to understand how the agent behaves when the environment is
+      imperfect.
+    </p>
+
+    <h2>6. AI Agent Studio from a developer perspective</h2>
+
+    <p>
+      ServiceNow positions AI Agent Studio as the development tool for building
+      and customizing AI agents. Its current AI Agents materials describe
+      natural-language configuration, specialized agents, guardrails, and
+      automated tasks.
+    </p>
+
+    <p>
+      A useful developer workflow is:
+    </p>
+
+    <ol>
+      <li>Define the business outcome.</li>
+      <li>Define the agent role and boundaries.</li>
+      <li>Identify the data the agent needs.</li>
+      <li>Identify the smallest useful set of tools.</li>
+      <li>Configure the agent and workflow.</li>
+      <li>Test with representative records and edge cases.</li>
+      <li>Review permissions, approvals, and failure behavior.</li>
+      <li>Deploy and monitor.</li>
+    </ol>
+
+    <h2>7. Where Flow Designer fits</h2>
+
+    <p>
+      AI should not replace every existing automation. A strong enterprise
+      pattern is to let the AI agent decide <em>what needs to happen</em> while
+      deterministic ServiceNow automation handles <em>how the approved action
+      is executed</em>.
+    </p>
+
+    <div class="callout">
+      <strong>Developer pattern:</strong>
+      Use AI for interpretation, planning, classification, summarization, and
+      choosing among appropriate actions. Use deterministic flows, scripts,
+      APIs, and business rules for controlled execution where exact behavior
+      matters.
+    </div>
+
+    <h2>8. MCP and external systems</h2>
+
+    <p>
+      ServiceNow's current AI Agent materials describe support for connecting
+      AI agents to external tools, data, and systems through the Model Context
+      Protocol (MCP), while AI Agent Fabric provides a broader connectivity and
+      coordination layer.
+    </p>
+
+    <p>
+      This creates an interesting architecture for developers: ServiceNow can
+      remain the workflow and enterprise-context layer while agents interact
+      with external capabilities through controlled interfaces.
+    </p>
+
+    <p>
+      For example:
+    </p>
+
+    <div class="code-example"><pre>ServiceNow AI Agent
+       |
+       +-- ServiceNow Flow / Action
+       |
+       +-- REST API
+       |
+       +-- MCP-connected external tool
+       |
+       +-- Enterprise knowledge / data
+       |
+       +-- Approved business workflow</pre></div>
+
+    <h2>9. Security and governance</h2>
+
+    <p>
+      Agentic automation introduces a different security question from
+      read-only generative AI: what happens when the model can cause a change?
+    </p>
+
+    <p>A practical governance checklist includes:</p>
+
+    <ul class="checklist">
+      <li>Use least-privilege access for agent actions.</li>
+      <li>Separate read-only tools from write or destructive actions.</li>
+      <li>Require approval for high-impact operations where appropriate.</li>
+      <li>Validate tool inputs before execution.</li>
+      <li>Validate important outputs before committing changes.</li>
+      <li>Keep auditability for agent decisions and actions.</li>
+      <li>Test prompt injection and malicious or unexpected inputs.</li>
+      <li>Define clear failure and escalation behavior.</li>
+      <li>Monitor agent performance after deployment.</li>
+    </ul>
+
+    <h2>10. Common mistakes when building AI Agents</h2>
+
+    <h3>Giving the agent too many tools</h3>
+    <p>
+      More tools do not automatically create a better agent. A smaller,
+      well-described toolset can make behavior easier to test and govern.
+    </p>
+
+    <h3>Using AI where deterministic automation is better</h3>
+    <p>
+      If a task has a fixed rule and predictable inputs, traditional ServiceNow
+      automation may be simpler and easier to validate.
+    </p>
+
+    <h3>Skipping failure scenarios</h3>
+    <p>
+      Tool failures, missing records, stale knowledge, permission errors, and
+      ambiguous user requests should be part of the test plan.
+    </p>
+
+    <h3>Allowing broad write access</h3>
+    <p>
+      An agent should not receive broad permissions merely because it might
+      need them someday. Start with the smallest set of actions required for
+      the use case.
+    </p>
+
+    <h2>11. A developer's mental model</h2>
+
+    <p>
+      When designing an AI Agent, think about the system as five connected
+      layers:
+    </p>
+
+    <ol>
+      <li><strong>Goal:</strong> What business outcome is required?</li>
+      <li><strong>Context:</strong> What information does the agent need?</li>
+      <li><strong>Reasoning:</strong> How should it decide the next step?</li>
+      <li><strong>Tools:</strong> What controlled actions can it take?</li>
+      <li><strong>Governance:</strong> What must it never do without validation or approval?</li>
+    </ol>
+
+    <p>
+      This mental model is useful whether you are building an incident agent,
+      HR service agent, customer service agent, security remediation agent, or
+      a custom application on the Now Platform.
+    </p>
+
+    <h2>12. What should a ServiceNow developer learn next?</h2>
+
+    <p>If you want to move from traditional ServiceNow development into AI engineering, focus on:</p>
+
+    <ul>
+      <li>AI Agent Studio</li>
+      <li>Agentic workflows</li>
+      <li>Now Assist and Generative AI Controller concepts</li>
+      <li>Flow Designer and IntegrationHub</li>
+      <li>Script Includes and Glide APIs</li>
+      <li>REST APIs and external integrations</li>
+      <li>RAG and enterprise knowledge retrieval</li>
+      <li>MCP and tool calling</li>
+      <li>Prompt engineering and evaluation</li>
+      <li>AI security and governance</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+
+    <p>
+      ServiceNow AI Agents bring together AI reasoning, enterprise context,
+      platform workflows, and controlled tools. For developers, the important
+      shift is to think beyond a prompt-and-response experience and design a
+      complete system: a clear goal, reliable context, focused tools,
+      deterministic execution where appropriate, and strong governance.
+    </p>
+
+    <p>
+      The most useful AI Agent is not simply the one that produces the most
+      impressive response. It is the one whose behavior can be understood,
+      tested, governed, and connected to a real business workflow.
+    </p>
+
+    <div class="sources">
+      <h2>Official references</h2>
+      <ul>
+        <li><a href="https://www.servicenow.com/products/ai-agents.html" target="_blank" rel="noopener">ServiceNow AI Agents</a></li>
+        <li><a href="https://www.servicenow.com/platform/what-are-agentic-workflows.html" target="_blank" rel="noopener">ServiceNow: What are agentic workflows?</a></li>
+        <li><a href="https://www.servicenow.com/ai.html" target="_blank" rel="noopener">ServiceNow AI Platform</a></li>
+      </ul>
+    </div>
+
+    <p style="margin-top:2rem;"><a href="../blog.html">← Back to Blog</a></p>
+  </main>
+</body>
+</html>
