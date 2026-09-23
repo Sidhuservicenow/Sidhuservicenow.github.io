@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiceNow + OpenAI: Building an AI Integration | Sidhartha Ananthula</title>
+  <meta name="description" content="A practical developer guide to integrating ServiceNow with OpenAI through outbound REST, Script Includes, secure credentials, JSON requests, response handling, and production architecture.">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .arch-diagram{margin:32px 0;padding:28px;border:1px solid #dfe5ef;border-radius:18px;background:#f7f9fc}
+    .arch-title{font-weight:800;font-size:1.05rem;margin-bottom:20px}
+    .arch-grid{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:14px;align-items:center}
+    .arch-box{background:#fff;border:1px solid #d7deea;border-radius:14px;padding:18px;text-align:center;box-shadow:0 5px 16px rgba(20,35,60,.05)}
+    .arch-box strong{display:block;margin-bottom:7px}
+    .arch-box small{color:#5d6b7c;line-height:1.5}
+    .arch-center{border:2px solid #2864f0;background:#eef4ff}
+    .arch-arrow{text-align:center;font-size:1.4rem;font-weight:800;color:#2864f0}
+    .arch-wide{grid-column:1 / -1}
+    .callout{margin:28px 0;padding:20px 22px;border-left:4px solid #2864f0;background:#f1f5ff;border-radius:10px}
+    .code-example{margin:24px 0;padding:20px;background:#101722;color:#e8edf5;border-radius:12px;overflow:auto;font-family:"JetBrains Mono",monospace;font-size:.88rem;line-height:1.6;white-space:pre-wrap}
+    .checklist{padding-left:20px}
+    .checklist li{margin:9px 0}
+    .sources{margin-top:36px;padding-top:24px;border-top:1px solid #e2e6ed}
+    .sources li{margin:10px 0}
+    .warning{margin:24px 0;padding:18px 20px;border-left:4px solid #9a6b00;background:#fff8e6;border-radius:10px}
+    @media(max-width:760px){.arch-grid{grid-template-columns:1fr}.arch-wide{grid-column:auto}.arch-arrow{transform:rotate(90deg)}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="../index.html">Sidhuservicenow<span>.</span></a>
+    <nav><a href="../index.html">Home</a><a href="../blog.html">Blog</a><a href="../projects.html">Projects</a><a href="../about.html">About</a></nav>
+  </div>
+</header>
+
+<main class="container article-page">
+  <a class="back-link" href="../blog.html">← Back to Blog</a>
+  <p class="eyebrow">INTEGRATION • SERVICENOW • OPENAI • AI ENGINEERING</p>
+  <h1>ServiceNow + OpenAI: Building an AI Integration</h1>
+  <p class="article-lead">ServiceNow can act as the enterprise workflow layer while OpenAI provides model capabilities. The key to a maintainable integration is not simply making an API call—it is separating credentials, integration logic, prompts, business rules, and user experience so each layer can be secured and changed independently.</p>
+  <p class="article-meta">September 2026 · 14 min read · ServiceNow Integration · OpenAI API</p>
+
+  <div class="callout"><strong>Architecture in one sentence:</strong> ServiceNow owns the business context and workflow; a server-side integration calls the OpenAI API; the response is validated and returned to the ServiceNow experience.</div>
+
+  <h2>1. What are we building?</h2>
+  <p>A common enterprise pattern is a ServiceNow experience that sends a user request to an external AI model and then uses the response inside a workflow or user interface. ServiceNow outbound REST integrations use REST Message records to define endpoints, methods, authentication, and headers, and server-side APIs can execute those messages.</p>
+  <p>OpenAI's current API documentation describes the Responses API as an API surface for direct model requests and tool use, and documents standard API-key authentication using Bearer credentials. OpenAI also states that API keys are secrets and should not be exposed in client-side code.</p>
+
+  <div class="arch-diagram">
+    <div class="arch-title">Reference architecture</div>
+    <div class="arch-grid">
+      <div class="arch-box"><strong>ServiceNow Experience</strong><small>Employee Center, Service Portal, UI Action, Flow, or API</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box"><strong>Script Include</strong><small>Business logic, prompt construction, validation</small></div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-box arch-center"><strong>Outbound REST Message</strong><small>Endpoint, authentication, headers, request body</small></div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-box"><strong>OpenAI API</strong><small>Model request and structured response</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box"><strong>ServiceNow Workflow</strong><small>Validate, store, display, route, or act on the result</small></div>
+      <div class="arch-wide callout"><strong>Security boundary:</strong> Keep the API credential and external API call on the server side. The browser should never receive the OpenAI secret.</div>
+    </div>
+  </div>
+
+  <h2>2. Why use a REST Message?</h2>
+  <p>A REST Message gives the integration a reusable platform configuration rather than scattering endpoint and authentication details throughout scripts. A REST Message can hold the endpoint, authentication, headers, HTTP methods, and related configuration.</p>
+  <ul>
+    <li><strong>REST Message:</strong> connection details and HTTP configuration.</li>
+    <li><strong>Credential:</strong> secret authentication material.</li>
+    <li><strong>Script Include:</strong> reusable server-side integration logic.</li>
+    <li><strong>Flow Designer:</strong> orchestration and business process.</li>
+    <li><strong>Experience layer:</strong> user input and presentation.</li>
+  </ul>
+
+  <h2>3. Configure the OpenAI endpoint</h2>
+  <p>OpenAI's current API reference documents the Responses API and standard Bearer authentication. For a production implementation, use the current endpoint and request schema from the official API reference rather than copying an old model-specific example.</p>
+  <div class="code-example">REST Message
+Name: OpenAI - Responses
+
+Endpoint:
+https://api.openai.com/v1/responses
+
+Method:
+POST
+
+Headers:
+Content-Type: application/json
+Authorization: Bearer &lt;credential managed by ServiceNow&gt;</div>
+
+  <div class="warning"><strong>Never put a real API key in this HTML article, a public GitHub repository, a client-side JavaScript file, or a ServiceNow widget visible to end users.</strong> OpenAI treats API keys as secrets and recommends keeping them on the server side or in a key-management system.</div>
+
+  <h2>4. Request body design</h2>
+  <p>The request should be generated server-side from controlled inputs. Avoid concatenating arbitrary user text into a privileged instruction set. Keep system-level behavior and business constraints separate from the user's request where your chosen API schema supports that separation.</p>
+  <div class="code-example">{
+  "model": "YOUR_APPROVED_MODEL",
+  "input": "Summarize this incident and identify the likely next troubleshooting step."
+}</div>
+  <p>The exact fields and supported model capabilities should be checked against the current OpenAI API reference when implementing the integration.</p>
+
+  <h2>5. Script Include: keep integration logic reusable</h2>
+  <p>A Script Include can provide a clean server-side abstraction so callers do not need to know how the REST Message is configured.</p>
+  <div class="code-example">var OpenAIIntegration = Class.create();
+OpenAIIntegration.prototype = {
+    initialize: function() {},
+
+    ask: function(userInput) {
+        if (!userInput) {
+            throw new Error('Input is required');
+        }
+
+        var requestBody = {
+            model: 'YOUR_APPROVED_MODEL',
+            input: userInput
+        };
+
+        var request = new sn_ws.RESTMessageV2(
+            'OpenAI - Responses',
+            'POST'
+        );
+
+        request.setRequestHeader(
+            'Content-Type',
+            'application/json'
+        );
+
+        request.setRequestBody(
+            JSON.stringify(requestBody)
+        );
+
+        var response = request.execute();
+        var status = response.getStatusCode();
+        var body = response.getBody();
+
+        if (status &lt; 200 || status &gt;= 300) {
+            gs.error('OpenAI request failed. HTTP status: ' + status);
+            throw new Error('AI service request failed');
+        }
+
+        return JSON.parse(body);
+    },
+
+    type: 'OpenAIIntegration'
+};</div>
+
+  <p>This is a conceptual implementation pattern. In a real application, use your instance's credential and REST Message configuration, validate inputs, define appropriate timeout behavior, and parse the response according to the API schema you are using.</p>
+
+  <h2>6. Keep the integration modular</h2>
+  <div class="code-example">OpenAIIntegration
+ ├── buildRequest()
+ ├── callModel()
+ ├── parseResponse()
+ ├── validateResponse()
+ └── handleError()
+
+PromptService
+ ├── buildIncidentPrompt()
+ ├── buildSummarizationPrompt()
+ └── buildClassificationPrompt()
+
+AIWorkflowService
+ ├── summarizeIncident()
+ ├── classifyRequest()
+ └── generateResolutionDraft()</div>
+
+  <h2>7. Connecting ServiceNow records to the model</h2>
+  <p>The useful part is where ServiceNow context becomes AI input. For example, an incident summarization flow could retrieve the incident number, short description, description, relevant work notes, service, and selected knowledge context before constructing a request.</p>
+  <div class="code-example">ServiceNow Incident
+        ↓
+Validate access
+        ↓
+Collect approved fields
+        ↓
+Optional knowledge retrieval
+        ↓
+Build controlled prompt/input
+        ↓
+OpenAI API
+        ↓
+Validate response
+        ↓
+Return summary / recommendation
+        ↓
+Human review or workflow action</div>
+
+  <div class="callout"><strong>Important:</strong> Do not automatically send every field from a record to an external model. Decide which data is necessary for the use case and apply your organization's privacy, security, retention, and data-handling requirements.</div>
+
+  <h2>8. Example: Incident summarization</h2>
+  <h3>Step 1 — User action</h3><p>The authorized user requests a summary from the incident form.</p>
+  <h3>Step 2 — Server-side validation</h3><p>The Script Include verifies that the user can access the incident and that the request is allowed.</p>
+  <h3>Step 3 — Gather context</h3><p>The server retrieves only the fields needed for the summarization task.</p>
+  <h3>Step 4 — Call OpenAI</h3><p>The REST Message sends a JSON request using the securely managed credential.</p>
+  <h3>Step 5 — Validate the response</h3><p>The integration checks HTTP status and response structure before using the model output.</p>
+  <h3>Step 6 — Present the result</h3><p>The summary can be shown to the user for review rather than silently modifying the incident.</p>
+
+  <h2>9. Error handling is part of the integration</h2>
+  <p>A successful HTTP request does not guarantee a successful business operation. Network failures, authentication errors, rate limits, malformed requests, timeouts, and unexpected response structures all need explicit handling. OpenAI's API reference documents errors, rate limits, and request identifiers as part of production guidance.</p>
+  <ul class="checklist">
+    <li>Missing or invalid input</li>
+    <li>Authentication failures</li>
+    <li>HTTP 4xx responses</li>
+    <li>HTTP 5xx responses</li>
+    <li>Timeouts and network failures</li>
+    <li>Rate limiting</li>
+    <li>Unexpected or incomplete response data</li>
+    <li>ServiceNow transaction failures</li>
+  </ul>
+
+  <h2>10. Logging and observability</h2>
+  <p>Logging should help diagnose failures without exposing secrets or sensitive payloads. OpenAI documents a unique <code>x-request-id</code> response header and recommends logging request IDs in production for troubleshooting.</p>
+  <ul>
+    <li>Integration name</li>
+    <li>Operation name</li>
+    <li>Start/end time or duration</li>
+    <li>HTTP status</li>
+    <li>OpenAI request ID when available</li>
+    <li>Application or transaction context</li>
+    <li>Error category</li>
+    <li>Whether human review was required</li>
+  </ul>
+  <p>Avoid logging the API key, authorization header, or unnecessary sensitive user or record content.</p>
+
+  <h2>11. Synchronous vs asynchronous design</h2>
+  <p>ServiceNow supports synchronous and asynchronous execution patterns for outbound integrations. Synchronous execution waits for the response, while asynchronous execution can allow the initiating transaction to continue rather than blocking on the external service.</p>
+  <p>For a user-facing "summarize this record" interaction, synchronous execution may be appropriate when the response is expected quickly. For longer-running or non-interactive processing, an asynchronous pattern may be more suitable.</p>
+
+  <div class="callout"><strong>Design for the user experience:</strong> The correct integration pattern depends on latency, transaction importance, failure recovery, expected volume, and whether the user needs the answer immediately.</div>
+
+  <h2>12. Security architecture</h2>
+  <p>The most important rule is simple: the browser should never own the OpenAI API secret. OpenAI's current authentication guidance explicitly says API keys are secrets and should not be exposed in client-side code.</p>
+  <ul class="checklist">
+    <li>Keep credentials server-side.</li>
+    <li>Use ServiceNow credential management rather than hardcoding secrets.</li>
+    <li>Apply least-privilege access to the Script Include and calling application.</li>
+    <li>Validate record access before sending record data externally.</li>
+    <li>Minimize the data included in requests.</li>
+    <li>Do not expose raw external API errors directly to end users.</li>
+    <li>Rotate credentials according to organizational policy.</li>
+    <li>Review external data handling and retention requirements before production use.</li>
+  </ul>
+
+  <h2>13. Production architecture</h2>
+  <div class="arch-diagram">
+    <div class="arch-title">Production-oriented pattern</div>
+    <div class="arch-grid">
+      <div class="arch-box"><strong>Employee Center / Portal</strong><small>User request</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box"><strong>Server-side API</strong><small>Authorization + validation</small></div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-box arch-center"><strong>AI Integration Layer</strong><small>Prompt + context + REST Message</small></div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-box"><strong>OpenAI API</strong><small>Model inference</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box"><strong>Validation / Workflow</strong><small>Check result → display, route, or act</small></div>
+      <div class="arch-wide callout"><strong>Operational layer:</strong> monitoring, request IDs, error handling, access control, credential management, evaluation, and audit.</div>
+    </div>
+  </div>
+
+  <h2>14. Common mistakes</h2>
+  <ul>
+    <li><strong>Hardcoding the API key:</strong> A secret should not live in source code.</li>
+    <li><strong>Calling OpenAI directly from the browser:</strong> This can expose the credential.</li>
+    <li><strong>Sending the entire ServiceNow record:</strong> More data is not automatically better.</li>
+    <li><strong>Putting all logic in a widget:</strong> Sensitive integration logic belongs server-side.</li>
+    <li><strong>Ignoring response validation:</strong> Model output should not automatically become trusted business data.</li>
+    <li><strong>No timeout strategy:</strong> External services can be slow or unavailable.</li>
+    <li><strong>No audit trail:</strong> Production AI integrations need operational visibility.</li>
+    <li><strong>Using stale API examples:</strong> Verify the current OpenAI API reference before implementing an endpoint or model.</li>
+  </ul>
+
+  <h2>15. Where this architecture can go next</h2>
+  <p>Once a basic ServiceNow-to-OpenAI integration is working, the same foundation can support richer patterns such as retrieval-augmented generation, structured outputs, tool calling, AI assistants, incident summarization, classification, knowledge workflows, and agentic orchestration.</p>
+  <p>The architecture should evolve without putting the model call directly inside every business process. A reusable integration layer makes it easier to change prompts, models, authentication, error handling, and observability independently.</p>
+
+  <h2>Conclusion</h2>
+  <p>A ServiceNow + OpenAI integration is fundamentally an enterprise integration problem with an AI model in the middle. The durable design is to keep ServiceNow responsible for identity, business context, workflow, and authorization while the integration layer securely communicates with the model.</p>
+  <p>Once those boundaries are clear, the same pattern can become the foundation for custom AI assistants, intelligent workflow actions, retrieval systems, and eventually agentic ServiceNow solutions.</p>
+
+  <div class="sources">
+    <h2>Official references</h2>
+    <ul>
+      <li><a href="https://developers.openai.com/api/reference/overview" target="_blank" rel="noopener">OpenAI API Reference — Overview and Authentication</a></li>
+      <li><a href="https://www.servicenow.com/community/developer-articles/outbound-rest-integration/ta-p/2861448" target="_blank" rel="noopener">ServiceNow Community — Outbound REST Integration</a></li>
+      <li><a href="https://www.servicenow.com/community/developer-articles/outbound-integrations-using-soap-rest-performance-best-practices/ta-p/2301503" target="_blank" rel="noopener">ServiceNow Community — Outbound Integration Performance and Design</a></li>
+    </ul>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <p>© 2026 Sidhartha Ananthula</p>
+    <p>ServiceNow AI • Automation • Engineering</p>
+  </div>
+</footer>
+</body>
+</html>
