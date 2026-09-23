@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Building a Custom AI Assistant in ServiceNow | Sidhartha Ananthula</title>
+  <meta name="description" content="A practical developer guide to building a custom AI assistant in ServiceNow using a ServiceNow widget, Script Include, REST integration, OpenAI, security, conversation context, and production architecture.">
+
+  <link rel="stylesheet" href="../assets/style.css">
+
+  <style>
+    .article-page {
+      padding-bottom: 80px;
+    }
+
+    .article-hero {
+      padding: 34px 0 20px;
+    }
+
+    .article-hero h1 {
+      max-width: 980px;
+    }
+
+    .article-intro {
+      max-width: 900px;
+      font-size: 1.12rem;
+      line-height: 1.8;
+    }
+
+    .article-meta-line {
+      margin-top: 22px;
+      color: #5d6675;
+      font-size: 0.95rem;
+    }
+
+    .article-content {
+      max-width: 900px;
+    }
+
+    .article-content h2 {
+      margin-top: 54px;
+    }
+
+    .article-content h3 {
+      margin-top: 34px;
+    }
+
+    .article-content p,
+    .article-content li {
+      line-height: 1.8;
+    }
+
+    .architecture {
+      margin: 34px 0;
+      padding: 28px;
+      border: 1px solid #dfe5ee;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .architecture-title {
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-step {
+      padding: 15px 18px;
+      border: 1px solid #d9e1ec;
+      border-radius: 10px;
+      background: #ffffff;
+      font-weight: 600;
+    }
+
+    .flow-arrow {
+      text-align: center;
+      font-weight: 800;
+      color: #2864e8;
+    }
+
+    .callout {
+      margin: 30px 0;
+      padding: 22px 24px;
+      border-left: 4px solid #2864e8;
+      border-radius: 10px;
+      background: #eef4ff;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .code-block {
+      margin: 24px 0;
+      padding: 22px;
+      overflow-x: auto;
+      border-radius: 12px;
+      background: #111827;
+      color: #e5e7eb;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    .checklist {
+      padding-left: 22px;
+    }
+
+    .article-footer {
+      margin-top: 60px;
+      padding-top: 28px;
+      border-top: 1px solid #dfe5ee;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="../index.html">Sidhuservicenow<span>.</span></a>
+
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../blog.html">Blog</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="article-page">
+
+  <section class="article-hero">
+    <div class="container">
+
+      <a class="text-link" href="../blog.html">← Back to Blog</a>
+
+      <p class="eyebrow">
+        AI ENGINEERING · SERVICENOW · OPENAI
+      </p>
+
+      <h1>Building a Custom AI Assistant in ServiceNow: Architecture, APIs, Security, and Implementation</h1>
+
+      <p class="article-intro">
+        A practical developer guide to building a custom AI assistant inside the
+        ServiceNow experience layer. The design separates the user interface,
+        server-side integration logic, credentials, prompts, and external AI model
+        so the solution can evolve without turning the widget into a security or
+        maintenance problem.
+      </p>
+
+      <div class="article-meta-line">
+        September 2026 · 16 min read · ServiceNow Development · AI Engineering
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container article-content">
+
+      <div class="callout">
+        <strong>Architecture in one sentence:</strong>
+        A ServiceNow widget collects the user's request, a server-side Script Include
+        applies business logic and calls the external AI service through a secured
+        REST integration, and the response is returned to the ServiceNow experience.
+      </div>
+
+      <h2>1. What are we building?</h2>
+
+      <p>
+        A custom AI assistant can provide a conversational experience directly inside
+        ServiceNow. Instead of sending users to a separate AI application, the
+        assistant can live alongside the employee experience, service catalog,
+        knowledge, incidents, requests, and other enterprise workflows.
+      </p>
+
+      <p>
+        The important engineering decision is to avoid putting the entire integration
+        inside the browser. The browser should handle the user experience. ServiceNow
+        server-side logic should control authorization, business rules, credentials,
+        request construction, validation, logging, and communication with the model.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">Reference architecture</div>
+
+        <div class="flow">
+          <div class="flow-step">1. User → ServiceNow Employee Center / Service Portal</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">2. Custom AI Assistant Widget</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">3. Server-side Script Include</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">4. ServiceNow REST Message / HTTP Integration</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">5. External AI Model API</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">6. Validated response → ServiceNow → User</div>
+        </div>
+      </div>
+
+      <h2>2. Why use a server-side integration?</h2>
+
+      <p>
+        A common first implementation is to place an API request directly in client
+        code. That approach creates a serious security problem when the external
+        service requires a secret API key.
+      </p>
+
+      <p>
+        A better pattern is to keep the credential on the server side. The widget
+        sends a controlled request to ServiceNow, and ServiceNow performs the
+        external API call.
+      </p>
+
+      <ul>
+        <li>The API credential is not exposed to the browser.</li>
+        <li>Server-side authorization can be applied before the request is sent.</li>
+        <li>Business rules can control what data reaches the model.</li>
+        <li>Logging and error handling can be centralized.</li>
+        <li>The external provider can be changed without rebuilding the entire UI.</li>
+      </ul>
+
+      <div class="callout">
+        <strong>Security rule:</strong>
+        Never place a production API key in widget client JavaScript, HTML,
+        browser storage, GitHub, or any other client-visible location.
+      </div>
+
+      <h2>3. The ServiceNow widget</h2>
+
+      <p>
+        The widget is responsible for presentation. It can provide a message area,
+        input box, submit button, loading state, and error message.
+      </p>
+
+      <p>
+        The widget should not contain the external provider's secret credential.
+        Instead, it sends the user's message to the server-side widget logic or
+        another controlled ServiceNow server-side endpoint.
+      </p>
+
+      <h3>Conceptual client-side flow</h3>
+
+      <div class="code-block">
+User enters a question
+        ↓
+Widget validates basic input
+        ↓
+Widget sends request to ServiceNow server
+        ↓
+Server validates user and request
+        ↓
+Server calls AI integration
+        ↓
+Widget receives response
+        ↓
+Assistant message is rendered
+      </div>
+
+      <h2>4. The Script Include as the integration layer</h2>
+
+      <p>
+        A Script Include is a useful place to isolate reusable server-side logic.
+        Instead of allowing the widget to know how the external API works, the
+        widget can call a small service-oriented method such as
+        <code>askAssistant()</code>.
+      </p>
+
+      <p>
+        Conceptually, the integration layer can look like this:
+      </p>
+
+      <div class="code-block">
+var CustomAIAssistant = Class.create();
+
+CustomAIAssistant.prototype = {
+
+  initialize: function() {},
+
+  askAssistant: function(userQuestion) {
+
+    // 1. Validate the request
+    // 2. Apply authorization rules
+    // 3. Build the model request
+    // 4. Execute the ServiceNow REST integration
+    // 5. Validate the response
+    // 6. Return a safe response
+
+  },
+
+  type: 'CustomAIAssistant'
+};
+      </div>
+
+      <p>
+        This is intentionally a design pattern rather than a copy-and-paste
+        production implementation. The exact implementation depends on the
+        ServiceNow application scope, authentication mechanism, REST configuration,
+        provider API, and organizational security requirements.
+      </p>
+
+      <h2>5. Connecting ServiceNow to the AI API</h2>
+
+      <p>
+        ServiceNow can use an outbound REST integration to communicate with an
+        external AI service. A REST Message can hold the endpoint and HTTP method,
+        while authentication and request configuration are handled through
+        appropriate ServiceNow mechanisms.
+      </p>
+
+      <p>
+        The integration should be treated as its own layer. This makes it easier to
+        change models, endpoints, request formats, or authentication without
+        rewriting the assistant interface.
+      </p>
+
+      <h3>Conceptual request</h3>
+
+      <div class="code-block">
+{
+  "model": "YOUR_SELECTED_MODEL",
+  "input": [
+    {
+      "role": "user",
+      "content": "Summarize this incident and suggest next steps."
+    }
+  ]
+}
+      </div>
+
+      <p>
+        The exact request schema should always follow the current API documentation
+        for the model provider being used. Do not hard-code assumptions about
+        provider-specific fields into the UI layer.
+      </p>
+
+      <h2>6. Prompt construction belongs on the server</h2>
+
+      <p>
+        A production assistant usually needs more than the user's raw question.
+        The server may need to add instructions, relevant business context, allowed
+        data, output requirements, and safety constraints.
+      </p>
+
+      <p>
+        A useful conceptual structure is:
+      </p>
+
+      <div class="code-block">
+System / developer instructions
+        +
+User request
+        +
+Approved ServiceNow context
+        +
+Output requirements
+        =
+Model request
+      </div>
+
+      <p>
+        Keeping this logic on the server makes prompt behavior easier to govern and
+        update. It also prevents users from modifying important server-side
+        instructions simply by changing browser code.
+      </p>
+
+      <h2>7. Adding ServiceNow context</h2>
+
+      <p>
+        The assistant becomes more useful when it can work with approved enterprise
+        context. For example, a request may involve an incident number, knowledge
+        article, catalog request, service, or other record.
+      </p>
+
+      <p>
+        The important principle is that the assistant should receive only the data
+        required for the task and that the server should enforce access controls
+        before data is included in the model request.
+      </p>
+
+      <h3>Example workflow</h3>
+
+      <ol>
+        <li>User asks for help with an incident.</li>
+        <li>ServiceNow identifies the relevant record.</li>
+        <li>Server-side logic verifies that the user can access the record.</li>
+        <li>Only approved fields are selected.</li>
+        <li>The selected context is included in the model request.</li>
+        <li>The response is returned to the user.</li>
+      </ol>
+
+      <div class="callout">
+        <strong>Do not treat retrieval as authorization.</strong>
+        Finding a record does not automatically mean the current user should be
+        allowed to send every field from that record to an external model.
+      </div>
+
+      <h2>8. Conversation context</h2>
+
+      <p>
+        A useful assistant normally needs some awareness of the conversation.
+        Context can be maintained in several ways depending on the architecture.
+      </p>
+
+      <ul>
+        <li>Keep a limited conversation history in the ServiceNow session.</li>
+        <li>Store selected conversation data in a controlled server-side table.</li>
+        <li>Use a provider-supported conversation or response mechanism when appropriate.</li>
+        <li>Summarize older turns instead of sending unlimited history.</li>
+      </ul>
+
+      <p>
+        Conversation history should have a defined retention strategy. More context
+        is not automatically better. Large histories can increase cost, latency,
+        and the amount of enterprise information sent to the model.
+      </p>
+
+      <h2>9. Error handling</h2>
+
+      <p>
+        External AI services can fail for many reasons: authentication problems,
+        rate limits, network failures, invalid requests, provider errors, or
+        temporary availability issues.
+      </p>
+
+      <p>
+        The assistant should not expose raw integration errors to end users.
+        Instead, the server should log useful diagnostic information and return a
+        controlled user-facing message.
+      </p>
+
+      <div class="code-block">
+AI request
+   ↓
+Did the request succeed?
+   ├── Yes → Validate response → Return answer
+   │
+   └── No → Log diagnostic details
+             ↓
+          Return safe error message
+      </div>
+
+      <h2>10. Security architecture</h2>
+
+      <p>
+        Security should be designed before the assistant is connected to enterprise
+        data. The following controls are especially important.
+      </p>
+
+      <ul class="checklist">
+        <li>Keep external API credentials server-side.</li>
+        <li>Use ServiceNow roles and ACLs to control access.</li>
+        <li>Validate and sanitize user input where appropriate.</li>
+        <li>Minimize the data sent to external AI services.</li>
+        <li>Avoid sending secrets, passwords, tokens, or unnecessary personal data.</li>
+        <li>Log integration events without logging sensitive payloads unnecessarily.</li>
+        <li>Define retention and deletion rules for conversation data.</li>
+        <li>Use approved enterprise authentication and credential-management patterns.</li>
+      </ul>
+
+      <h2>11. Observability and logging</h2>
+
+      <p>
+        An AI assistant is an integration, not just a UI component. Production
+        troubleshooting therefore needs visibility across the complete request path.
+      </p>
+
+      <p>
+        Useful operational information can include request timestamps, response
+        status, latency, integration outcome, error category, and correlation
+        identifiers. Sensitive prompt or response content should only be logged when
+        there is a justified business and security reason to do so.
+      </p>
+
+      <h2>12. Synchronous vs asynchronous execution</h2>
+
+      <p>
+        A simple assistant question can often use a synchronous request where the
+        user waits for the answer. Longer-running work may be better handled
+        asynchronously.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">Choosing an execution pattern</div>
+
+        <div class="flow">
+          <div class="flow-step">Short request → synchronous response → display answer</div>
+          <div class="flow-step">Long workflow → asynchronous processing → update user when complete</div>
+          <div class="flow-step">Complex agent workflow → orchestration → tools → workflow → result</div>
+        </div>
+      </div>
+
+      <h2>13. From AI Assistant to AI Agent</h2>
+
+      <p>
+        A custom assistant usually starts with a simple question-and-answer pattern.
+        The architecture can later evolve into a more capable agentic system.
+      </p>
+
+      <div class="code-block">
+Custom AI Assistant
+        ↓
+Tool calling
+        ↓
+ServiceNow data access
+        ↓
+Flow Designer / actions
+        ↓
+Business workflows
+        ↓
+AI Agent / agentic orchestration
+      </div>
+
+      <p>
+        This evolution is important because the UI does not need to change every
+        time the backend becomes more capable. If the assistant communicates with
+        a stable server-side service layer, additional tools and orchestration can
+        be introduced behind that interface.
+      </p>
+
+      <h2>14. Where MCP and RAG fit</h2>
+
+      <p>
+        MCP and retrieval-augmented generation can extend the architecture, but they
+        solve different problems.
+      </p>
+
+      <h3>MCP</h3>
+
+      <p>
+        Model Context Protocol can provide a standardized way for AI systems to
+        interact with tools and external capabilities. In a ServiceNow environment,
+        this can support architectures where an AI system needs controlled access
+        to enterprise operations.
+      </p>
+
+      <h3>RAG</h3>
+
+      <p>
+        Retrieval-augmented generation can provide relevant enterprise knowledge to
+        a model at request time instead of relying only on information encoded in
+        the model itself.
+      </p>
+
+      <p>
+        These patterns can be added later. The core engineering principle remains
+        the same: define clear boundaries between the user experience, business
+        logic, enterprise data, external model, and security controls.
+      </p>
+
+      <h2>15. Common implementation mistakes</h2>
+
+      <ul>
+        <li>Putting an API key directly into client-side JavaScript.</li>
+        <li>Allowing the browser to decide what enterprise data can be sent externally.</li>
+        <li>Mixing UI code, prompts, authentication, and integration logic together.</li>
+        <li>Sending entire records when only a few fields are required.</li>
+        <li>Logging complete prompts and responses without considering sensitive data.</li>
+        <li>Assuming an AI response is always valid or complete.</li>
+        <li>Building without timeout, retry, and error-handling strategies.</li>
+        <li>Creating an AI feature without defining who is authorized to use it.</li>
+      </ul>
+
+      <h2>16. A practical implementation checklist</h2>
+
+      <ul class="checklist">
+        <li>Define the assistant's specific business use case.</li>
+        <li>Design the ServiceNow experience.</li>
+        <li>Create the server-side integration layer.</li>
+        <li>Configure secure authentication.</li>
+        <li>Implement the external REST integration.</li>
+        <li>Define prompt and response contracts.</li>
+        <li>Apply ServiceNow authorization and data filtering.</li>
+        <li>Add controlled error handling.</li>
+        <li>Add appropriate logging and observability.</li>
+        <li>Test security, failure scenarios, latency, and response quality.</li>
+        <li>Document data handling and retention requirements.</li>
+      </ul>
+
+      <h2>17. Final architecture</h2>
+
+      <div class="architecture">
+        <div class="architecture-title">Production-oriented mental model</div>
+
+        <div class="flow">
+          <div class="flow-step">User Experience — Employee Center / Service Portal</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Custom AI Assistant — presentation and interaction</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Service Layer — authorization, validation, prompts, business logic</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Integration Layer — REST Message / external AI API</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">AI Model — reasoning and generation</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow Data / Knowledge / Workflows — controlled enterprise context</div>
+        </div>
+      </div>
+
+      <p>
+        The most important lesson is that a custom AI assistant should be designed
+        as an enterprise integration rather than a chat box. The interface is only
+        one layer. A maintainable solution separates presentation, server-side
+        business logic, credentials, data access, model integration, and
+        observability.
+      </p>
+
+      <p>
+        Once those boundaries are established, the same foundation can support
+        richer capabilities such as structured outputs, retrieval, tool calling,
+        MCP, AI Agents, and workflow automation.
+      </p>
+
+      <div class="article-footer">
+        <p class="eyebrow">NEXT</p>
+        <h3>Model Context Protocol (MCP) with ServiceNow</h3>
+        <p>
+          The next article will explore how MCP can connect AI systems with
+          ServiceNow tools, data, and controlled enterprise capabilities.
+        </p>
+        <a class="text-link" href="../blog.html">← Back to all articles</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <p>© 2026 Sidhartha Ananthula</p>
+    <p>ServiceNow AI • Automation • Engineering</p>
+  </div>
+</footer>
+
+</body>
+</html>
