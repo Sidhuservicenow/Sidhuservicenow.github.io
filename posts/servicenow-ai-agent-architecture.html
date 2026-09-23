@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiceNow AI Agent Architecture: Tools, Flows, Data, and MCP | Sidhartha Ananthula</title>
+  <meta name="description" content="A practical developer guide to ServiceNow AI Agent architecture, including agent roles, tools, Flow Designer, enterprise data, integrations, MCP, security, and production design.">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .arch-diagram{margin:32px 0;padding:28px;border:1px solid #dfe5ef;border-radius:18px;background:#f7f9fc}
+    .arch-title{font-weight:800;font-size:1.05rem;margin-bottom:20px}
+    .arch-grid{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:14px;align-items:center}
+    .arch-box{background:#fff;border:1px solid #d7deea;border-radius:14px;padding:18px;text-align:center;box-shadow:0 5px 16px rgba(20,35,60,.05)}
+    .arch-box strong{display:block;margin-bottom:7px}
+    .arch-box small{color:#5d6b7c;line-height:1.5}
+    .arch-center{border:2px solid #2864f0;background:#eef4ff}
+    .arch-arrow{text-align:center;font-size:1.4rem;font-weight:800;color:#2864f0}
+    .arch-wide{grid-column:1 / -1}
+    .loop{margin-top:18px;padding:16px;border-left:4px solid #2864f0;background:#fff;border-radius:10px}
+    .callout{margin:28px 0;padding:20px 22px;border-left:4px solid #2864f0;background:#f1f5ff;border-radius:10px}
+    .code-example{margin:24px 0;padding:20px;background:#101722;color:#e8edf5;border-radius:12px;overflow:auto;font-family:"JetBrains Mono",monospace;font-size:.9rem;line-height:1.6}
+    .checklist{padding-left:20px}
+    .checklist li{margin:9px 0}
+    .sources{margin-top:36px;padding-top:24px;border-top:1px solid #e2e6ed}
+    .sources li{margin:10px 0}
+    .comparison{width:100%;border-collapse:collapse;margin:24px 0}
+    .comparison th,.comparison td{border:1px solid #dfe4eb;padding:12px;text-align:left;vertical-align:top}
+    .comparison th{background:#f5f7fa}
+    @media(max-width:760px){.arch-grid{grid-template-columns:1fr}.arch-wide{grid-column:auto}.arch-arrow{transform:rotate(90deg)}}
+  </style>
+</head>
+
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="../index.html">Sidhuservicenow<span>.</span></a>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../blog.html">Blog</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container article-page">
+  <a class="back-link" href="../blog.html">← Back to Blog</a>
+
+  <p class="eyebrow">SERVICENOW AI • AI ENGINEERING • ARCHITECTURE</p>
+
+  <h1>ServiceNow AI Agent Architecture: Tools, Flows, Data, and MCP</h1>
+
+  <p class="article-lead">
+    Building an AI agent is not just about writing a prompt. A production agent needs a clear role,
+    reliable enterprise context, controlled tools, workflow execution, identity, security, and observability.
+    This guide breaks down the architecture from a ServiceNow developer's perspective.
+  </p>
+
+  <p class="article-meta">September 2026 · 14 min read · ServiceNow AI · AI Engineering</p>
+
+  <div class="callout">
+    <strong>Quick mental model:</strong>
+    An AI Agent decides <em>what</em> needs to happen, enterprise data provides <em>context</em>,
+    tools provide <em>capabilities</em>, workflows execute <em>actions</em>, and governance controls
+    <em>what the agent is allowed to do</em>.
+  </div>
+
+  <h2>1. The architecture at a glance</h2>
+
+  <p>
+    ServiceNow describes AI Agents as systems that can define goals, gather relevant data, reason about
+    the next step, use tools such as flows, scripts, and generative AI skills, and monitor results.
+    AI Agent Studio is used to build and customize agents, while ServiceNow's broader AI platform connects
+    agents with data, workflows, and integrations. citeturn0search0turn0search6
+  </p>
+
+  <div class="arch-diagram">
+    <div class="arch-title">Conceptual ServiceNow AI Agent execution architecture</div>
+    <div class="arch-grid">
+      <div class="arch-box">
+        <strong>1. User / Trigger</strong>
+        <small>Chat, portal, event, workflow, API, or another agent</small>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <strong>2. Agent Goal & Role</strong>
+        <small>Mission, instructions, boundaries, success criteria</small>
+      </div>
+
+      <div class="arch-arrow">↓</div>
+      <div class="arch-box arch-center">
+        <strong>3. AI Agent</strong>
+        <small>Plans, reasons, selects tools, evaluates results</small>
+      </div>
+      <div class="arch-arrow">↓</div>
+
+      <div class="arch-box">
+        <strong>4. Enterprise Context</strong>
+        <small>Knowledge, incidents, cases, CMDB data, records, connected data</small>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <strong>5. Tools</strong>
+        <small>Flows, subflows, scripts, skills, APIs, IntegrationHub, MCP</small>
+      </div>
+
+      <div class="arch-wide loop">
+        <strong>Execution loop:</strong> Goal → gather context → choose tool → execute → observe result →
+        continue, stop, or request human intervention.
+      </div>
+    </div>
+  </div>
+
+  <h2>2. Agent vs. workflow: they solve different problems</h2>
+
+  <p>
+    A useful design distinction is that a traditional workflow describes a known sequence of steps,
+    while an AI agent can determine which available action or tool is appropriate based on the goal
+    and current context. ServiceNow positions agentic workflows around the overall business objective,
+    with agents and tools contributing to the execution. citeturn0search3
+  </p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th>Traditional workflow</th>
+        <th>AI agent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Developer defines the sequence.</td>
+        <td>Agent can plan the next step within defined boundaries.</td>
+      </tr>
+      <tr>
+        <td>Best for deterministic business rules.</td>
+        <td>Useful when the path depends on context or changing information.</td>
+      </tr>
+      <tr>
+        <td>Triggers and actions are explicitly configured.</td>
+        <td>Agent selects from available tools according to its role and goal.</td>
+      </tr>
+      <tr>
+        <td>Predictable execution path.</td>
+        <td>Requires stronger testing, guardrails, permissions, and evaluation.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. The agent's role is the contract</h2>
+
+  <p>
+    ServiceNow describes an AI agent role as defining its purpose, objectives, behavior, and interactions.
+    In practical development, this is the first place to establish the agent's boundaries. citeturn0search3
+  </p>
+
+  <p>A good role definition should answer:</p>
+  <ul class="checklist">
+    <li>What business problem does this agent solve?</li>
+    <li>What records or systems can it access?</li>
+    <li>What actions is it allowed to perform?</li>
+    <li>What conditions require human approval?</li>
+    <li>What should it do when required information is missing?</li>
+    <li>What does successful completion look like?</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Developer principle:</strong>
+    Do not give an agent broad access simply because a tool exists. Design the smallest useful toolset
+    that can accomplish the intended task.
+  </div>
+
+  <h2>4. Tools are how an agent actually gets work done</h2>
+
+  <p>
+    ServiceNow identifies flow actions, subflows, scripts, and skills among the tools AI Agents can use.
+    These tools turn an agent from a conversational component into an execution component. citeturn0search3
+  </p>
+
+  <h3>Common tool categories</h3>
+  <ul>
+    <li><strong>Flow Actions:</strong> Reuse existing Flow Designer automation.</li>
+    <li><strong>Subflows:</strong> Encapsulate reusable multi-step business logic.</li>
+    <li><strong>Scripts:</strong> Perform controlled platform operations where scripting is appropriate.</li>
+    <li><strong>Skills:</strong> Provide specialized capabilities or AI-powered operations.</li>
+    <li><strong>Knowledge / Search:</strong> Retrieve information required to make a decision.</li>
+    <li><strong>Integration tools:</strong> Reach external systems through existing integrations.</li>
+    <li><strong>MCP tools:</strong> Connect an agent to external capabilities through the Model Context Protocol.</li>
+  </ul>
+
+  <h2>5. Why Flow Designer matters</h2>
+
+  <p>
+    Flow Designer provides a visual way to define triggers and actions and is part of the ServiceNow
+    platform's automation foundation. That makes existing flows and subflows valuable building blocks
+    for agentic solutions. citeturn0search6
+  </p>
+
+  <p>For example, instead of allowing an agent to directly manipulate several records, a developer can expose a bounded operation such as:</p>
+
+  <div class="code-example">Resolve Incident
+  1. Validate incident state
+  2. Confirm resolution code is permitted
+  3. Add resolution notes
+  4. Set resolved state
+  5. Return incident number + result</div>
+
+  <p>
+    The agent decides whether the operation is appropriate; the flow owns the deterministic execution rules.
+    This separation can make the overall solution easier to test and govern.
+  </p>
+
+  <h2>6. Enterprise data provides the context</h2>
+
+  <p>
+    An agent cannot reliably act on a business problem if it lacks the information needed to understand that
+    problem. ServiceNow says AI Agents can use business data such as knowledge articles, historical incidents
+    and cases, configuration items from the CMDB, and information from other connected systems. citeturn0search3
+  </p>
+
+  <p>A typical incident-resolution agent might need:</p>
+  <ul>
+    <li>Current incident fields and work notes</li>
+    <li>Related configuration items</li>
+    <li>Recent incidents involving the same service</li>
+    <li>Relevant knowledge articles</li>
+    <li>Change or maintenance context</li>
+    <li>Approved remediation procedures</li>
+    <li>External monitoring or observability information</li>
+  </ul>
+
+  <p>
+    The important architecture question is not simply "Can the LLM answer?" It is:
+    <strong>Does the agent have the right context at the moment it needs to act?</strong>
+  </p>
+
+  <h2>7. Where MCP fits</h2>
+
+  <p>
+    Model Context Protocol (MCP) provides a standardized way for AI applications to connect to external
+    tools and resources. ServiceNow's current AI Agent materials describe MCP as a way for agents to reach
+    external tools, data, and systems through AI Agent Fabric. citeturn0search0turn0search36
+  </p>
+
+  <div class="arch-diagram">
+    <div class="arch-title">MCP in an agent architecture</div>
+    <div class="arch-grid">
+      <div class="arch-box">
+        <strong>ServiceNow AI Agent</strong>
+        <small>Reasons about the business goal</small>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <strong>MCP Client</strong>
+        <small>Connects the agent to approved MCP capabilities</small>
+      </div>
+      <div class="arch-wide arch-arrow">↓</div>
+      <div class="arch-box arch-wide">
+        <strong>External MCP Server / Tools</strong>
+        <small>Exposes selected capabilities such as search, APIs, data access, or business operations</small>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    The architectural benefit is separation of concerns: the agent can reason about the task while an external
+    tool provider owns the implementation details of a capability. ServiceNow's recent MCP materials also
+    describe approval and governance workflows for external MCP connections. citeturn0search7turn0search12
+  </p>
+
+  <h2>8. Example: Incident Resolution Agent</h2>
+
+  <p>Consider an agent whose goal is to help resolve recurring application incidents.</p>
+
+  <h3>Step 1 — Understand the goal</h3>
+  <p>The agent receives an incident and determines what information is required before any action is taken.</p>
+
+  <h3>Step 2 — Gather context</h3>
+  <p>It retrieves the incident, related CI, knowledge, and relevant historical information.</p>
+
+  <h3>Step 3 — Choose tools</h3>
+  <p>It may select a knowledge search, a diagnostic flow, or an approved integration tool.</p>
+
+  <h3>Step 4 — Evaluate the result</h3>
+  <p>If the diagnostic result identifies a known condition, the agent can continue with the next approved step.</p>
+
+  <h3>Step 5 — Execute bounded action</h3>
+  <p>A Flow Designer action performs the deterministic remediation operation.</p>
+
+  <h3>Step 6 — Verify</h3>
+  <p>The agent checks the outcome and either completes the task, continues, or routes the case for human review.</p>
+
+  <div class="code-example">User / Event
+      ↓
+Incident Resolution Agent
+      ↓
+Retrieve incident + CI + knowledge
+      ↓
+Reason about available options
+      ↓
+Select approved diagnostic tool
+      ↓
+Evaluate result
+      ↓
+Run bounded Flow / Integration
+      ↓
+Verify outcome
+      ↓
+Resolve OR request human intervention</div>
+
+  <h2>9. Security and governance are architectural components</h2>
+
+  <p>
+    Agentic systems need more than prompt quality. ServiceNow's AI platform materials emphasize governance,
+    security, and control around AI use. Its AI Control Tower is positioned as a central governance and
+    management layer for AI across the enterprise. citeturn0search3turn0search34
+  </p>
+
+  <p>For a developer, the practical checklist includes:</p>
+  <ul class="checklist">
+    <li>Use least-privilege roles and permissions.</li>
+    <li>Keep sensitive operations behind controlled tools.</li>
+    <li>Validate inputs before destructive actions.</li>
+    <li>Require human approval for high-impact operations where appropriate.</li>
+    <li>Log important decisions and tool executions.</li>
+    <li>Test failure paths, not only successful paths.</li>
+    <li>Evaluate whether retrieved information is current and relevant.</li>
+    <li>Define what the agent should do when it cannot establish enough confidence.</li>
+  </ul>
+
+  <h2>10. A practical developer implementation pattern</h2>
+
+  <p>
+    A maintainable implementation can separate the solution into five layers:
+  </p>
+
+  <ol>
+    <li><strong>Experience:</strong> Employee Center, Service Portal, Virtual Agent, API, or another channel.</li>
+    <li><strong>Agent:</strong> Role, goal, instructions, reasoning, and tool selection.</li>
+    <li><strong>Context:</strong> Knowledge, records, CMDB, search, and connected enterprise data.</li>
+    <li><strong>Execution:</strong> Flows, subflows, scripts, IntegrationHub, APIs, and MCP tools.</li>
+    <li><strong>Governance:</strong> Identity, permissions, guardrails, testing, evaluation, monitoring, and audit.</li>
+  </ol>
+
+  <div class="callout">
+    <strong>Design rule:</strong>
+    Keep reasoning flexible and execution deterministic wherever possible. Let the agent decide
+    <em>which approved capability to use</em>; let the underlying tool enforce the business rules.
+  </div>
+
+  <h2>11. Common architecture mistakes</h2>
+
+  <ul>
+    <li><strong>One giant agent:</strong> Give one agent too many unrelated responsibilities.</li>
+    <li><strong>Too many tools:</strong> Expose every available action instead of a focused toolset.</li>
+    <li><strong>Weak context:</strong> Expect accurate decisions without retrieving the required business data.</li>
+    <li><strong>Direct unrestricted writes:</strong> Allow broad record changes without deterministic validation.</li>
+    <li><strong>No failure path:</strong> Design only for the happy path.</li>
+    <li><strong>No evaluation:</strong> Deploy without measuring whether the agent actually completes its objective reliably.</li>
+    <li><strong>Confusing MCP with the agent:</strong> MCP is a connectivity protocol; it does not replace the agent's role, reasoning, or governance.</li>
+  </ul>
+
+  <h2>12. What ServiceNow developers should learn next</h2>
+
+  <p>If you want to build serious agentic solutions on the Now Platform, a useful learning path is:</p>
+
+  <ol>
+    <li>AI Agent Studio concepts and agent roles</li>
+    <li>Flow Designer and reusable subflows</li>
+    <li>ServiceNow scripting and Glide APIs</li>
+    <li>AI Search and enterprise knowledge retrieval</li>
+    <li>IntegrationHub and REST integrations</li>
+    <li>RAG and grounding patterns</li>
+    <li>MCP architecture and tool design</li>
+    <li>Identity, ACLs, security, and governance</li>
+    <li>Agent evaluation and production monitoring</li>
+  </ol>
+
+  <h2>Conclusion</h2>
+
+  <p>
+    The most important shift when designing ServiceNow AI Agents is to stop thinking of the agent as
+    "a smarter chatbot." The useful architectural unit is a controlled system in which the agent has
+    a defined goal, access to relevant enterprise context, a limited set of tools, deterministic workflow
+    capabilities, and governance around what it can do.
+  </p>
+
+  <p>
+    Once that model is clear, technologies such as Flow Designer, IntegrationHub, AI Search, RAG, and MCP
+    become pieces of one larger architecture rather than isolated features.
+  </p>
+
+  <div class="sources">
+    <h2>Official ServiceNow references</h2>
+    <ul>
+      <li><a href="https://www.servicenow.com/products/ai-agents.html" target="_blank" rel="noopener">ServiceNow AI Agents</a></li>
+      <li><a href="https://www.servicenow.com/platform/what-is-servicenow-ai-platform.html" target="_blank" rel="noopener">What is the ServiceNow AI Platform?</a></li>
+      <li><a href="https://www.servicenow.com/community/servicenow-otto-articles/designing-your-first-custom-servicenow-mcp-server-with-mcp/ta-p/3566757" target="_blank" rel="noopener">Designing your first custom ServiceNow MCP server</a></li>
+      <li><a href="https://www.servicenow.com/community/ai-control-tower-articles/ai-gateway-faq/ta-p/3587429" target="_blank" rel="noopener">ServiceNow AI Gateway FAQ</a></li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
