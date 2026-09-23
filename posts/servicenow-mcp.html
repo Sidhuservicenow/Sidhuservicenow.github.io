@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Model Context Protocol (MCP) with ServiceNow | Sidhartha Ananthula</title>
+  <meta name="description" content="A practical developer guide to Model Context Protocol with ServiceNow, including MCP clients, servers, tools, resources, prompts, architecture, security, governance, and implementation patterns.">
+
+  <link rel="stylesheet" href="../assets/style.css">
+
+  <style>
+    .article-page {
+      padding-bottom: 80px;
+    }
+
+    .article-hero {
+      padding: 34px 0 20px;
+    }
+
+    .article-hero h1 {
+      max-width: 1000px;
+    }
+
+    .article-intro {
+      max-width: 920px;
+      font-size: 1.12rem;
+      line-height: 1.8;
+    }
+
+    .article-meta-line {
+      margin-top: 22px;
+      color: #5d6675;
+      font-size: 0.95rem;
+    }
+
+    .article-content {
+      max-width: 920px;
+    }
+
+    .article-content h2 {
+      margin-top: 54px;
+    }
+
+    .article-content h3 {
+      margin-top: 34px;
+    }
+
+    .article-content p,
+    .article-content li {
+      line-height: 1.8;
+    }
+
+    .architecture {
+      margin: 34px 0;
+      padding: 28px;
+      border: 1px solid #dfe5ee;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .architecture-title {
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-step {
+      padding: 15px 18px;
+      border: 1px solid #d9e1ec;
+      border-radius: 10px;
+      background: #ffffff;
+      font-weight: 600;
+    }
+
+    .flow-arrow {
+      text-align: center;
+      font-weight: 800;
+      color: #2864e8;
+    }
+
+    .callout {
+      margin: 30px 0;
+      padding: 22px 24px;
+      border-left: 4px solid #2864e8;
+      border-radius: 10px;
+      background: #eef4ff;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .code-block {
+      margin: 24px 0;
+      padding: 22px;
+      overflow-x: auto;
+      border-radius: 12px;
+      background: #111827;
+      color: #e5e7eb;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    .comparison {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 26px 0;
+    }
+
+    .comparison th,
+    .comparison td {
+      padding: 14px;
+      border: 1px solid #dfe5ee;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .comparison th {
+      background: #f8fafc;
+      font-weight: 800;
+    }
+
+    .checklist {
+      padding-left: 22px;
+    }
+
+    .article-footer {
+      margin-top: 60px;
+      padding-top: 28px;
+      border-top: 1px solid #dfe5ee;
+    }
+
+    .reference-list li {
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="../index.html">Sidhuservicenow<span>.</span></a>
+
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../blog.html">Blog</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="article-page">
+
+  <section class="article-hero">
+    <div class="container">
+
+      <a class="text-link" href="../blog.html">← Back to Blog</a>
+
+      <p class="eyebrow">
+        MCP · SERVICENOW · AI ENGINEERING
+      </p>
+
+      <h1>Model Context Protocol (MCP) with ServiceNow: Tools, Architecture, Security, and Implementation</h1>
+
+      <p class="article-intro">
+        Model Context Protocol (MCP) provides a standardized way for AI applications
+        to discover and interact with external capabilities. For ServiceNow
+        developers, MCP creates a practical interoperability layer between AI
+        clients and governed ServiceNow tools, data, and workflows.
+      </p>
+
+      <div class="article-meta-line">
+        September 2026 · 18 min read · MCP · ServiceNow AI · Agentic AI
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container article-content">
+
+      <div class="callout">
+        <strong>Architecture in one sentence:</strong>
+        An AI application acts as the MCP client, connects to an MCP server,
+        discovers the server's available capabilities, and invokes approved
+        ServiceNow tools through a standardized protocol.
+      </div>
+
+      <h2>1. What is MCP?</h2>
+
+      <p>
+        Model Context Protocol, commonly called MCP, is an open standard for
+        connecting AI applications to systems where useful data and actions live.
+        Instead of building a different AI-specific integration for every client
+        and every enterprise system, MCP defines a common interaction model.
+      </p>
+
+      <p>
+        The protocol separates the AI application from the system that exposes the
+        capability. An AI host can connect through an MCP client to an MCP server,
+        and the server exposes capabilities that the client can discover and use.
+      </p>
+
+      <p>
+        The current MCP specification defines core server primitives including
+        <strong>tools, resources, and prompts</strong>. Tools are executable
+        functions, resources provide contextual data, and prompts are reusable
+        interaction templates.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">The basic MCP model</div>
+
+        <div class="flow">
+          <div class="flow-step">AI Application / Host</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">MCP Client</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">MCP Protocol</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">MCP Server</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Tools / Resources / Prompts</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow APIs, workflows, records, or platform capabilities</div>
+        </div>
+      </div>
+
+      <h2>2. Why should a ServiceNow developer care?</h2>
+
+      <p>
+        Traditional integrations often create a point-to-point relationship between
+        an AI application and a ServiceNow API. As the number of AI clients grows,
+        the integration surface can grow with it.
+      </p>
+
+      <p>
+        MCP changes the integration boundary. Instead of asking every AI client to
+        understand ServiceNow-specific endpoints, the MCP server exposes a curated
+        set of capabilities using a common protocol.
+      </p>
+
+      <table class="comparison">
+        <tr>
+          <th>Traditional point-to-point integration</th>
+          <th>MCP-based integration</th>
+        </tr>
+        <tr>
+          <td>Client is tightly coupled to API details.</td>
+          <td>Client discovers standardized capabilities.</td>
+        </tr>
+        <tr>
+          <td>Each AI client may require custom integration code.</td>
+          <td>Multiple compatible clients can use the same MCP server.</td>
+        </tr>
+        <tr>
+          <td>Tool descriptions may be duplicated across clients.</td>
+          <td>Capabilities can be published by the server.</td>
+        </tr>
+        <tr>
+          <td>Governance is often implemented separately for each connector.</td>
+          <td>Governance can be centralized around the server and its tools.</td>
+        </tr>
+      </table>
+
+      <p>
+        MCP does not eliminate APIs. A ServiceNow MCP implementation can still use
+        platform APIs, Scripted REST APIs, actions, subflows, or other server-side
+        mechanisms underneath the MCP tool.
+      </p>
+
+      <h2>3. MCP is not a replacement for REST APIs</h2>
+
+      <p>
+        This distinction is important. REST APIs describe how software communicates
+        with a service. MCP describes a standardized way for AI applications to
+        discover and use capabilities exposed by an MCP server.
+      </p>
+
+      <div class="code-block">
+AI Client
+   |
+   | MCP
+   v
+MCP Server
+   |
+   | ServiceNow API / Flow / Action / Script
+   v
+ServiceNow Platform
+      </div>
+
+      <p>
+        In other words, MCP can sit above existing ServiceNow integration
+        capabilities rather than replacing them.
+      </p>
+
+      <h2>4. The three important MCP primitives</h2>
+
+      <h3>Tools</h3>
+
+      <p>
+        Tools are executable operations. They are the most important primitive when
+        an AI application needs to perform an action or retrieve information through
+        a defined function.
+      </p>
+
+      <p>ServiceNow-oriented examples could include:</p>
+
+      <ul>
+        <li>Find an incident.</li>
+        <li>Get details for a change request.</li>
+        <li>Search approved knowledge.</li>
+        <li>Check the assignment group for an incident.</li>
+        <li>Create a request using an approved workflow.</li>
+        <li>Trigger a controlled automation.</li>
+      </ul>
+
+      <h3>Resources</h3>
+
+      <p>
+        Resources represent contextual information that an MCP client can use.
+        Depending on the implementation, resources can represent documents,
+        records, configuration information, or other structured content.
+      </p>
+
+      <h3>Prompts</h3>
+
+      <p>
+        Prompts are reusable templates or instructions exposed by an MCP server.
+        They can provide a consistent way to initiate a particular interaction.
+      </p>
+
+      <div class="callout">
+        <strong>Developer mental model:</strong>
+        Think of tools as things the AI can call, resources as information it can
+        access, and prompts as reusable interaction patterns.
+      </div>
+
+      <h2>5. ServiceNow as an MCP server</h2>
+
+      <p>
+        ServiceNow provides MCP capabilities through its MCP Server Console and
+        related platform features. The ServiceNow approach focuses on exposing
+        selected platform capabilities as governed MCP tools rather than simply
+        opening generic database access to an AI client.
+      </p>
+
+      <p>
+        ServiceNow has also expanded its MCP capabilities over time, including
+        prebuilt and domain-oriented server options. Availability and exact
+        capabilities depend on the ServiceNow release, plugins, licensing, and
+        configuration in the target environment.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">ServiceNow as the governed MCP server</div>
+
+        <div class="flow">
+          <div class="flow-step">External AI Client / Agent</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">MCP Client Connection</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow MCP Server Console</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Curated MCP Tool Catalog</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow Actions / Subflows / Skills / APIs</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow Data and Business Workflows</div>
+        </div>
+      </div>
+
+      <h2>6. ServiceNow can also act as an MCP client</h2>
+
+      <p>
+        MCP is not limited to the pattern where ServiceNow is the server.
+        ServiceNow can also connect to external MCP servers so that AI agents or
+        platform capabilities can use tools hosted outside the ServiceNow instance.
+      </p>
+
+      <p>
+        This creates two useful enterprise patterns:
+      </p>
+
+      <ol>
+        <li>
+          <strong>ServiceNow as MCP server:</strong> external AI clients use
+          governed ServiceNow capabilities.
+        </li>
+        <li>
+          <strong>ServiceNow as MCP client:</strong> ServiceNow AI capabilities
+          consume approved tools exposed by external MCP servers.
+        </li>
+      </ol>
+
+      <div class="code-block">
+Pattern A
+
+External AI
+    ↓
+MCP Client
+    ↓
+ServiceNow MCP Server
+    ↓
+ServiceNow
+
+
+Pattern B
+
+ServiceNow AI Agent
+    ↓
+MCP Client
+    ↓
+External MCP Server
+    ↓
+External Tool / Data
+      </div>
+
+      <h2>7. How tool discovery works</h2>
+
+      <p>
+        One of MCP's important characteristics is capability discovery. A client
+        does not necessarily need every tool's implementation details hard-coded
+        into the application.
+      </p>
+
+      <p>
+        The server publishes information about available capabilities. The client
+        can discover the available tools and their input requirements, then use an
+        appropriate tool when the AI workflow determines that it is needed.
+      </p>
+
+      <h3>Conceptual example</h3>
+
+      <div class="code-block">
+MCP server publishes:
+
+Tool: find_incident
+Description:
+  Find an incident by number.
+
+Input:
+  {
+    "incident_number": "string"
+  }
+
+Tool: create_incident
+Description:
+  Create an incident using an approved workflow.
+
+Input:
+  {
+    "short_description": "string",
+    "description": "string"
+  }
+      </div>
+
+      <p>
+        The important part is that the tool contract describes the capability.
+        The server remains responsible for implementing the actual operation.
+      </p>
+
+      <h2>8. Designing a good ServiceNow MCP tool</h2>
+
+      <p>
+        The quality of an MCP implementation depends heavily on the quality of its
+        tools. A tool should represent a useful business capability rather than
+        exposing an unnecessarily low-level database operation.
+      </p>
+
+      <h3>Prefer business actions</h3>
+
+      <div class="code-block">
+Good:
+
+get_incident_summary
+find_open_incidents
+create_access_request
+check_change_status
+
+
+Less useful as a first abstraction:
+
+query_table
+update_any_record
+delete_record
+run_arbitrary_script
+      </div>
+
+      <p>
+        A purpose-built tool can apply validation, business rules, authorization,
+        and domain-specific logic before performing the underlying operation.
+      </p>
+
+      <div class="callout">
+        <strong>Design principle:</strong>
+        Give the AI the smallest useful capability that can safely accomplish the
+        business task. Avoid turning MCP into unrestricted database access.
+      </div>
+
+      <h2>9. MCP tool implementation pattern</h2>
+
+      <p>
+        A ServiceNow MCP tool can conceptually delegate to an existing server-side
+        capability instead of implementing all business logic inside the MCP layer.
+      </p>
+
+      <div class="code-block">
+MCP Tool
+   ↓
+Validation
+   ↓
+Authorization
+   ↓
+ServiceNow Action / Subflow / Script Include
+   ↓
+Business Logic
+   ↓
+Approved Data
+   ↓
+Structured MCP Result
+      </div>
+
+      <p>
+        This architecture makes MCP another controlled interface to the platform
+        rather than a second location where business logic has to be recreated.
+      </p>
+
+      <h2>10. Security is the most important part</h2>
+
+      <p>
+        MCP can increase the number of actions an AI system can reach. That is
+        useful, but it also increases the importance of authorization, input
+        validation, tool design, auditability, and data protection.
+      </p>
+
+      <p>
+        A tool that can read a record has a different risk profile from a tool that
+        can delete data or approve a request. Tool design should therefore account
+        for the consequences of each operation.
+      </p>
+
+      <ul class="checklist">
+        <li>Authenticate the MCP client.</li>
+        <li>Authorize access to the MCP server.</li>
+        <li>Control which users or agents can discover each tool.</li>
+        <li>Enforce ServiceNow roles and ACLs.</li>
+        <li>Validate every tool argument server-side.</li>
+        <li>Use least-privilege access for machine identities.</li>
+        <li>Separate read operations from high-impact write operations.</li>
+        <li>Log important tool invocations for audit and troubleshooting.</li>
+        <li>Protect sensitive data from unnecessary model exposure.</li>
+        <li>Consider approval or human confirmation for high-impact actions.</li>
+      </ul>
+
+      <h2>11. Why generic CRUD tools can be dangerous</h2>
+
+      <p>
+        It may be technically convenient to expose generic create, read, update,
+        and delete operations against a broad ServiceNow table. But an AI system
+        with a generic write capability can become difficult to constrain.
+      </p>
+
+      <p>
+        A more controlled approach is to expose task-specific tools. For example,
+        instead of giving an agent an unrestricted update operation, expose a
+        specific action such as <code>assign_incident</code> with an explicit
+        schema and server-side validation.
+      </p>
+
+      <div class="code-block">
+Generic:
+
+update_record(table, sys_id, fields)
+
+
+Controlled:
+
+assign_incident(
+  incident_number,
+  assignment_group
+)
+      </div>
+
+      <p>
+        The second pattern gives the server a clearer place to enforce what the AI
+        is allowed to change.
+      </p>
+
+      <h2>12. MCP and ServiceNow AI Agents</h2>
+
+      <p>
+        MCP becomes especially interesting when combined with AI agents. An agent
+        can reason about a task, identify a required capability, select a tool,
+        provide the tool inputs, receive the result, and continue the workflow.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">Agent + MCP execution flow</div>
+
+        <div class="flow">
+          <div class="flow-step">User: "Check my open incident and tell me its status."</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">AI Agent interprets the request</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Agent discovers/selects the incident lookup tool</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">MCP client sends the tool call</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow validates identity and authorization</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Tool retrieves approved incident information</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Result returns through MCP</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Agent explains the result to the user</div>
+        </div>
+      </div>
+
+      <h2>13. MCP vs custom REST integration</h2>
+
+      <p>
+        MCP and REST are not competing technologies. The right choice depends on
+        the integration boundary and the consumers of the capability.
+      </p>
+
+      <table class="comparison">
+        <tr>
+          <th>Scenario</th>
+          <th>Typical pattern</th>
+        </tr>
+        <tr>
+          <td>A known application needs a deterministic API contract.</td>
+          <td>REST API</td>
+        </tr>
+        <tr>
+          <td>Multiple AI clients need standardized tool discovery.</td>
+          <td>MCP</td>
+        </tr>
+        <tr>
+          <td>A ServiceNow workflow needs to call another enterprise API.</td>
+          <td>REST / IntegrationHub / Flow Designer</td>
+        </tr>
+        <tr>
+          <td>An AI agent needs governed access to multiple capabilities.</td>
+          <td>MCP can provide the tool interface</td>
+        </tr>
+      </table>
+
+      <h2>14. MCP and IntegrationHub</h2>
+
+      <p>
+        IntegrationHub and MCP solve different layers of the problem.
+      </p>
+
+      <p>
+        IntegrationHub can orchestrate integrations and actions across enterprise
+        systems. MCP provides a standardized interface through which AI clients can
+        discover and invoke selected capabilities.
+      </p>
+
+      <div class="code-block">
+AI Client
+   ↓
+MCP Tool
+   ↓
+ServiceNow Action
+   ↓
+IntegrationHub
+   ↓
+External Enterprise System
+      </div>
+
+      <p>
+        This combination allows the AI-facing interface to remain focused on a
+        controlled business capability while the underlying workflow continues to
+        use ServiceNow's integration tooling.
+      </p>
+
+      <h2>15. MCP and RAG</h2>
+
+      <p>
+        MCP and retrieval-augmented generation are complementary.
+      </p>
+
+      <p>
+        RAG focuses on retrieving relevant information for the model. MCP focuses
+        on standardized interaction between an AI application and external
+        capabilities.
+      </p>
+
+      <div class="code-block">
+User question
+      ↓
+AI Agent
+      ↓
+MCP tool → retrieve approved ServiceNow knowledge
+      ↓
+Relevant context
+      ↓
+Model reasoning
+      ↓
+Answer or next tool call
+      </div>
+
+      <p>
+        A mature enterprise architecture can therefore use MCP as the tool
+        interoperability layer while using retrieval systems to provide relevant
+        enterprise context.
+      </p>
+
+      <h2>16. MCP and the 2026 protocol evolution</h2>
+
+      <p>
+        MCP is evolving quickly. The 2026-07-28 specification introduced a
+        stateless protocol core, additional authorization hardening, cacheable
+        list results, an extensions framework, and changes around long-running
+        tasks and transports.
+      </p>
+
+      <p>
+        This matters for developers because MCP implementations should avoid
+        assuming that older transport or session behavior will remain the long-term
+        standard. When building production systems, target the protocol version
+        supported by the client, server, and SDKs you actually deploy.
+      </p>
+
+      <div class="callout">
+        <strong>Practical rule:</strong>
+        MCP specifications and ServiceNow capabilities are evolving independently.
+        Always verify the supported MCP revision, ServiceNow release, plugin/version,
+        authentication method, and client compatibility before implementing a
+        production integration.
+      </div>
+
+      <h2>17. A practical ServiceNow MCP project</h2>
+
+      <p>
+        A good first project is an Incident MCP Server with a small, carefully
+        selected tool catalog.
+      </p>
+
+      <h3>Example tool catalog</h3>
+
+      <div class="code-block">
+find_incident
+get_incident_summary
+get_incident_work_notes
+get_assignment_group
+create_incident
+      </div>
+
+      <p>
+        Start with read-only capabilities. After authorization, validation, and
+        auditing are established, carefully introduce write operations.
+      </p>
+
+      <h3>Example request flow</h3>
+
+      <div class="code-block">
+User
+  ↓
+AI Client
+  ↓
+MCP Client
+  ↓
+ServiceNow MCP Server
+  ↓
+find_incident
+  ↓
+ServiceNow server-side logic
+  ↓
+ACL / authorization check
+  ↓
+Incident data
+  ↓
+MCP result
+  ↓
+AI response
+      </div>
+
+      <h2>18. Testing an MCP implementation</h2>
+
+      <p>
+        MCP testing should cover more than whether a tool returns the expected
+        result. The security boundary is equally important.
+      </p>
+
+      <ul class="checklist">
+        <li>Can an authorized client discover the intended tools?</li>
+        <li>Can an unauthorized client connect?</li>
+        <li>Can a user call a tool they should not access?</li>
+        <li>Are invalid arguments rejected?</li>
+        <li>Are high-impact operations protected?</li>
+        <li>Does the tool return predictable structured output?</li>
+        <li>Are errors safe and useful?</li>
+        <li>Are tool calls auditable?</li>
+        <li>Is sensitive data minimized?</li>
+        <li>Does the implementation behave correctly after client/server upgrades?</li>
+      </ul>
+
+      <h2>19. Common MCP mistakes</h2>
+
+      <ul>
+        <li>Treating MCP as a replacement for all existing APIs.</li>
+        <li>Exposing broad generic CRUD operations without strong controls.</li>
+        <li>Allowing the AI to bypass ServiceNow authorization.</li>
+        <li>Putting business logic only in the MCP layer instead of reusable server-side services.</li>
+        <li>Giving every agent access to every tool.</li>
+        <li>Ignoring the difference between read and write capabilities.</li>
+        <li>Logging sensitive tool payloads unnecessarily.</li>
+        <li>Assuming protocol behavior from an older MCP specification.</li>
+        <li>Building tools around database tables instead of business outcomes.</li>
+        <li>Skipping negative security tests.</li>
+      </ul>
+
+      <h2>20. Production architecture</h2>
+
+      <div class="architecture">
+        <div class="architecture-title">Enterprise MCP architecture</div>
+
+        <div class="flow">
+          <div class="flow-step">AI Clients — agents, assistants, developer tools</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">MCP Client + Authentication</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Security / Gateway / Governance Controls</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow MCP Server / MCP Server Console</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Curated Tools and Resources</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ACLs + Roles + Business Rules + Validation</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Actions / Subflows / APIs / ServiceNow Data</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Audit + Observability + Enterprise Outcomes</div>
+        </div>
+      </div>
+
+      <h2>21. Developer checklist</h2>
+
+      <ul class="checklist">
+        <li>Define the business capability before creating the MCP tool.</li>
+        <li>Choose whether ServiceNow is the MCP client, server, or both.</li>
+        <li>Keep tools small, explicit, and purpose-built.</li>
+        <li>Reuse existing ServiceNow business logic where possible.</li>
+        <li>Apply authentication and authorization before tool execution.</li>
+        <li>Validate every input on the server.</li>
+        <li>Separate read and write capabilities.</li>
+        <li>Use least-privilege identities.</li>
+        <li>Define audit and observability requirements.</li>
+        <li>Test unauthorized and malformed requests.</li>
+        <li>Verify ServiceNow release and MCP protocol compatibility.</li>
+        <li>Document every exposed tool and its intended audience.</li>
+      </ul>
+
+      <h2>22. Final mental model</h2>
+
+      <p>
+        For a ServiceNow developer, the simplest way to think about MCP is as an
+        interoperability layer between AI applications and enterprise capabilities.
+      </p>
+
+      <div class="code-block">
+AI
+ │
+ │ understands the task
+ ▼
+MCP Client
+ │
+ │ discovers / calls capabilities
+ ▼
+MCP Server
+ │
+ │ exposes governed tools
+ ▼
+ServiceNow
+ │
+ ├── Actions
+ ├── Subflows
+ ├── APIs
+ ├── Knowledge
+ ├── Records
+ └── Workflows
+      </div>
+
+      <p>
+        The key is not simply making ServiceNow callable by AI. The real engineering
+        work is deciding which capabilities should be exposed, how they are
+        authorized, what data they can access, how results are validated, and how
+        every action is governed and observed.
+      </p>
+
+      <p>
+        That is what turns MCP from a protocol experiment into an enterprise
+        architecture pattern.
+      </p>
+
+      <h2>23. Official references</h2>
+
+      <ul class="reference-list">
+        <li>
+          <a href="https://modelcontextprotocol.io/specification/draft/server/index" target="_blank" rel="noopener">
+            Model Context Protocol — Server and primitive documentation
+          </a>
+        </li>
+        <li>
+          <a href="https://blog.modelcontextprotocol.io/posts/2026-07-28/" target="_blank" rel="noopener">
+            MCP 2026-07-28 Specification
+          </a>
+        </li>
+        <li>
+          <a href="https://www.servicenow.com/community/servicenow-otto-articles/mcp-server-console-faq/ta-p/3550125" target="_blank" rel="noopener">
+            ServiceNow — MCP Server Console FAQ
+          </a>
+        </li>
+        <li>
+          <a href="https://www.servicenow.com/community/ceg-ai-coe-articles/mcp-the-protocol-powering-agentic-ai/ta-p/3508887" target="_blank" rel="noopener">
+            ServiceNow — MCP: The Protocol Powering Agentic AI
+          </a>
+        </li>
+        <li>
+          <a href="https://www.servicenow.com/community/developer-blog/why-should-i-care-about-mcp-servers-and-tools-part-1/ba-p/3562982" target="_blank" rel="noopener">
+            ServiceNow — MCP Servers and Tools
+          </a>
+        </li>
+      </ul>
+
+      <div class="article-footer">
+        <p class="eyebrow">NEXT</p>
+        <h3>RAG + ServiceNow: A Practical Architecture</h3>
+        <p>
+          The next article will explore retrieval-augmented generation and how
+          enterprise ServiceNow knowledge can be retrieved and supplied to an AI
+          system at runtime.
+        </p>
+        <a class="text-link" href="../blog.html">← Back to all articles</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <p>© 2026 Sidhartha Ananthula</p>
+    <p>ServiceNow AI • Automation • Engineering</p>
+  </div>
+</footer>
+
+</body>
+</html>
