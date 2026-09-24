@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ServiceNow Virtual Agent + Generative AI | Sidhartha Ananthula</title>
+  <meta name="description" content="A practical developer guide to ServiceNow Virtual Agent and Generative AI, including NLU, LLM-powered topics, Now Assist, knowledge retrieval, actions, security, architecture, and implementation patterns.">
+
+  <link rel="stylesheet" href="../assets/style.css">
+
+  <style>
+    .article-page {
+      padding-bottom: 80px;
+    }
+
+    .article-hero {
+      padding: 34px 0 20px;
+    }
+
+    .article-hero h1 {
+      max-width: 1000px;
+    }
+
+    .article-intro {
+      max-width: 920px;
+      font-size: 1.12rem;
+      line-height: 1.8;
+    }
+
+    .article-meta-line {
+      margin-top: 22px;
+      color: #5d6675;
+      font-size: 0.95rem;
+    }
+
+    .article-content {
+      max-width: 920px;
+    }
+
+    .article-content h2 {
+      margin-top: 54px;
+    }
+
+    .article-content h3 {
+      margin-top: 34px;
+    }
+
+    .article-content p,
+    .article-content li {
+      line-height: 1.8;
+    }
+
+    .architecture {
+      margin: 34px 0;
+      padding: 28px;
+      border: 1px solid #dfe5ee;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .architecture-title {
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-step {
+      padding: 15px 18px;
+      border: 1px solid #d9e1ec;
+      border-radius: 10px;
+      background: #ffffff;
+      font-weight: 600;
+    }
+
+    .flow-arrow {
+      text-align: center;
+      font-weight: 800;
+      color: #2864e8;
+    }
+
+    .callout {
+      margin: 30px 0;
+      padding: 22px 24px;
+      border-left: 4px solid #2864e8;
+      border-radius: 10px;
+      background: #eef4ff;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .code-block {
+      margin: 24px 0;
+      padding: 22px;
+      overflow-x: auto;
+      border-radius: 12px;
+      background: #111827;
+      color: #e5e7eb;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      white-space: pre;
+    }
+
+    .comparison {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 26px 0;
+    }
+
+    .comparison th,
+    .comparison td {
+      padding: 14px;
+      border: 1px solid #dfe5ee;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .comparison th {
+      background: #f8fafc;
+      font-weight: 800;
+    }
+
+    .checklist {
+      padding-left: 22px;
+    }
+
+    .article-footer {
+      margin-top: 60px;
+      padding-top: 28px;
+      border-top: 1px solid #dfe5ee;
+    }
+
+    .reference-list li {
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="../index.html">Sidhuservicenow<span>.</span></a>
+
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../blog.html">Blog</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="article-page">
+
+  <section class="article-hero">
+    <div class="container">
+
+      <a class="text-link" href="../blog.html">← Back to Blog</a>
+
+      <p class="eyebrow">
+        GENERATIVE AI · VIRTUAL AGENT · SERVICENOW
+      </p>
+
+      <h1>ServiceNow Virtual Agent + Generative AI: Architecture, LLM Topics, Knowledge, and Implementation</h1>
+
+      <p class="article-intro">
+        ServiceNow Virtual Agent provides a conversational interface for self-service.
+        Generative AI extends that experience by allowing conversations to understand
+        natural language more flexibly, retrieve relevant enterprise context, and
+        connect conversations to platform actions and workflows.
+      </p>
+
+      <div class="article-meta-line">
+        September 2026 · 18 min read · Virtual Agent · Generative AI · ServiceNow AI
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container article-content">
+
+      <div class="callout">
+        <strong>Architecture in one sentence:</strong>
+        Use Virtual Agent as the conversational experience, combine deterministic
+        topics and LLM-powered experiences where appropriate, ground answers in
+        approved enterprise context, and keep business actions behind governed
+        ServiceNow capabilities.
+      </div>
+
+      <h2>1. What is ServiceNow Virtual Agent?</h2>
+
+      <p>
+        ServiceNow Virtual Agent (VA) is a conversational self-service experience
+        that allows employees, customers, and other users to interact with ServiceNow
+        through natural-language conversations.
+      </p>
+
+      <p>
+        Traditional Virtual Agent implementations can use topics, conversation
+        flows, NLU models, input collection, decision logic, and actions. The
+        conversation can then retrieve information or invoke ServiceNow workflows
+        instead of requiring the user to navigate multiple forms and applications.
+      </p>
+
+      <p>
+        The important developer idea is that Virtual Agent is not just a chatbot UI.
+        It is a conversational entry point into platform capabilities.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">Traditional Virtual Agent mental model</div>
+
+        <div class="flow">
+          <div class="flow-step">User message</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Intent / topic discovery</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Topic conversation and input collection</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow action / Flow / API</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Result returned to the user</div>
+        </div>
+      </div>
+
+      <h2>2. Where Generative AI changes the experience</h2>
+
+      <p>
+        Generative AI changes the interaction model from conversations that depend
+        heavily on predefined paths toward conversations that can interpret broader
+        natural-language requests and generate responses from available context.
+      </p>
+
+      <p>
+        ServiceNow's Now Assist in Virtual Agent provides generative AI capabilities
+        for conversational experiences. ServiceNow has also introduced LLM-powered
+        Virtual Agent topics that can create natural-language conversations without
+        relying on traditional NLU topic matching in the same way.
+      </p>
+
+      <p>
+        This does not mean every conversation should become fully generative.
+        Deterministic flows remain useful when the business process requires exact
+        inputs, predictable branching, validation, approvals, or tightly controlled
+        execution.
+      </p>
+
+      <table class="comparison">
+        <tr>
+          <th>Pattern</th>
+          <th>Strength</th>
+          <th>Typical use</th>
+        </tr>
+        <tr>
+          <td>Deterministic VA topic</td>
+          <td>Predictable process control</td>
+          <td>Structured requests, approvals, known workflows</td>
+        </tr>
+        <tr>
+          <td>NLU-based experience</td>
+          <td>Intent classification</td>
+          <td>Known user intents mapped to topics</td>
+        </tr>
+        <tr>
+          <td>LLM-powered topic</td>
+          <td>Natural-language interaction and flexible input collection</td>
+          <td>Conversational requests with varied wording</td>
+        </tr>
+        <tr>
+          <td>Generative answer / search</td>
+          <td>Contextual answers from enterprise knowledge</td>
+          <td>Questions where the user needs information rather than a transaction</td>
+        </tr>
+      </table>
+
+      <h2>3. Virtual Agent + Now Assist</h2>
+
+      <p>
+        Now Assist is ServiceNow's family of generative AI experiences. In the
+        Virtual Agent context, generative AI can be used to provide more
+        conversational answers, support natural-language interactions, and connect
+        users to relevant information and workflows.
+      </p>
+
+      <p>
+        ServiceNow has described Now Assist for Virtual Agent as a low-code
+        generative AI capability that can provide direct answers, use enterprise
+        context, and connect conversations to digital workflows.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">Now Assist in Virtual Agent — conceptual architecture</div>
+
+        <div class="flow">
+          <div class="flow-step">Employee / Customer</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Virtual Agent / Assistant</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Topic, skill, search, or LLM-powered experience</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Relevant ServiceNow context and enterprise knowledge</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Generative response or governed platform action</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">User response / workflow result</div>
+        </div>
+      </div>
+
+      <h2>4. NLU versus LLM-powered conversations</h2>
+
+      <p>
+        Natural Language Understanding (NLU) and large language models solve related
+        but different problems.
+      </p>
+
+      <p>
+        An NLU-oriented design commonly maps user language to a known intent or
+        topic. The topic then follows a predefined conversational flow.
+      </p>
+
+      <p>
+        An LLM-powered design can interpret a broader range of language and can
+        perform tasks such as extracting inputs from a user's natural-language
+        message or generating a response based on provided context.
+      </p>
+
+      <div class="code-block">NLU-oriented
+
+User message
+    ↓
+Intent classification
+    ↓
+Known topic
+    ↓
+Predefined conversation
+    ↓
+Action
+
+
+LLM-powered
+
+User message
+    ↓
+LLM interprets intent + context
+    ↓
+LLM-powered topic / skill
+    ↓
+Input extraction or response generation
+    ↓
+Action / retrieval / response</div>
+
+      <p>
+        In practice, these patterns can coexist. A production ServiceNow environment
+        can use deterministic topics for critical processes while using generative
+        experiences for flexible questions and conversational input.
+      </p>
+
+      <h2>5. LLM-powered Virtual Agent topics</h2>
+
+      <p>
+        ServiceNow documentation and product material describe LLM-powered Virtual
+        Agent topics that can create natural-language conversations without requiring
+        the same traditional NLU approach.
+      </p>
+
+      <p>
+        One useful capability is natural-language input collection. Instead of
+        forcing a user to answer every question in a rigid sequence, the LLM can
+        interpret a user utterance and populate relevant inputs when the topic is
+        configured to request those values.
+      </p>
+
+      <p>
+        For example, an application troubleshooting conversation might need the
+        application name, problem description, and priority. A user could provide
+        several of those details in one natural-language message instead of
+        answering every field independently.
+      </p>
+
+      <div class="code-block">User:
+"My VPN stopped connecting after I changed my password.
+I need this fixed urgently."
+
+Potential extracted context:
+- Application / service: VPN
+- Issue: connection failure
+- Priority signal: urgent
+
+Topic:
+- Validate required information
+- Ask only for missing information
+- Invoke the appropriate ServiceNow action
+- Return the result</div>
+
+      <div class="callout">
+        <strong>Important:</strong>
+        Natural-language input extraction should not automatically equal authorization.
+        The server-side workflow must still validate the actual user, requested action,
+        required fields, and permissions.
+      </div>
+
+      <h2>6. Where knowledge retrieval fits</h2>
+
+      <p>
+        Many Virtual Agent conversations are information-seeking questions:
+        "How do I reset my password?", "What is the VPN policy?", or "What is the
+        process for requesting a laptop?"
+      </p>
+
+      <p>
+        These scenarios benefit from grounding the generated response in approved
+        enterprise knowledge rather than asking the model to answer from general
+        knowledge alone.
+      </p>
+
+      <p>
+        ServiceNow supports AI-powered search experiences that can retrieve relevant
+        knowledge and generate concise answers. The exact features available depend
+        on the ServiceNow release, products, licensing, and configuration.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">Grounded conversational answer</div>
+
+        <div class="flow">
+          <div class="flow-step">User question</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Virtual Agent / AI experience</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Retrieve relevant approved knowledge</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Apply user / access context</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Generate grounded answer</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Show answer with appropriate source / next action</div>
+        </div>
+      </div>
+
+      <h2>7. Knowledge quality becomes an AI engineering concern</h2>
+
+      <p>
+        A generative conversational experience can only be as useful as the
+        information it is allowed to retrieve and use. Outdated, duplicate,
+        contradictory, or poorly written knowledge can produce poor answers even
+        when the model itself is working as designed.
+      </p>
+
+      <p>
+        ServiceNow guidance also emphasizes the possibility of inaccurate or
+        irrelevant generated content. Developers should therefore treat knowledge
+        governance as part of the AI architecture.
+      </p>
+
+      <ul class="checklist">
+        <li>Define ownership for important knowledge bases.</li>
+        <li>Review outdated articles and duplicate content.</li>
+        <li>Use clear article titles and useful content structure.</li>
+        <li>Apply appropriate user criteria and access controls.</li>
+        <li>Test retrieval using real employee questions.</li>
+        <li>Monitor unanswered and poorly answered questions.</li>
+        <li>Keep source content aligned with current business processes.</li>
+      </ul>
+
+      <h2>8. Virtual Agent can do more than answer questions</h2>
+
+      <p>
+        The strongest enterprise conversational experiences connect conversation
+        to action. A user may start with a question but eventually need ServiceNow
+        to perform a task.
+      </p>
+
+      <p>Examples include:</p>
+
+      <ul>
+        <li>Create an incident.</li>
+        <li>Check incident status.</li>
+        <li>Request software.</li>
+        <li>Order a catalog item.</li>
+        <li>Reset or unlock an account through an approved workflow.</li>
+        <li>Check an HR request.</li>
+        <li>Start a facilities request.</li>
+        <li>Route a complex issue to a human support team.</li>
+      </ul>
+
+      <div class="code-block">Question
+   ↓
+Understand request
+   ↓
+Retrieve context
+   ↓
+Determine whether action is required
+   ↓
+Validate inputs + authorization
+   ↓
+ServiceNow Flow / Action / API
+   ↓
+Result
+   ↓
+Conversational response</div>
+
+      <h2>9. Catalog ordering through conversational experiences</h2>
+
+      <p>
+        ServiceNow has also introduced conversational catalog experiences in its
+        Virtual Agent and Now Assist ecosystem. This is an important pattern because
+        a conversational request can be transformed into structured catalog input.
+      </p>
+
+      <p>
+        From a developer perspective, the important boundary is between language
+        interpretation and transaction execution. The conversational layer can
+        collect or infer information, but the underlying catalog and platform
+        controls still need to validate the request.
+      </p>
+
+      <div class="callout">
+        <strong>Developer rule:</strong>
+        Treat conversationally collected values as untrusted input until the
+        server-side application, catalog, policy, and authorization layers validate
+        them.
+      </div>
+
+      <h2>10. A practical architecture for Virtual Agent + GenAI</h2>
+
+      <div class="architecture">
+        <div class="architecture-title">Production-oriented architecture</div>
+
+        <div class="flow">
+          <div class="flow-step">Employee Center / Service Portal / Teams / Mobile</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Virtual Agent / Assistant</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Topic discovery / LLM-powered topic / skill</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Context + knowledge retrieval</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Generative response OR governed action</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Flow Designer / Action / Script / Integration</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">ServiceNow data / enterprise system</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Response + audit + observability</div>
+        </div>
+      </div>
+
+      <h2>11. Keep the model away from unrestricted business operations</h2>
+
+      <p>
+        A common architectural mistake is to let the conversational model directly
+        decide how database records should be changed. A safer pattern is to place
+        explicit ServiceNow capabilities between the model and the business data.
+      </p>
+
+      <div class="code-block">Less controlled
+
+User
+  ↓
+LLM
+  ↓
+Generic record update
+  ↓
+Database
+
+
+More controlled
+
+User
+  ↓
+Virtual Agent / LLM
+  ↓
+Approved business action
+  ↓
+Validation + authorization
+  ↓
+Flow / Action / Script Include
+  ↓
+ServiceNow data</div>
+
+      <p>
+        This gives developers a clear place to enforce business rules, ACLs,
+        validation, approvals, and logging.
+      </p>
+
+      <h2>12. Virtual Agent + Flow Designer</h2>
+
+      <p>
+        Flow Designer is a natural execution layer for conversational actions.
+        Virtual Agent can collect the user's intent and required inputs, while a
+        flow or action handles the deterministic business process.
+      </p>
+
+      <div class="code-block">Virtual Agent
+     ↓
+Collect / validate inputs
+     ↓
+Flow Designer Action
+     ↓
+Subflow
+     ↓
+Business rules / approvals
+     ↓
+Integration or record operation
+     ↓
+Return status
+     ↓
+Virtual Agent response</div>
+
+      <p>
+        This separation also makes the implementation easier to test. The business
+        flow can be tested independently of the conversational interface.
+      </p>
+
+      <h2>13. Virtual Agent + AI Agents</h2>
+
+      <p>
+        Conversational experiences can also become an entry point into more
+        agentic workflows. In such an architecture, Virtual Agent handles the user
+        interaction while an AI Agent or agentic workflow can select tools and
+        coordinate multiple steps.
+      </p>
+
+      <div class="architecture">
+        <div class="architecture-title">From conversation to agentic workflow</div>
+
+        <div class="flow">
+          <div class="flow-step">User request</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Virtual Agent / Now Assist</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">AI Agent / orchestration</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Skills / tools / ServiceNow capabilities</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Workflow + enterprise systems</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Result + human review where appropriate</div>
+        </div>
+      </div>
+
+      <p>
+        The key design principle is that conversational intelligence and business
+        execution remain separate layers. This makes the architecture easier to
+        govern as the system becomes more capable.
+      </p>
+
+      <h2>14. Security and access control</h2>
+
+      <p>
+        Generative AI does not remove ServiceNow's existing security responsibilities.
+        A conversational experience must still respect the user's identity,
+        permissions, data access, and business policies.
+      </p>
+
+      <ul class="checklist">
+        <li>Authenticate the user through the supported experience.</li>
+        <li>Respect roles, ACLs, and user criteria.</li>
+        <li>Do not expose knowledge that the user is not authorized to access.</li>
+        <li>Validate action inputs server-side.</li>
+        <li>Use least privilege for integrations and machine identities.</li>
+        <li>Protect secrets and credentials from prompts and client-side code.</li>
+        <li>Minimize sensitive data sent to external AI services.</li>
+        <li>Log operational events without unnecessarily storing sensitive conversation content.</li>
+        <li>Require confirmation or human approval for high-impact actions when appropriate.</li>
+      </ul>
+
+      <h2>15. Prompt injection and untrusted content</h2>
+
+      <p>
+        Enterprise conversational AI must also consider prompt injection. User
+        messages, knowledge articles, external content, and retrieved text should
+        not automatically be treated as trusted instructions.
+      </p>
+
+      <p>
+        A useful mental model is to distinguish between <strong>instructions</strong>
+        and <strong>data</strong>. Retrieved content should provide context for the
+        response, not silently override system-level controls or authorization.
+      </p>
+
+      <div class="callout">
+        <strong>Practical rule:</strong>
+        Never use a user's natural-language request as the sole authorization for a
+        privileged operation. Authorization belongs in the application and platform
+        security layers.
+      </div>
+
+      <h2>16. Human escalation is part of the architecture</h2>
+
+      <p>
+        Not every request should end with an AI-generated answer. A mature
+        conversational experience needs a clear path to a human agent when the
+        system cannot confidently resolve the request or when policy requires
+        human involvement.
+      </p>
+
+      <p>Useful escalation signals include:</p>
+
+      <ul>
+        <li>The requested operation is outside the assistant's scope.</li>
+        <li>Required information is missing or contradictory.</li>
+        <li>The user disputes the generated answer.</li>
+        <li>The operation has significant business impact.</li>
+        <li>The system cannot retrieve an appropriate source.</li>
+        <li>Repeated attempts fail to resolve the request.</li>
+      </ul>
+
+      <h2>17. Observability and testing</h2>
+
+      <p>
+        Testing a generative conversational experience requires more than checking
+        whether the chat window opens. Developers should test the complete path from
+        user utterance through retrieval, reasoning, action execution, and response.
+      </p>
+
+      <ul class="checklist">
+        <li>Test common user wording variations.</li>
+        <li>Test incomplete requests.</li>
+        <li>Test ambiguous requests.</li>
+        <li>Test unauthorized requests.</li>
+        <li>Test prompt injection attempts.</li>
+        <li>Test knowledge retrieval quality.</li>
+        <li>Test incorrect or outdated knowledge.</li>
+        <li>Test workflow failures and timeouts.</li>
+        <li>Test escalation to human support.</li>
+        <li>Measure latency and operational errors.</li>
+        <li>Review generated answers for factual grounding.</li>
+      </ul>
+
+      <h2>18. Common implementation mistakes</h2>
+
+      <ul>
+        <li>
+          <strong>Making everything generative:</strong>
+          deterministic workflows are still valuable for controlled transactions.
+        </li>
+        <li>
+          <strong>Ignoring knowledge quality:</strong>
+          poor source content can produce poor grounded answers.
+        </li>
+        <li>
+          <strong>Trusting extracted values:</strong>
+          LLM-extracted inputs still require validation.
+        </li>
+        <li>
+          <strong>Bypassing platform security:</strong>
+          conversational AI should not create a new path around ACLs or roles.
+        </li>
+        <li>
+          <strong>Putting credentials in client-side code:</strong>
+          secrets belong in secure server-side configuration.
+        </li>
+        <li>
+          <strong>Using unrestricted record operations:</strong>
+          prefer narrowly scoped business actions.
+        </li>
+        <li>
+          <strong>No human fallback:</strong>
+          users need a path out when AI cannot safely resolve the issue.
+        </li>
+        <li>
+          <strong>Testing only happy paths:</strong>
+          failure and security scenarios are critical.
+        </li>
+        <li>
+          <strong>Ignoring licensing and release differences:</strong>
+          verify the exact capabilities available in the target instance.
+        </li>
+      </ul>
+
+      <h2>19. A practical project: Employee IT Help Assistant</h2>
+
+      <p>
+        A useful first project is an employee IT help assistant that combines
+        knowledge retrieval with a small set of controlled actions.
+      </p>
+
+      <h3>Example capabilities</h3>
+
+      <div class="code-block">Knowledge:
+- Password reset instructions
+- VPN troubleshooting
+- Laptop setup
+- Software request policy
+
+Actions:
+- Check incident status
+- Create incident
+- Submit software request
+- Escalate to support</div>
+
+      <h3>Example conversation</h3>
+
+      <div class="code-block">User:
+"My VPN is not connecting. I already restarted my laptop."
+
+Assistant:
+1. Understand the issue.
+2. Retrieve approved VPN troubleshooting guidance.
+3. Provide the relevant steps.
+4. Ask whether the issue remains.
+5. If required, collect the information needed to create an incident.
+6. Invoke the approved incident action.
+7. Return the incident number.
+
+Result:
+Conversation → knowledge → action → workflow → result</div>
+
+      <h2>20. Developer implementation checklist</h2>
+
+      <ul class="checklist">
+        <li>Define the business use case.</li>
+        <li>Decide which conversations should be deterministic.</li>
+        <li>Identify where LLM-powered interaction adds value.</li>
+        <li>Review and clean the source knowledge.</li>
+        <li>Define the required user context.</li>
+        <li>Design approved actions and flows.</li>
+        <li>Apply ACLs, roles, user criteria, and authorization checks.</li>
+        <li>Validate every important input server-side.</li>
+        <li>Design escalation and human handoff.</li>
+        <li>Test hallucination, injection, security, and failure scenarios.</li>
+        <li>Measure response quality, latency, and operational errors.</li>
+        <li>Verify the target ServiceNow release, plugins, licensing, and supported AI capabilities.</li>
+      </ul>
+
+      <h2>21. Final architecture</h2>
+
+      <div class="code-block">                    USER
+                      |
+                      v
+        Employee Center / Portal / Teams
+                      |
+                      v
+              VIRTUAL AGENT
+                      |
+        +-------------+-------------+
+        |             |             |
+        v             v             v
+   Deterministic   LLM Topic     AI Search /
+      Topic        / Skill       Knowledge
+        |             |             |
+        +-------------+-------------+
+                      |
+                      v
+              Context + Security
+                      |
+          +-----------+-----------+
+          |                       |
+          v                       v
+   Generated Answer        Approved Action
+                                  |
+                                  v
+                         Flow / Action / API
+                                  |
+                                  v
+                     ServiceNow / Enterprise
+                                  |
+                                  v
+                         Result + Audit
+                      |
+                      v
+                  User Response</div>
+
+      <p>
+        The most useful way to think about Virtual Agent + Generative AI is not
+        "replace the chatbot with an LLM." It is to build a conversational layer
+        that can understand natural language while still relying on governed
+        enterprise data, deterministic workflows, platform security, and human
+        escalation.
+      </p>
+
+      <p>
+        That separation is what makes the architecture maintainable. The model can
+        improve over time without forcing every business process to become an
+        uncontrolled generative workflow.
+      </p>
+
+      <h2>22. Official references</h2>
+
+      <ul class="reference-list">
+        <li>
+          <a href="https://www.servicenow.com/docs/" target="_blank" rel="noopener">
+            ServiceNow Product Documentation
+          </a>
+        </li>
+        <li>
+          <a href="https://www.servicenow.com/community/virtual-agent-nlu-articles/now-assist-in-virtual-agent-what-s-new-what-s-different-and-what/ta-p/2772439" target="_blank" rel="noopener">
+            ServiceNow Community — Now Assist in Virtual Agent
+          </a>
+        </li>
+        <li>
+          <a href="https://www.servicenow.com/community/virtual-agent-nlu-articles/virtual-agent-faqs/ta-p/2349558" target="_blank" rel="noopener">
+            ServiceNow Community — Virtual Agent FAQs
+          </a>
+        </li>
+        <li>
+          <a href="https://www.servicenow.com/community/knowledge-management-articles/best-practices-to-use-your-knowledge-articles-with-now-assist/ta-p/2824219" target="_blank" rel="noopener">
+            ServiceNow Community — Best Practices for Knowledge with Now Assist
+          </a>
+        </li>
+        <li>
+          <a href="https://newsroom.servicenow.com/press-releases/details/2023/ServiceNow-introduces-new-generative-AI-solution-Now-Assist-for-Virtual-Agent-to-create-conversational-experiences-for-more-intelligent-self-service-06-13-2023-traffic/default.aspx" target="_blank" rel="noopener">
+            ServiceNow Newsroom — Now Assist for Virtual Agent
+          </a>
+        </li>
+      </ul>
+
+      <div class="article-footer">
+        <p class="eyebrow">NEXT</p>
+        <h3>Prompt Engineering for ServiceNow AI</h3>
+        <p>
+          The next article will explore practical prompting patterns, grounding,
+          structured outputs, evaluation, and prompt design for ServiceNow AI
+          experiences.
+        </p>
+        <a class="text-link" href="../blog.html">← Back to all articles</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <p>© 2026 Sidhartha Ananthula</p>
+    <p>ServiceNow AI • Automation • Engineering</p>
+  </div>
+</footer>
+
+</body>
+</html>
