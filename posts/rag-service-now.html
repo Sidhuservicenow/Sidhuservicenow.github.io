@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG + ServiceNow: A Practical Architecture | Sidhuservicenow</title>
+  <meta name="description" content="A practical developer-focused guide to Retrieval-Augmented Generation (RAG) with ServiceNow, AI Search, knowledge, security, retrieval, generation, and enterprise architecture.">
+  <meta name="author" content="Sidhartha Ananthula">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .callout{margin:28px 0;padding:20px 22px;border-left:4px solid #2563eb;background:#f1f5ff;border-radius:10px}
+    .rag-diagram{margin:28px 0;padding:22px;border:1px solid #dbe3ef;border-radius:16px;background:#f8fafc}
+    .rag-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:center}
+    .rag-box{padding:16px;border:1px solid #cbd5e1;border-radius:12px;background:#fff;text-align:center}
+    .rag-box strong{display:block;margin-bottom:6px}
+    .rag-arrow{text-align:center;font-size:1.4rem;font-weight:700;color:#2563eb}
+    .code-block{margin:24px 0;padding:20px;background:#101722;color:#e8edf5;border-radius:12px;overflow:auto;font-family:"JetBrains Mono",monospace;font-size:.9rem;line-height:1.6;white-space:pre}
+    .checklist{padding-left:20px}.checklist li{margin:9px 0}
+    .comparison{width:100%;border-collapse:collapse;margin:24px 0}.comparison th,.comparison td{border:1px solid #dfe4eb;padding:12px;text-align:left;vertical-align:top}.comparison th{background:#f5f7fa}
+    .sources{margin-top:36px;padding-top:24px;border-top:1px solid #e2e6ed}.sources li{margin:10px 0}
+    @media(max-width:800px){.rag-flow{grid-template-columns:1fr}.rag-arrow{transform:rotate(90deg)}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="../index.html">Sidhuservicenow<span>.</span></a>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../blog.html">Blog</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container article-page">
+  <a class="back-link" href="../blog.html">← Back to Blog</a>
+  <p class="eyebrow">RAG • SERVICENOW AI • AI ENGINEERING</p>
+  <h1>RAG + ServiceNow: A Practical Architecture</h1>
+  <p class="article-lead">
+    Retrieval-Augmented Generation (RAG) connects an AI model to relevant enterprise
+    information at request time. In a ServiceNow environment, the interesting part is
+    not simply adding embeddings or a vector database—it is designing retrieval,
+    authorization, context, generation, and workflow boundaries that work together.
+  </p>
+  <p class="article-meta">September 2026 · 12 min read · RAG · ServiceNow AI</p>
+
+  <div class="callout">
+    <strong>Quick mental model:</strong>
+    Retrieve the right information → apply the user's access context → provide that
+    context to the model → generate an answer grounded in the retrieved content.
+  </div>
+
+  <h2>1. What is RAG?</h2>
+  <p>
+    Retrieval-Augmented Generation is an architecture pattern where an application
+    retrieves relevant external information and supplies it to an LLM as context before
+    generating a response. This lets the application ground answers in current or
+    domain-specific information instead of relying only on the model's training data.
+  </p>
+  <p>
+    For enterprise systems, that distinction is important because knowledge changes,
+    access rules matter, and the information may be specific to one organization.
+  </p>
+
+  <h2>2. Why RAG matters for ServiceNow</h2>
+  <p>
+    ServiceNow contains large amounts of operational knowledge: knowledge articles,
+    incidents, cases, catalog information, policies, configuration data, and other
+    records. An AI experience becomes more useful when it can retrieve the subset of
+    that information that is relevant to the current question and that the user is
+    authorized to access.
+  </p>
+  <p>
+    ServiceNow has described Now Assist in AI Search as a RAG architecture in which
+    AI Search retrieves relevant content and the retrieved context is then supplied to
+    the LLM for answer generation.
+  </p>
+
+  <h2>3. The architecture at a glance</h2>
+  <div class="rag-diagram">
+    <div class="rag-flow">
+      <div class="rag-box"><strong>1. User Question</strong><small>Search, portal, Virtual Agent, API</small></div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-box"><strong>2. Retriever</strong><small>Find relevant enterprise content</small></div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-box"><strong>3. Context</strong><small>Relevant content + access context</small></div>
+    </div>
+    <div class="rag-flow" style="margin-top:14px">
+      <div class="rag-box"><strong>5. Answer</strong><small>Grounded response, citation, or action</small></div>
+      <div class="rag-arrow">←</div>
+      <div class="rag-box"><strong>4. LLM</strong><small>Generate from question + retrieved context</small></div>
+      <div class="rag-arrow">←</div>
+      <div class="rag-box"><strong>Governance</strong><small>Roles, ACLs, data controls, monitoring</small></div>
+    </div>
+  </div>
+
+  <h2>4. Retrieval is more than vector search</h2>
+  <p>
+    A common beginner architecture is: create embeddings → search a vector database →
+    send the top chunks to the model. That can be useful, but enterprise retrieval is
+    broader. Relevance can depend on permissions, source quality, freshness, metadata,
+    taxonomy, language, record state, and the user's context.
+  </p>
+  <p>
+    ServiceNow's own guidance for Now Assist in AI Search emphasizes that RAG is not
+    simply about embeddings; retrieval needs to account for the right content and the
+    controls around that content.
+  </p>
+
+  <h2>5. A ServiceNow-focused RAG flow</h2>
+  <div class="code-block">User question
+      ↓
+ServiceNow experience
+      ↓
+AI Search / retrieval layer
+      ↓
+Filter by user access + relevance
+      ↓
+Retrieve approved knowledge/context
+      ↓
+Prompt = instructions + question + retrieved context
+      ↓
+LLM / Now Assist generation
+      ↓
+Grounded answer
+      ↓
+Source link / next action / workflow</div>
+
+  <h2>6. Knowledge quality determines answer quality</h2>
+  <p>
+    RAG cannot reliably compensate for a poor knowledge base. Duplicate, outdated,
+    contradictory, or poorly structured articles can produce weak retrieval results
+    and confusing answers.
+  </p>
+  <p>
+    ServiceNow recommends maintaining a single source of truth and reducing duplicate
+    knowledge content when using RAG with Now Assist. Article title, content, keywords,
+    freshness, and other signals can affect retrieval relevance.
+  </p>
+
+  <h2>7. Security must be part of retrieval</h2>
+  <p>
+    A critical enterprise principle is that the retriever should not turn restricted
+    content into unrestricted AI context. The user's identity and authorization must
+    remain part of the retrieval decision.
+  </p>
+  <ul class="checklist">
+    <li>Apply ServiceNow roles and ACLs before content becomes model context.</li>
+    <li>Respect knowledge-base and article-level access controls.</li>
+    <li>Do not retrieve records merely because they are technically searchable.</li>
+    <li>Minimize sensitive fields included in the prompt.</li>
+    <li>Log operational events without unnecessarily storing sensitive content.</li>
+  </ul>
+
+  <h2>8. RAG vs fine-tuning</h2>
+  <table class="comparison">
+    <tr><th>Question</th><th>RAG</th><th>Fine-tuning</th></tr>
+    <tr><td>Need current enterprise knowledge?</td><td>Well suited</td><td>Usually not the primary mechanism</td></tr>
+    <tr><td>Need the model to see changing documents?</td><td>Retrieve at runtime</td><td>Requires retraining/update process</td></tr>
+    <tr><td>Need behavior/style changes?</td><td>Can help with context and instructions</td><td>Can be useful for model behavior/style</td></tr>
+    <tr><td>Need source traceability?</td><td>Can return retrieved sources</td><td>Not inherently a source-retrieval mechanism</td></tr>
+  </table>
+
+  <h2>9. Where RAG fits with AI Agents</h2>
+  <p>
+    RAG and AI Agents solve different problems. RAG supplies relevant information;
+    an agent can decide what information or tools it needs and what action to take.
+  </p>
+  <div class="code-block">User goal
+   ↓
+AI Agent
+   ├── Retrieve knowledge (RAG)
+   ├── Read approved ServiceNow data
+   ├── Call a tool / flow
+   └── Ask for human approval when required
+   ↓
+Result</div>
+  <p>
+    This is where RAG becomes particularly interesting for ServiceNow: retrieval can
+    provide the policy or knowledge needed for an agent to make a better-informed next
+    step, while tools and workflows provide controlled execution.
+  </p>
+
+  <h2>10. Where MCP fits</h2>
+  <p>
+    MCP and RAG are complementary. RAG is about retrieving useful context for generation;
+    MCP is a protocol for connecting AI applications with tools and external capabilities.
+  </p>
+  <div class="code-block">AI Agent
+   ├── RAG → retrieve relevant enterprise knowledge
+   └── MCP → discover / invoke approved tools
+                  ↓
+             ServiceNow actions
+                  ↓
+             Workflow / integration</div>
+
+  <h2>11. Practical ServiceNow RAG use cases</h2>
+  <ul>
+    <li><strong>Employee support:</strong> answer questions from approved HR or IT knowledge.</li>
+    <li><strong>Incident assistance:</strong> retrieve troubleshooting guidance relevant to an incident.</li>
+    <li><strong>Knowledge discovery:</strong> turn a natural-language question into a grounded answer plus source articles.</li>
+    <li><strong>Policy assistance:</strong> retrieve the policies relevant to a request and summarize them.</li>
+    <li><strong>AI Agent context:</strong> retrieve business rules or knowledge before an agent selects its next action.</li>
+    <li><strong>Custom AI skills:</strong> use retrieval as one of the tools that supplies context to a generative AI skill.</li>
+  </ul>
+
+  <h2>12. Common RAG mistakes</h2>
+  <ul class="checklist">
+    <li>Assuming vector similarity alone determines relevance.</li>
+    <li>Ignoring user permissions during retrieval.</li>
+    <li>Indexing duplicate or stale knowledge without a content strategy.</li>
+    <li>Sending too much context to the model.</li>
+    <li>Failing to preserve source references for the final answer.</li>
+    <li>Trusting generated text without validation.</li>
+    <li>Logging sensitive prompts and retrieved records unnecessarily.</li>
+    <li>Building retrieval without measuring relevance and answer quality.</li>
+  </ul>
+
+  <h2>13. A practical implementation checklist</h2>
+  <ul class="checklist">
+    <li>Define the exact business question the RAG system must answer.</li>
+    <li>Identify authoritative ServiceNow knowledge sources.</li>
+    <li>Define the user's authorization model.</li>
+    <li>Choose the retrieval mechanism supported by the target ServiceNow release and use case.</li>
+    <li>Define ranking, filtering, freshness, and metadata requirements.</li>
+    <li>Design the prompt/context contract.</li>
+    <li>Return source references where appropriate.</li>
+    <li>Test authorized and unauthorized retrieval scenarios.</li>
+    <li>Evaluate retrieval relevance separately from generation quality.</li>
+    <li>Add monitoring, failure handling, and governance.</li>
+  </ul>
+
+  <h2>14. Final architecture</h2>
+  <div class="callout">
+    <strong>Enterprise RAG mental model:</strong><br><br>
+    Experience → Identity → Retrieval → Authorized Context → LLM → Grounded Answer → Workflow / Human Review
+  </div>
+  <p>
+    The strongest ServiceNow RAG designs treat retrieval as an enterprise data and
+    security problem first and an AI problem second. The model is only one part of
+    the architecture. The quality of the sources, the authorization boundary, the
+    retrieval logic, and the workflow around the answer are equally important.
+  </p>
+
+  <div class="sources">
+    <h2>Official references</h2>
+    <ul>
+      <li><a href="https://www.servicenow.com/community/servicenow-otto-articles/under-the-hood-now-assist-in-ai-search/ta-p/2642915" target="_blank" rel="noopener">ServiceNow — Under the hood: Now Assist in AI Search</a></li>
+      <li><a href="https://www.servicenow.com/community/knowledge-management-articles/best-practices-to-use-your-knowledge-articles-with-now-assist/ta-p/2824219" target="_blank" rel="noopener">ServiceNow — Best practices to use knowledge articles with Now Assist</a></li>
+      <li><a href="https://www.servicenow.com/community/servicenow-otto-articles/now-assist-skill-kit-tool-and-deployment-options/ta-p/3284803" target="_blank" rel="noopener">ServiceNow — Now Assist Skill Kit tools and Retriever</a></li>
+      <li><a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/retrieval-augmented-generation-options/what-is-rag.html" target="_blank" rel="noopener">AWS Prescriptive Guidance — Understanding Retrieval Augmented Generation</a></li>
+    </ul>
+  </div>
+
+  <div class="article-footer">
+    <p class="eyebrow">NEXT</p>
+    <h3>ServiceNow Virtual Agent + Generative AI</h3>
+    <p>Explore how conversational experiences can combine ServiceNow context, generative AI, and workflow execution.</p>
+    <a class="text-link" href="../blog.html">← Back to all articles</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <p>© 2026 Sidhartha Ananthula</p>
+    <p>ServiceNow AI • Automation • Engineering</p>
+  </div>
+</footer>
+</body>
+</html>
