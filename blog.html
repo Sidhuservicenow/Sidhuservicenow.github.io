@@ -159,6 +159,86 @@
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
       .reveal { opacity: 1; transform: none; }
     }
+    /* FIX: Force the redesigned blog's dark theme */
+html,
+body {
+  background-color: #080b18 !important;
+  color: #f4f7ff !important;
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse at 12% 12%, rgba(65, 84, 220, 0.19), transparent 35%),
+    radial-gradient(ellipse at 90% 28%, rgba(145, 70, 255, 0.13), transparent 30%),
+    linear-gradient(180deg, #080b18 0%, #0a1023 52%, #080b18 100%) !important;
+}
+
+main,
+.hero,
+.section,
+.cta-section {
+  background-color: transparent !important;
+  color: #f4f7ff !important;
+}
+
+.section-light {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 22, 46, 0.95),
+    rgba(9, 14, 30, 0.95)
+  ) !important;
+}
+
+h1,
+h2,
+h3,
+.featured-card h3,
+.article-content h3,
+.topic-card h3,
+.cta h2 {
+  color: #f4f7ff !important;
+}
+
+.hero h1 {
+  color: #f4f7ff !important;
+}
+
+.gradient-text {
+  color: transparent !important;
+  background: linear-gradient(
+    100deg,
+    #ffffff 4%,
+    #83eaff 44%,
+    #b6a0ff 82%
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+.hero-copy,
+.section-subtitle,
+.featured-card p,
+.topic-card p,
+.article-content p {
+  color: #a8b3d0 !important;
+}
+
+.featured-card,
+.topic-card,
+.article-card {
+  background-color: #101730 !important;
+  color: #f4f7ff !important;
+}
+
+.btn-secondary {
+  color: #f4f7ff !important;
+  border-color: rgba(163, 184, 255, 0.3) !important;
+}
+
+.site-footer {
+  background-color: #080b18 !important;
+  color: #a8b3d0 !important;
+}
   </style>
 </head>
 <body>
