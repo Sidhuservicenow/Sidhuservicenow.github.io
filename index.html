@@ -1,484 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Sidhartha Ananthula | ServiceNow Developer & AI</title>
-
-  <meta
-    name="description"
-    content="ServiceNow Developer focused on ServiceNow AI, AI Agents, Employee Center, integrations, automation, and enterprise solutions."
-  >
-
-  <link rel="stylesheet" href="assets/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidhuservicenow | ServiceNow AI & Engineering</title>
+<meta name="description" content="Explore ServiceNow AI, Now Assist, AI Agents, Generative AI, MCP, RAG, integrations, and enterprise automation by Sidhartha Ananthula.">
+<meta name="theme-color" content="#080b18">
+<style>
+:root{--bg:#080b18;--panel:#11172b;--text:#f5f7ff;--muted:#a6b0ca;--purple:#a78bfa;--cyan:#67e8f9;--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(ellipse at 80% 5%,#22204b 0,transparent 34%),var(--bg);color:var(--text);line-height:1.7}
+a{color:inherit;text-decoration:none}
+.container{width:min(1140px,92%);margin:auto}
+header{position:sticky;top:0;z-index:10;background:rgba(8,11,24,.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-weight:900;font-size:1.3rem;letter-spacing:-.7px}.logo span{color:var(--cyan)}
+nav{display:flex;gap:26px;flex-wrap:wrap}nav a{font-size:.94rem;color:var(--muted)}nav a:hover,nav a.active{color:var(--cyan)}
+.hero{padding:100px 0 90px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:65px}
+.eyebrow{text-transform:uppercase;letter-spacing:2.5px;font-size:.75rem;font-weight:800;color:var(--cyan);margin-bottom:18px}
+h1{font-size:clamp(2.8rem,6vw,5.3rem);line-height:1.04;letter-spacing:-3px;margin-bottom:25px}
+.gradient{background:linear-gradient(100deg,#a78bfa,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:1.12rem;color:var(--muted);max-width:630px}
+.actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 22px;border-radius:12px;font-weight:800;transition:.25s}
+.primary{background:linear-gradient(100deg,#8b5cf6,#06b6d4);color:white;box-shadow:0 10px 35px #6d28d944}
+.secondary{border:1px solid var(--line);background:#ffffff08}
+.btn:hover,.card:hover{transform:translateY(-5px)}
+.social{display:flex;gap:18px;margin-top:24px;color:var(--muted);font-size:.92rem}.social a:hover{color:var(--cyan)}
+.visual{min-height:420px;position:relative;display:grid;place-items:center;perspective:1000px}
+.orb{width:270px;height:270px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff 0,#a78bfa 8%,#6543dc 30%,#171c4b 63%,#080b18 75%);box-shadow:inset -20px -20px 50px #02040c,0 0 75px #8b5cf655;animation:float 5s ease-in-out infinite;transform-style:preserve-3d}
+.ring{position:absolute;width:390px;height:135px;border:1px solid #67e8f988;border-radius:50%;transform:rotate(-27deg);animation:spin 12s linear infinite}
+.ring.two{width:340px;height:340px;border-color:#a78bfa55;transform:rotateX(65deg);animation:spin 18s linear infinite reverse}
+.float-card{position:absolute;padding:13px 17px;background:#11172bdc;border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(10px);box-shadow:0 15px 45px #0005;font-size:.9rem}
+.fc1{top:40px;left:0}.fc2{right:-4px;top:125px}.fc3{bottom:48px;left:20px}
+@keyframes float{50%{transform:translateY(-18px) rotateY(10deg) rotateX(-5deg)}}
+@keyframes spin{to{transform:rotate(333deg)}}
+section.content{padding:72px 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:28px}
+h2{font-size:clamp(2rem,4vw,3rem);line-height:1.2;letter-spacing:-1px}
+.sub{color:var(--muted);margin-top:10px;max-width:650px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:linear-gradient(145deg,#151b32,#0e1325);border:1px solid var(--line);border-radius:20px;overflow:hidden;transition:.25s}
+.card img{width:100%;height:190px;object-fit:cover;display:block}
+.card-body{padding:23px}
+.tag{display:inline-block;color:var(--cyan);font-size:.73rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:9px}
+h3{font-size:1.22rem;line-height:1.4;margin-bottom:10px}
+.card p{color:var(--muted);font-size:.94rem}
+.text-link{display:inline-block;margin-top:17px;color:var(--cyan);font-weight:800}
+.strip{border:1px solid var(--line);background:#ffffff05;border-radius:20px;padding:25px;display:flex;flex-wrap:wrap;gap:12px}
+.pill{border:1px solid #a78bfa44;border-radius:999px;padding:9px 14px;color:#e0d7ff;background:#a78bfa0c;font-size:.9rem}
+.cta{padding:45px;border:1px solid #a78bfa55;border-radius:25px;background:radial-gradient(ellipse at top right,#31245a,transparent 60%),#111529}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
+.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:800px){.hero-grid{grid-template-columns:1fr;gap:20px}.visual{min-height:340px}.orb{width:210px;height:210px}.ring{width:300px}.grid{grid-template-columns:repeat(2,1fr)}h1{letter-spacing:-1.8px}}
+@media(max-width:560px){.nav{padding:16px 0;align-items:flex-start;flex-direction:column}nav{gap:15px}.hero{padding:65px 0}.grid{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.cta{padding:26px}.visual{min-height:300px}}
+</style>
 </head>
-
 <body>
-
-<header class="site-header">
+<header>
   <div class="container nav">
-
-    <a class="logo" href="index.html">
-      Sidhuservicenow<span>.</span>
-    </a>
-
+    <a class="logo" href="index.html">Sidhuservicenow<span>.</span></a>
     <nav>
-      <a href="index.html">Home</a>
+      <a class="active" href="index.html">Home</a>
       <a href="blog.html">Blog</a>
       <a href="projects.html">Projects</a>
       <a href="about.html">About</a>
     </nav>
-
   </div>
 </header>
 
-
 <main>
-
-  <!-- HERO -->
-  <section class="page-hero">
-
-    <div class="container">
-
-      <p class="eyebrow">
-        SERVICENOW • AI • AUTOMATION
-      </p>
-
-      <h1>
-        Building practical ServiceNow solutions with AI and automation.
-      </h1>
-
-      <p>
-        ServiceNow Developer focused on platform development,
-        Employee Center, integrations, automation, and AI-powered
-        enterprise experiences.
-      </p>
-
-      <div style="margin-top: 28px; display: flex; gap: 14px; flex-wrap: wrap;">
-
-        <a
-          class="btn btn-primary"
-          href="projects.html"
-        >
-          View Projects →
-        </a>
-
-        <a
-          class="btn"
-          href="blog.html"
-        >
-          Read Blog →
-        </a>
-
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">ServiceNow AI · Automation · Engineering</p>
+      <h1>Engineering the <span class="gradient">intelligent</span> enterprise.</h1>
+      <p class="lead">I'm Sidhartha Ananthula, a ServiceNow developer exploring practical AI solutions, intelligent workflows, integrations, and modern enterprise automation on the Now Platform.</p>
+      <div class="actions">
+        <a class="btn primary" href="blog.html">Explore the Blog ↗</a>
+        <a class="btn secondary" href="projects.html">Explore Projects</a>
       </div>
-
+      <div class="social">
+        <a href="https://github.com/Sidhuservicenow" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
     </div>
-
-  </section>
-
-
-  <!-- PROFILE -->
-  <section class="section">
-
-    <div class="container">
-
-      <div class="section-heading">
-
-        <div>
-          <p class="eyebrow">
-            PROFILE
-          </p>
-
-          <h2>
-            What I Work On
-          </h2>
-        </div>
-
-      </div>
-
-
-      <div class="topic-grid">
-
-        <article class="topic-card">
-
-          <span class="topic-number">
-            01
-          </span>
-
-          <h3>
-            ServiceNow Development
-          </h3>
-
-          <p>
-            ServiceNow application development, customization,
-            Catalog Items, Flow Designer, scripting, Employee Center,
-            Service Portal, and enterprise platform solutions.
-          </p>
-
-        </article>
-
-
-        <article class="topic-card">
-
-          <span class="topic-number">
-            02
-          </span>
-
-          <h3>
-            ServiceNow AI
-          </h3>
-
-          <p>
-            Exploring and implementing practical AI use cases with
-            Now Assist, AI Agents, Virtual Agent, Generative AI,
-            AI Search, and intelligent automation.
-          </p>
-
-        </article>
-
-
-        <article class="topic-card">
-
-          <span class="topic-number">
-            03
-          </span>
-
-          <h3>
-            Integrations & Automation
-          </h3>
-
-          <p>
-            REST integrations with third-party and internal systems,
-            API communication, workflow automation, troubleshooting,
-            testing, and production delivery.
-          </p>
-
-        </article>
-
-      </div>
-
+    <div class="visual" aria-label="Animated 3D-style AI sphere">
+      <div class="ring"></div><div class="ring two"></div><div class="orb"></div>
+      <div class="float-card fc1">✦ Now Assist & GenAI</div>
+      <div class="float-card fc2">⌘ AI Agents</div>
+      <div class="float-card fc3">◎ Connected workflows</div>
     </div>
+  </div>
+</section>
 
-  </section>
-
-
-  <!-- FEATURED WORK -->
-  <section class="section section-light">
-
-    <div class="container">
-
-      <div class="section-heading">
-
-        <div>
-
-          <p class="eyebrow">
-            FEATURED WORK
-          </p>
-
-          <h2>
-            Recent ServiceNow Work
-          </h2>
-
-        </div>
-
-      </div>
-
-
-      <div class="topic-grid">
-
-
-        <article class="topic-card">
-
-          <span class="topic-number">
-            01
-          </span>
-
-          <h3>
-            Employee Center Customization
-          </h3>
-
-          <p>
-            Worked on customized widgets including announcement widgets,
-            AI Search widget enhancements, Header and Footer customization,
-            and other Employee Center experiences.
-          </p>
-
-          <a
-            class="text-link"
-            href="projects.html"
-          >
-            View project experience →
-          </a>
-
-        </article>
-
-
-        <article class="topic-card">
-
-          <span class="topic-number">
-            02
-          </span>
-
-          <h3>
-            AI Agents for Catalog Requests
-          </h3>
-
-          <p>
-            Created AI Agent experiences to support catalog item
-            submission and explored conversational AI capabilities
-            within ServiceNow.
-          </p>
-
-          <a
-            class="text-link"
-            href="posts/servicenow-ai-agents.html"
-          >
-            Read article →
-          </a>
-
-        </article>
-
-
-        <article class="topic-card">
-
-          <span class="topic-number">
-            03
-          </span>
-
-          <h3>
-            ServiceNow Integrations
-          </h3>
-
-          <p>
-            Worked on REST integrations with third-party tools and
-            internal enterprise applications, including API handling,
-            troubleshooting, and workflow integration.
-          </p>
-
-          <a
-            class="text-link"
-            href="projects.html"
-          >
-            View project experience →
-          </a>
-
-        </article>
-
-
-      </div>
-
+<section class="content">
+  <div class="container">
+    <div class="section-head">
+      <div><p class="eyebrow">What I explore</p><h2>Technology with purpose.</h2><p class="sub">Ideas and implementation patterns for building useful, secure, and maintainable solutions.</p></div>
     </div>
-
-  </section>
-
-
-  <!-- AI FOCUS -->
-  <section class="section">
-
-    <div class="container">
-
-      <div class="section-heading">
-
-        <div>
-
-          <p class="eyebrow">
-            AI FOCUS
-          </p>
-
-          <h2>
-            Exploring the Future of ServiceNow
-          </h2>
-
-        </div>
-
-      </div>
-
-
-      <div class="topic-grid">
-
-
-        <div class="topic-card">
-
-          <span class="topic-number">
-            01
-          </span>
-
-          <h3>
-            AI Agents
-          </h3>
-
-          <p>
-            Agentic workflows, tools, actions, catalog interactions,
-            and intelligent enterprise automation.
-          </p>
-
-        </div>
-
-
-        <div class="topic-card">
-
-          <span class="topic-number">
-            02
-          </span>
-
-          <h3>
-            RAG & Knowledge
-          </h3>
-
-          <p>
-            Retrieval-augmented generation, enterprise knowledge,
-            grounding, context, and reliable AI responses.
-          </p>
-
-        </div>
-
-
-        <div class="topic-card">
-
-          <span class="topic-number">
-            03
-          </span>
-
-          <h3>
-            MCP & AI Integrations
-          </h3>
-
-          <p>
-            Exploring Model Context Protocol, AI tools,
-            ServiceNow APIs, external models, and connected
-            enterprise experiences.
-          </p>
-
-        </div>
-
-
-      </div>
-
+    <div class="grid">
+      <article class="card"><img loading="lazy" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=85" alt="Abstract artificial intelligence visualization"><div class="card-body"><span class="tag">01 · Artificial Intelligence</span><h3>ServiceNow AI & Now Assist</h3><p>Explore generative AI, AI Agents, Virtual Agent, NLU, and intelligent experiences.</p><a class="text-link" href="blog.html">Explore articles →</a></div></article>
+      <article class="card"><img loading="lazy" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=85" alt="Servers and digital infrastructure"><div class="card-body"><span class="tag">02 · Architecture</span><h3>Integrations & Enterprise Systems</h3><p>Understand APIs, REST integrations, secure connections, MCP, and practical architecture.</p><a class="text-link" href="projects.html">View projects →</a></div></article>
+      <article class="card"><img loading="lazy" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=85" alt="Computer circuit board technology"><div class="card-body"><span class="tag">03 · Engineering</span><h3>Developer Guides</h3><p>Learn implementation patterns, automation techniques, and developer-focused solutions.</p><a class="text-link" href="blog.html">Read guides →</a></div></article>
     </div>
+  </div>
+</section>
 
-  </section>
-
-
-  <!-- CERTIFICATIONS -->
-  <section class="section section-light">
-
-    <div class="container">
-
-      <div class="section-heading">
-
-        <div>
-
-          <p class="eyebrow">
-            CERTIFICATIONS
-          </p>
-
-          <h2>
-            ServiceNow Credentials
-          </h2>
-
-        </div>
-
-      </div>
-
-
-      <div class="topic-grid">
-
-
-        <!-- CERTIFICATION 1 -->
-        <div class="topic-card">
-
-          <span class="topic-number">
-            01
-          </span>
-
-          <h3>
-            ServiceNow Certified Developer
-          </h3>
-
-          <p>
-            Certified ServiceNow Developer with hands-on experience
-            across ServiceNow development, scripting, integrations,
-            workflows, Employee Center, and platform customization.
-          </p>
-
-        </div>
-
-
-        <!-- CERTIFICATION 2 -->
-        <div class="topic-card">
-
-          <span class="topic-number">
-            02
-          </span>
-
-          <h3>
-            ITSM Implementation Certificate A
-          </h3>
-
-          <p>
-            ITSM implementation certification covering ServiceNow
-            implementation concepts and enterprise IT service management
-            capabilities.
-          </p>
-
-        </div>
-
-
-      </div>
-
+<section class="content">
+  <div class="container">
+    <p class="eyebrow">Technology stack</p><h2>Areas of focus.</h2>
+    <p class="sub" style="margin-bottom:24px">A growing collection of topics across the ServiceNow ecosystem and AI engineering.</p>
+    <div class="strip">
+      <span class="pill">ServiceNow Platform</span><span class="pill">Now Assist</span><span class="pill">AI Agents</span><span class="pill">Generative AI</span><span class="pill">Virtual Agent</span><span class="pill">Flow Designer</span><span class="pill">REST APIs</span><span class="pill">MCP</span><span class="pill">RAG</span><span class="pill">AI Search</span><span class="pill">Document Intelligence</span><span class="pill">Enterprise Automation</span>
     </div>
+  </div>
+</section>
 
-  </section>
-
-
-  <!-- BLOG CTA -->
-  <section class="cta-section">
-
-    <div class="container cta">
-
-      <div>
-
-        <p class="eyebrow">
-          TECHNICAL BLOG
-        </p>
-
-        <h2>
-          Practical articles on ServiceNow AI, automation, and enterprise engineering.
-        </h2>
-
-      </div>
-
-      <a
-        class="btn btn-primary"
-        href="blog.html"
-      >
-        Explore Blog →
-      </a>
-
-    </div>
-
-  </section>
-
+<section class="content">
+  <div class="container"><div class="cta">
+    <p class="eyebrow">Keep exploring</p><h2>Ideas become useful when we build.</h2>
+    <p class="sub">Browse technical articles, architecture ideas, and projects focused on ServiceNow and AI.</p>
+    <div class="actions"><a class="btn primary" href="blog.html">Read the Blog ↗</a><a class="btn secondary" href="about.html">About This Site</a></div>
+  </div></div>
+</section>
 </main>
 
-
-<!-- FOOTER -->
-<footer class="site-footer">
-
-  <div class="container footer-content">
-
-    <p>
-      © 2026 Sidhartha Ananthula
-    </p>
-
-    <p>
-      ServiceNow AI • Automation • Engineering
-    </p>
-
-  </div>
-
-</footer>
-
+<footer><div class="container footer-inner"><span>© <span id="year"></span> Sidhuservicenow · Built for curious engineers.</span><a href="about.html">About</a></div></footer>
+<script>document.getElementById("year").textContent=new Date().getFullYear();</script>
 </body>
 </html>
