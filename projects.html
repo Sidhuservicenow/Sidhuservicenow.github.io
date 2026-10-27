@@ -1,452 +1,1664 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Projects | Sidhartha Ananthula</title>
-  <meta name="description" content="Hands-on ServiceNow development experience including Employee Center customization, AI Agents, Now Assist, integrations, migrations, Catalog Items, ATF, production deployments, and automation.">
+  <title>Projects | Sidhuservicenow</title>
+  <meta name="description" content="Explore ServiceNow development projects covering AI Agents, Now Assist, ITSM, ITOM, CMDB, integrations, Employee Center, and enterprise automation.">
+  <meta name="author" content="Sidhartha Ananthula">
+  <meta name="theme-color" content="#080b18">
 
   <link rel="stylesheet" href="assets/style.css">
+
+  <style>
+    :root {
+      --bg: #080b18;
+      --bg-soft: #0d1327;
+      --panel: rgba(19, 27, 51, 0.78);
+      --panel-solid: #111a32;
+      --text: #f4f7ff;
+      --muted: #a9b7d4;
+      --cyan: #66e8ff;
+      --purple: #a78bfa;
+      --blue: #5d8dff;
+      --line: rgba(148, 180, 255, 0.18);
+      --gradient: linear-gradient(110deg, #a78bfa, #5d8dff, #23d5e8);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg) !important;
+      color: var(--text) !important;
+      overflow-x: hidden;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    /* NAVIGATION */
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      background: rgba(7, 11, 23, 0.88) !important;
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .site-header .nav {
+      min-height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .site-header .logo {
+      color: #f5f8ff !important;
+      font-size: 22px;
+      font-weight: 850;
+      letter-spacing: -1px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-header .logo span {
+      color: var(--cyan) !important;
+    }
+
+    .site-header nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .site-header nav a {
+      color: #a9b7d4 !important;
+      font-size: 16px;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .site-header nav a:hover,
+    .site-header nav a[aria-current="page"] {
+      color: var(--cyan) !important;
+    }
+
+    /* HERO */
+
+    .project-hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: 105px 0 100px;
+      background:
+        radial-gradient(
+          ellipse at 78% 40%,
+          rgba(104, 71, 225, 0.20),
+          transparent 36%
+        ),
+        radial-gradient(
+          ellipse at 15% 80%,
+          rgba(35, 213, 232, 0.08),
+          transparent 38%
+        ),
+        linear-gradient(135deg, #080b18, #0c1025 70%, #11112b);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      gap: 44px;
+    }
+
+    .eyebrow {
+      margin: 0 0 20px;
+      color: var(--cyan) !important;
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+    }
+
+    .project-hero h1 {
+      max-width: 780px;
+      margin: 0 0 25px;
+      color: var(--text) !important;
+      font-size: clamp(42px, 5.3vw, 72px);
+      line-height: 1.06;
+      letter-spacing: -3.5px;
+      font-weight: 850;
+    }
+
+    .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .hero-description {
+      max-width: 650px;
+      color: var(--muted) !important;
+      font-size: 18px;
+      line-height: 1.9;
+      margin: 0 0 30px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 0 23px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--text) !important;
+      font-weight: 750;
+      text-decoration: none;
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      border-color: rgba(102, 232, 255, 0.5);
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      border: none;
+      color: #080b18 !important;
+      box-shadow: 0 12px 35px rgba(93, 141, 255, 0.18);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 15px 40px rgba(93, 141, 255, 0.32);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    /* ANIMATED PROJECT VISUAL */
+
+    .project-visual {
+      min-height: 390px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+
+    .visual-glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: #7044f2;
+      filter: blur(100px);
+      opacity: 0.28;
+      animation: glowPulse 5s ease-in-out infinite alternate;
+    }
+
+    .visual-orbit {
+      position: absolute;
+      width: 330px;
+      height: 125px;
+      border: 1px solid rgba(102, 232, 255, 0.38);
+      border-radius: 50%;
+      transform: rotate(-32deg);
+      animation: orbitFloat 9s linear infinite;
+    }
+
+    .visual-orbit.orbit-two {
+      width: 330px;
+      height: 125px;
+      transform: rotate(48deg);
+      border-color: rgba(167, 139, 250, 0.48);
+      animation-direction: reverse;
+      animation-duration: 12s;
+    }
+
+    .visual-orbit.orbit-three {
+      width: 250px;
+      height: 250px;
+      transform: rotate(0deg);
+      border-color: rgba(93, 141, 255, 0.22);
+      animation: none;
+    }
+
+    .visual-core {
+      width: 190px;
+      height: 190px;
+      position: relative;
+      z-index: 2;
+      border-radius: 50%;
+      background:
+        radial-gradient(
+          circle at 32% 26%,
+          #ffffff 0%,
+          #c9baff 4%,
+          #8b66ff 16%,
+          #5731c5 36%,
+          #15132f 72%,
+          #070b18 100%
+        );
+      box-shadow:
+        inset -24px -25px 55px rgba(0, 0, 0, 0.72),
+        0 0 65px rgba(128, 84, 255, 0.30);
+      animation: coreFloat 5s ease-in-out infinite;
+    }
+
+    .visual-label {
+      position: absolute;
+      z-index: 3;
+      padding: 14px 17px;
+      color: #eef4ff;
+      background: rgba(15, 22, 43, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 700;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
+    }
+
+    .label-one {
+      top: 55px;
+      left: 0;
+    }
+
+    .label-two {
+      top: 125px;
+      right: -3px;
+    }
+
+    .label-three {
+      bottom: 55px;
+      left: 15px;
+    }
+
+    /* STATS */
+
+    .stats {
+      padding: 32px 0;
+      background: #0b1020;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+
+    .stat-item {
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-item strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 25px;
+      font-weight: 850;
+      color: var(--cyan);
+    }
+
+    .stat-item span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* GENERAL SECTIONS */
+
+    .section {
+      padding: 92px 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 42px;
+    }
+
+    .section-heading .eyebrow {
+      margin-bottom: 13px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--text) !important;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.15;
+      letter-spacing: -1.6px;
+    }
+
+    .section-description {
+      max-width: 560px;
+      margin: 15px 0 0;
+      color: var(--muted) !important;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* FILTER BUTTONS */
+
+    .project-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .filter-btn {
+      padding: 11px 17px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.025);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      color: var(--cyan);
+      border-color: rgba(102, 232, 255, 0.5);
+      background: rgba(102, 232, 255, 0.08);
+    }
+
+    /* PROJECT CARDS */
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .project-card {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 30px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(21, 31, 59, 0.94),
+          rgba(12, 17, 34, 0.96)
+        );
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 25px;
+      right: 25px;
+      height: 2px;
+      background: var(--gradient);
+      opacity: 0.65;
+      transform: scaleX(0.3);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(102, 232, 255, 0.32);
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.24);
+    }
+
+    .project-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .project-card[hidden] {
+      display: none !important;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 23px;
+    }
+
+    .project-icon {
+      width: 53px;
+      height: 53px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      color: var(--cyan);
+      font-size: 24px;
+      background: linear-gradient(
+        135deg,
+        rgba(102, 232, 255, 0.13),
+        rgba(167, 139, 250, 0.16)
+      );
+      border: 1px solid var(--line);
+    }
+
+    .project-number {
+      color: rgba(169, 183, 212, 0.55);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .project-category {
+      display: inline-flex;
+      align-self: flex-start;
+      margin-bottom: 13px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(167, 139, 250, 0.10);
+      color: #c6b5ff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .project-card h3 {
+      margin: 0 0 13px;
+      color: var(--text) !important;
+      font-size: 24px;
+      line-height: 1.3;
+      letter-spacing: -0.6px;
+    }
+
+    .project-card > p {
+      margin: 0 0 22px;
+      color: var(--muted) !important;
+      font-size: 15px;
+      line-height: 1.85;
+    }
+
+    .project-card h4 {
+      margin: 0 0 12px;
+      color: #e8efff;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .project-points {
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin: 0 0 24px;
+      list-style: none;
+    }
+
+    .project-points li {
+      position: relative;
+      padding-left: 21px;
+      color: #c0cce4;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .project-points li::before {
+      content: "✦";
+      position: absolute;
+      left: 0;
+      top: 1px;
+      color: var(--cyan);
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 19px;
+      margin-top: auto;
+      border-top: 1px solid var(--line);
+    }
+
+    .tech-stack span {
+      padding: 7px 10px;
+      color: #b9c9e8;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(148, 180, 255, 0.12);
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    /* ARCHITECTURE SECTION */
+
+    .architecture-section {
+      background:
+        radial-gradient(
+          ellipse at 50% 50%,
+          rgba(73, 68, 175, 0.13),
+          transparent 65%
+        ),
+        #0a0f20;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .architecture-box {
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(15, 22, 43, 0.78);
+    }
+
+    .architecture-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    .flow-step {
+      position: relative;
+      min-height: 125px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 12px;
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      z-index: 2;
+      transform: translateY(-50%);
+      color: var(--cyan);
+      font-size: 19px;
+    }
+
+    .flow-step .flow-icon {
+      font-size: 25px;
+    }
+
+    .flow-step strong {
+      color: #eef4ff;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .flow-step small {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* CAPABILITIES */
+
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .capability-card {
+      padding: 25px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+    }
+
+    .capability-card .capability-icon {
+      margin-bottom: 18px;
+      font-size: 27px;
+    }
+
+    .capability-card h3 {
+      margin: 0 0 11px;
+      color: var(--text) !important;
+      font-size: 18px;
+    }
+
+    .capability-card p {
+      margin: 0;
+      color: var(--muted) !important;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* CTA */
+
+    .cta-section {
+      padding: 75px 0 95px;
+    }
+
+    .cta-box {
+      position: relative;
+      overflow: hidden;
+      padding: 55px 35px;
+      text-align: center;
+      border: 1px solid rgba(102, 232, 255, 0.23);
+      border-radius: 24px;
+      background:
+        radial-gradient(
+          ellipse at 20% 0%,
+          rgba(167, 139, 250, 0.16),
+          transparent 55%
+        ),
+        radial-gradient(
+          ellipse at 100% 100%,
+          rgba(35, 213, 232, 0.10),
+          transparent 55%
+        ),
+        #0d1429;
+    }
+
+    .cta-box h2 {
+      margin: 0 0 15px;
+      color: var(--text) !important;
+      font-size: clamp(29px, 4vw, 43px);
+      letter-spacing: -1.5px;
+    }
+
+    .cta-box p {
+      max-width: 650px;
+      margin: 0 auto 27px;
+      color: var(--muted) !important;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* FOOTER */
+
+    .site-footer {
+      padding: 27px 0;
+      background: #070a15;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .footer-inner p {
+      margin: 0;
+      color: #8e9bb7;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: #a9b7d4;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--cyan);
+    }
+
+    /* ANIMATIONS */
+
+    @keyframes coreFloat {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-12px) scale(1.025);
+      }
+    }
+
+    @keyframes orbitFloat {
+      from {
+        rotate: 0deg;
+      }
+      to {
+        rotate: 360deg;
+      }
+    }
+
+    @keyframes glowPulse {
+      from {
+        opacity: 0.17;
+        transform: scale(0.92);
+      }
+      to {
+        opacity: 0.34;
+        transform: scale(1.08);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .project-hero {
+        padding: 75px 0;
+      }
+
+      .project-visual {
+        min-height: 330px;
+      }
+
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .capability-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .architecture-flow {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .flow-step:not(:last-child)::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(100% - 32px, 1180px);
+      }
+
+      .site-header .nav {
+        min-height: 76px;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 15px 0;
+        gap: 14px;
+      }
+
+      .site-header .logo {
+        width: 100%;
+        text-align: center;
+        font-size: 20px;
+      }
+
+      .site-header nav {
+        width: 100%;
+        justify-content: center;
+        gap: clamp(14px, 4vw, 24px);
+      }
+
+      .site-header nav a {
+        font-size: 13px;
+      }
+
+      .project-hero {
+        padding: 60px 0;
+      }
+
+      .project-hero h1 {
+        font-size: clamp(39px, 11vw, 55px);
+        letter-spacing: -2px;
+      }
+
+      .hero-description {
+        font-size: 16px;
+      }
+
+      .project-visual {
+        min-height: 290px;
+        transform: scale(0.9);
+      }
+
+      .label-one {
+        left: -2px;
+      }
+
+      .label-two {
+        right: -5px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+      }
+
+      .stat-item {
+        padding: 15px 5px;
+      }
+
+      .section {
+        padding: 65px 0;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        margin-bottom: 28px;
+      }
+
+      .project-card {
+        padding: 23px;
+      }
+
+      .project-card h3 {
+        font-size: 21px;
+      }
+
+      .capability-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .architecture-box {
+        padding: 17px;
+      }
+
+      .architecture-flow {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-step {
+        min-height: 95px;
+      }
+
+      .cta-box {
+        padding: 38px 22px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-links {
+        justify-content: center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="site-header">
-  <div class="container nav">
-
-    <a class="logo" href="index.html">
-      Sidhuservicenow<span>.</span>
-    </a>
-
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="blog.html">Blog</a>
-      <a href="projects.html">Projects</a>
-      <a href="about.html">About</a>
-    </nav>
-
-  </div>
-</header>
-
-<main>
-
-  <!-- HERO -->
-  <section class="page-hero">
-    <div class="container">
-
-      <p class="eyebrow">HANDS-ON EXPERIENCE</p>
-
-      <h1>ServiceNow Projects & Development</h1>
-
-      <p>
-        Hands-on experience building, customizing, integrating, testing,
-        migrating, and deploying ServiceNow solutions across enterprise
-        workflows and AI-powered experiences.
-      </p>
-
-    </div>
-  </section>
-
-
-  <!-- EXPERIENCE -->
-  <section class="section">
-
-    <div class="container">
-
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">SELECTED WORK</p>
-          <h2>What I Have Worked On</h2>
-        </div>
-      </div>
-
-
-      <div class="topic-grid">
-
-
-        <!-- 01 -->
-        <article class="topic-card">
-
-          <span class="topic-number">01</span>
-
-          <h3>
-            Employee Center Customization
-          </h3>
-
-          <p>
-            Customized Employee Center experiences to support business
-            requirements and improve the user experience across the
-            ServiceNow platform.
-          </p>
-
-          <p>
-            Worked on custom widgets including announcement widgets,
-            AI Search widget customizations, Header and Footer updates,
-            and other Employee Center components.
-          </p>
-
-          <p>
-            <strong>Technologies:</strong>
-            Employee Center, Service Portal, ServiceNow Widgets,
-            JavaScript, HTML, CSS
-          </p>
-
-        </article>
-
-
-        <!-- 02 -->
-        <article class="topic-card">
-
-          <span class="topic-number">02</span>
-
-          <h3>
-            ServiceNow Integrations
-          </h3>
-
-          <p>
-            Worked on REST integrations between ServiceNow and
-            third-party applications as well as integrations with
-            internal enterprise systems.
-          </p>
-
-          <p>
-            Worked with API requests, responses, JSON data,
-            authentication, troubleshooting, and integration workflows.
-          </p>
-
-          <p>
-            <strong>Technologies:</strong>
-            REST APIs, JSON, Script Includes,
-            REST Messages, ServiceNow, Third-Party Systems
-          </p>
-
-        </article>
-
-
-        <!-- 03 -->
-        <article class="topic-card">
-
-          <span class="topic-number">03</span>
-
-          <h3>
-            Now Assist & ServiceNow AI Research
-          </h3>
-
-          <p>
-            Researched and explored different Now Assist capabilities
-            and AI functionalities available on the ServiceNow platform.
-          </p>
-
-          <p>
-            Evaluated AI use cases and explored how ServiceNow AI
-            capabilities can support conversational experiences,
-            automation, knowledge, and enterprise workflows.
-          </p>
-
-          <p>
-            <strong>Focus Areas:</strong>
-            Now Assist, Generative AI, AI Agents,
-            Virtual Agent, NLU, AI-powered automation
-          </p>
-
-        </article>
-
-
-        <!-- 04 -->
-        <article class="topic-card">
-
-          <span class="topic-number">04</span>
-
-          <h3>
-            Catalog Items & AI Agent Experiences
-          </h3>
-
-          <p>
-            Worked on Service Catalog items and explored AI-powered
-            experiences for helping users submit catalog requests.
-          </p>
-
-          <p>
-            Created AI Agent experiences designed to assist with
-            catalog item submission and worked with conversational
-            interactions and related ServiceNow functionality.
-          </p>
-
-          <p>
-            <strong>Technologies:</strong>
-            Service Catalog, AI Agents, Now Assist,
-            Virtual Agent, NLU, Flow Designer
-          </p>
-
-        </article>
-
-
-        <!-- 05 -->
-        <article class="topic-card">
-
-          <span class="topic-number">05</span>
-
-          <h3>
-            ServiceNow Platform Migration
-          </h3>
-
-          <p>
-            Worked on migrating business functionality and workflows
-            from other tools into ServiceNow.
-          </p>
-
-          <p>
-            Supported the transition of existing capabilities into the
-            ServiceNow platform while working with development,
-            configuration, testing, and validation activities.
-          </p>
-
-          <p>
-            <strong>Focus Areas:</strong>
-            ServiceNow migration, application development,
-            workflow migration, configuration, testing
-          </p>
-
-        </article>
-
-
-        <!-- 06 -->
-        <article class="topic-card">
-
-          <span class="topic-number">06</span>
-
-          <h3>
-            Production Deployments & Code Reviews
-          </h3>
-
-          <p>
-            Worked through the development lifecycle from implementation
-            through production deployment.
-          </p>
-
-          <p>
-            Participated in code reviews, addressed review feedback,
-            supported defect fixing, and deployed ServiceNow changes
-            to production environments.
-          </p>
-
-          <p>
-            <strong>Focus Areas:</strong>
-            Code Reviews, Bug Fixing, Deployment,
-            Update Sets, Production Releases, Development Lifecycle
-          </p>
-
-        </article>
-
-
-        <!-- 07 -->
-        <article class="topic-card">
-
-          <span class="topic-number">07</span>
-
-          <h3>
-            Automated Testing with ATF
-          </h3>
-
-          <p>
-            Worked on the ServiceNow Automated Test Framework side of
-            development to support testing and validation of platform
-            functionality.
-          </p>
-
-          <p>
-            Created and worked with automated test scenarios to help
-            validate ServiceNow functionality and reduce manual
-            regression testing effort.
-          </p>
-
-          <p>
-            <strong>Technologies:</strong>
-            ServiceNow ATF, Automated Testing,
-            Regression Testing, Validation
-          </p>
-
-        </article>
-
-
-        <!-- 08 -->
-        <article class="topic-card">
-
-          <span class="topic-number">08</span>
-
-          <h3>
-            ServiceNow Development & Troubleshooting
-          </h3>
-
-          <p>
-            Worked on day-to-day ServiceNow development, enhancements,
-            troubleshooting, defect resolution, and production support
-            activities.
-          </p>
-
-          <p>
-            Investigated issues, implemented fixes, tested changes,
-            and worked through development and release processes to
-            deliver platform enhancements.
-          </p>
-
-          <p>
-            <strong>Technologies:</strong>
-            JavaScript, Glide APIs, Script Includes,
-            Flow Designer, Service Catalog, ServiceNow
-          </p>
-
-        </article>
-
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- TECHNICAL AREAS -->
-  <section class="section section-light">
-
-    <div class="container">
-
-      <div class="section-heading">
-
-        <div>
-          <p class="eyebrow">TECHNICAL AREAS</p>
-          <h2>Core Experience</h2>
-        </div>
-
-      </div>
-
-
-      <div class="topic-grid">
-
-
-        <div class="topic-card">
-
-          <span class="topic-number">01</span>
-
-          <h3>
-            ServiceNow
-          </h3>
-
-          <p>
-            Employee Center, Service Portal, Service Catalog,
-            ITSM, ITOM, Discovery, CMDB, Flow Designer,
-            Script Includes, Glide APIs, and ServiceNow development.
-          </p>
-
-        </div>
-
-
-        <div class="topic-card">
-
-          <span class="topic-number">02</span>
-
-          <h3>
-            AI & Automation
-          </h3>
-
-          <p>
-            Now Assist, AI Agents, Generative AI, Virtual Agent,
-            NLU, AI Search, intelligent automation,
-            and AI-powered ServiceNow experiences.
-          </p>
-
-        </div>
-
-
-        <div class="topic-card">
-
-          <span class="topic-number">03</span>
-
-          <h3>
-            Integration & APIs
-          </h3>
-
-          <p>
-            REST integrations, REST Messages, JSON,
-            third-party applications, internal enterprise systems,
-            authentication, and API troubleshooting.
-          </p>
-
-        </div>
-
-
-        <div class="topic-card">
-
-          <span class="topic-number">04</span>
-
-          <h3>
-            Quality & Delivery
-          </h3>
-
-          <p>
-            ATF, testing, defect fixing, code reviews,
-            production deployments, validation,
-            and ServiceNow release processes.
-          </p>
-
-        </div>
-
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- CTA -->
-  <section class="cta-section">
-
-    <div class="container cta">
-
-      <div>
-
-        <p class="eyebrow">
-          EXPLORE MY WORK
-        </p>
-
-        <h2>
-          Read the technical articles behind my ServiceNow and AI work.
-        </h2>
-
-      </div>
-
-      <a
-        class="btn btn-primary"
-        href="blog.html"
-      >
-        View Blog →
+  <!-- NAVIGATION -->
+  <header class="site-header">
+    <div class="container nav">
+
+      <a class="logo" href="index.html">
+        Sidhuservicenow<span>.</span>
       </a>
 
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="projects.html" aria-current="page">Projects</a>
+        <a href="about.html">About</a>
+      </nav>
+
     </div>
+  </header>
 
-  </section>
+  <main>
 
-</main>
+    <!-- HERO -->
+    <section class="project-hero">
+      <div class="container hero-grid">
 
+        <div class="reveal">
 
-<!-- FOOTER -->
-<footer class="site-footer">
+          <p class="eyebrow">
+            HANDS-ON EXPERIENCE · SERVICENOW ENGINEERING
+          </p>
 
-  <div class="container footer-content">
+          <h1>
+            Building intelligent
+            <span class="gradient-text">enterprise solutions.</span>
+          </h1>
 
-    <p>
-      © 2026 Sidhartha Ananthula
-    </p>
+          <p class="hero-description">
+            Exploring practical ServiceNow development across AI-powered
+            experiences, intelligent workflows, IT operations, enterprise
+            integrations, and automation on the Now Platform.
+          </p>
 
-    <p>
-      ServiceNow AI • Automation • Engineering
-    </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#featured-projects">
+              Explore Projects ↓
+            </a>
 
-  </div>
+            <a class="btn btn-secondary" href="blog.html">
+              Read Technical Blog ↗
+            </a>
+          </div>
 
-</footer>
+        </div>
+
+        <div class="project-visual reveal" aria-hidden="true">
+
+          <div class="visual-glow"></div>
+
+          <div class="visual-orbit"></div>
+          <div class="visual-orbit orbit-two"></div>
+          <div class="visual-orbit orbit-three"></div>
+
+          <div class="visual-core"></div>
+
+          <div class="visual-label label-one">
+            ✦ Now Assist & GenAI
+          </div>
+
+          <div class="visual-label label-two">
+            ⌘ AI Agents
+          </div>
+
+          <div class="visual-label label-three">
+            ◎ Connected workflows
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="container stats-grid">
+
+        <div class="stat-item">
+          <strong>AI</strong>
+          <span>Intelligent experiences</span>
+        </div>
+
+        <div class="stat-item">
+          <strong>ITSM</strong>
+          <span>Enterprise workflows</span>
+        </div>
+
+        <div class="stat-item">
+          <strong>ITOM</strong>
+          <span>Operations & discovery</span>
+        </div>
+
+        <div class="stat-item">
+          <strong>API</strong>
+          <span>Integrations & automation</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FEATURED PROJECTS -->
+    <section class="section" id="featured-projects">
+
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">SELECTED WORK</p>
+            <h2>ServiceNow Projects &<br>
+              <span class="gradient-text">Development</span>
+            </h2>
+            <p class="section-description">
+              Explore representative implementation patterns and development
+              areas across the ServiceNow platform. These descriptions
+              showcase technical capabilities rather than claiming that
+              every example is a publicly deployed production project.
+            </p>
+          </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="project-filters reveal" aria-label="Filter projects">
+
+          <button class="filter-btn active" type="button" data-filter="all"
+            aria-pressed="true">
+            All Projects
+          </button>
+
+          <button class="filter-btn" type="button" data-filter="ai"
+            aria-pressed="false">
+            AI & GenAI
+          </button>
+
+          <button class="filter-btn" type="button" data-filter="itsm"
+            aria-pressed="false">
+            ITSM
+          </button>
+
+          <button class="filter-btn" type="button" data-filter="itom"
+            aria-pressed="false">
+            ITOM & CMDB
+          </button>
+
+          <button class="filter-btn" type="button" data-filter="integration"
+            aria-pressed="false">
+            Integrations
+          </button>
+
+        </div>
+
+        <div class="project-grid">
+
+          <!-- PROJECT 1 -->
+          <article class="project-card reveal" data-category="ai">
+
+            <div class="card-top">
+              <div class="project-icon" aria-hidden="true">✧</div>
+              <span class="project-number">PROJECT 01</span>
+            </div>
+
+            <span class="project-category">AI & GenAI</span>
+
+            <h3>ServiceNow AI Assistant</h3>
+
+            <p>
+              An AI assistant concept for bringing conversational
+              assistance into a ServiceNow portal or Employee Center
+              experience.
+            </p>
+
+            <h4>Implementation areas</h4>
+
+            <ul class="project-points">
+              <li>Custom Service Portal or Employee Center widget</li>
+              <li>Server-side Script Include for controlled processing</li>
+              <li>REST integration with an AI service</li>
+              <li>Conversational responses and error handling</li>
+            </ul>
+
+            <div class="tech-stack">
+              <span>Service Portal</span>
+              <span>JavaScript</span>
+              <span>Script Include</span>
+              <span>REST API</span>
+              <span>LLM</span>
+            </div>
+
+          </article>
+
+          <!-- PROJECT 2 -->
+          <article class="project-card reveal" data-category="ai">
+
+            <div class="card-top">
+              <div class="project-icon" aria-hidden="true">◈</div>
+              <span class="project-number">PROJECT 02</span>
+            </div>
+
+            <span class="project-category">AI & GenAI</span>
+
+            <h3>AI Agents & Workflow Automation</h3>
+
+            <p>
+              Exploring AI-powered workflow patterns that combine
+              conversational intent, enterprise context, and controlled
+              actions to support business processes.
+            </p>
+
+            <h4>Implementation areas</h4>
+
+            <ul class="project-points">
+              <li>Agent use cases and task decomposition</li>
+              <li>Tool and action integration patterns</li>
+              <li>Workflow orchestration and execution controls</li>
+              <li>Human review, permissions, and auditability</li>
+            </ul>
+
+            <div class="tech-stack">
+              <span>AI Agents</span>
+              <span>Now Assist</span>
+              <span>Flow Designer</span>
+              <span>Governance</span>
+            </div>
+
+          </article>
+
+          <!-- PROJECT 3 -->
+          <article class="project-card reveal" data-category="itsm">
+
+            <div class="card-top">
+              <div class="project-icon" aria-hidden="true">▤</div>
+              <span class="project-number">PROJECT 03</span>
+            </div>
+
+            <span class="project-category">ITSM</span>
+
+            <h3>Service Catalog & Approval Workflows</h3>
+
+            <p>
+              Configurable catalog request patterns with conditional
+              approvals, validation rules, and workflow-driven fulfillment.
+            </p>
+
+            <h4>Implementation areas</h4>
+
+            <ul class="project-points">
+              <li>Catalog items and reusable variable sets</li>
+              <li>Conditional approval paths and subflows</li>
+              <li>Server-side validation and business rules</li>
+              <li>Request, requested-item, and task coordination</li>
+            </ul>
+
+            <div class="tech-stack">
+              <span>Service Catalog</span>
+              <span>Flow Designer</span>
+              <span>Business Rules</span>
+              <span>Approvals</span>
+            </div>
+
+          </article>
+
+          <!-- PROJECT 4 -->
+          <article class="project-card reveal" data-category="itom">
+
+            <div class="card-top">
+              <div class="project-icon" aria-hidden="true">⌘</div>
+              <span class="project-number">PROJECT 04</span>
+            </div>
+
+            <span class="project-category">ITOM & CMDB</span>
+
+            <h3>Discovery, CMDB & Service Mapping</h3>
+
+            <p>
+              IT operations implementation patterns focused on discovering
+              infrastructure, maintaining configuration data, and
+              understanding relationships between services and components.
+            </p>
+
+            <h4>Implementation areas</h4>
+
+            <ul class="project-points">
+              <li>Discovery and MID Server integration patterns</li>
+              <li>CMDB class structure and relationship quality</li>
+              <li>Service mapping and dependency visibility</li>
+              <li>Data quality, identification, and reconciliation</li>
+            </ul>
+
+            <div class="tech-stack">
+              <span>Discovery</span>
+              <span>CMDB</span>
+              <span>Service Mapping</span>
+              <span>MID Server</span>
+            </div>
+
+          </article>
+
+          <!-- PROJECT 5 -->
+          <article class="project-card reveal" data-category="integration">
+
+            <div class="card-top">
+              <div class="project-icon" aria-hidden="true">⤳</div>
+              <span class="project-number">PROJECT 05</span>
+            </div>
+
+            <span class="project-category">Integrations</span>
+
+            <h3>Enterprise API Integrations</h3>
+
+            <p>
+              Integration patterns for connecting ServiceNow with external
+              applications and enterprise services while maintaining
+              predictable error handling and secure communication.
+            </p>
+
+            <h4>Implementation areas</h4>
+
+            <ul class="project-points">
+              <li>REST and SOAP request and response handling</li>
+              <li>Authentication and credential management patterns</li>
+              <li>Reusable integration actions and subflows</li>
+              <li>Logging, retries, and failure troubleshooting</li>
+            </ul>
+
+            <div class="tech-stack">
+              <span>REST</span>
+              <span>SOAP</span>
+              <span>IntegrationHub</span>
+              <span>Flow Designer</span>
+            </div>
+
+          </article>
+
+          <!-- PROJECT 6 -->
+          <article class="project-card reveal" data-category="itsm">
+
+            <div class="card-top">
+              <div class="project-icon" aria-hidden="true">◎</div>
+              <span class="project-number">PROJECT 06</span>
+            </div>
+
+            <span class="project-category">ITSM & Security</span>
+
+            <h3>Access Controls & Process Validation</h3>
+
+            <p>
+              Server-side controls and form behavior patterns for enforcing
+              role-based actions, required information, and lifecycle
+              transitions on ServiceNow records.
+            </p>
+
+            <h4>Implementation areas</h4>
+
+            <ul class="project-points">
+              <li>Access Control Lists and role-based permissions</li>
+              <li>Business Rules and record validation</li>
+              <li>Mandatory fields and state transition checks</li>
+              <li>Clear user feedback and negative-path testing</li>
+            </ul>
+
+            <div class="tech-stack">
+              <span>ACLs</span>
+              <span>JavaScript</span>
+              <span>Business Rules</span>
+              <span>Security</span>
+            </div>
+
+          </article>
+
+          <!-- PROJECT 7 -->
+          <article class="project-card reveal" data-category="itom">
+
+            <div class="card-top">
+              <div class="project-icon" aria-hidden="true">⌁</div>
+              <span class="project-number">PROJECT 07</span>
+            </div>
+
+            <span class="project-category">ITOM & AIOps</span>
+
+            <h3>Event Management & AIOps</h3>
+
+            <p>
+              Operational monitoring patterns that help teams organize
+              events, understand service health, and reduce noise through
+              correlation and actionable operational context.
+            </p>
+
+            <h4>Implementation areas</h4>
+
+            <ul class="project-points">
+              <li>Event ingestion and alert processing</li>
+              <li>Alert grouping and event correlation concepts</li>
+              <li>Service health and operational visibility</li>
+              <li>Integration with CMDB service context</li>
+            </ul>
+
+            <div class="tech-stack">
+              <span>ITOM</span>
+              <span>Event Management</span>
+              <span>AIOps</span>
+              <span>CMDB</span>
+            </div>
+
+          </article>
+
+          <!-- PROJECT 8 -->
+          <article class="project-card reveal" data-category="integration">
+
+            <div class="card-top">
+              <div class="project-icon" aria-hidden="true">▧</div>
+              <span class="project-number">PROJECT 08</span>
+            </div>
+
+            <span class="project-category">Employee Experience</span>
+
+            <h3>Employee Center & Virtual Agent</h3>
+
+            <p>
+              Employee-facing experience patterns that bring service
+              catalog access, conversational assistance, and knowledge
+              discovery together in a consistent portal.
+            </p>
+
+            <h4>Implementation areas</h4>
+
+            <ul class="project-points">
+              <li>Employee Center and portal customization</li>
+              <li>Virtual Agent topic and conversation design</li>
+              <li>Catalog access and knowledge integration</li>
+              <li>Responsive UI and reusable components</li>
+            </ul>
+
+            <div class="tech-stack">
+              <span>Employee Center</span>
+              <span>Virtual Agent</span>
+              <span>Service Portal</span>
+              <span>NLU</span>
+            </div>
+
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section class="section architecture-section">
+
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">SOLUTION THINKING</p>
+            <h2>From request to <span class="gradient-text">result.</span></h2>
+            <p class="section-description">
+              A simplified view of how a typical enterprise workflow can
+              connect user experiences, platform logic, integrations,
+              and governed outcomes.
+            </p>
+          </div>
+        </div>
+
+        <div class="architecture-box reveal">
+
+          <div class="architecture-flow">
+
+            <div class="flow-step">
+              <span class="flow-icon">◉</span>
+              <strong>User Experience</strong>
+              <small>Portal · Catalog · Agent</small>
+            </div>
+
+            <div class="flow-step">
+              <span class="flow-icon">⌘</span>
+              <strong>ServiceNow Logic</strong>
+              <small>Rules · Scripts · APIs</small>
+            </div>
+
+            <div class="flow-step">
+              <span class="flow-icon">⚙</span>
+              <strong>Workflow Engine</strong>
+              <small>Flows · Approvals · Tasks</small>
+            </div>
+
+            <div class="flow-step">
+              <span class="flow-icon">⇄</span>
+              <strong>Integrations</strong>
+              <small>REST · SOAP · MID</small>
+            </div>
+
+            <div class="flow-step">
+              <span class="flow-icon">✧</span>
+              <strong>Business Outcome</strong>
+              <small>Automation · Visibility</small>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TECHNICAL CAPABILITIES -->
+    <section class="section">
+
+      <div class="container">
+
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">TECHNICAL TOOLKIT</p>
+            <h2>Core engineering <span class="gradient-text">capabilities.</span></h2>
+          </div>
+        </div>
+
+        <div class="capability-grid">
+
+          <article class="capability-card reveal">
+            <div class="capability-icon" aria-hidden="true">✧</div>
+            <h3>AI & Generative AI</h3>
+            <p>
+              AI Agents, Now Assist, LLM integrations, prompt design,
+              conversational experiences, and AI governance patterns.
+            </p>
+          </article>
+
+          <article class="capability-card reveal">
+            <div class="capability-icon" aria-hidden="true">▤</div>
+            <h3>Platform Development</h3>
+            <p>
+              JavaScript, Glide APIs, Script Includes, Client Scripts,
+              Business Rules, UI Policies, and reusable application logic.
+            </p>
+          </article>
+
+          <article class="capability-card reveal">
+            <div class="capability-icon" aria-hidden="true">⤳</div>
+            <h3>Workflow Automation</h3>
+            <p>
+              Flow Designer, subflows, catalog requests, approvals,
+              event-driven processes, and task orchestration.
+            </p>
+          </article>
+
+          <article class="capability-card reveal">
+            <div class="capability-icon" aria-hidden="true">⌘</div>
+            <h3>ITOM & CMDB</h3>
+            <p>
+              Discovery, MID Server concepts, service mapping, configuration
+              data quality, event management, and operational visibility.
+            </p>
+          </article>
+
+          <article class="capability-card reveal">
+            <div class="capability-icon" aria-hidden="true">⇄</div>
+            <h3>Integrations</h3>
+            <p>
+              REST and SOAP APIs, IntegrationHub, authentication patterns,
+              external services, data exchange, and error handling.
+            </p>
+          </article>
+
+          <article class="capability-card reveal">
+            <div class="capability-icon" aria-hidden="true">◎</div>
+            <h3>Security & Quality</h3>
+            <p>
+              ACLs, role-based access, server-side validation, testing,
+              maintainability, and responsible handling of enterprise data.
+            </p>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+
+      <div class="container">
+
+        <div class="cta-box reveal">
+
+          <p class="eyebrow">CONTINUE EXPLORING</p>
+
+          <h2>
+            Ideas become better <span class="gradient-text">solutions.</span>
+          </h2>
+
+          <p>
+            Visit the technical blog for detailed explanations, code
+            examples, architecture discussions, and practical ServiceNow
+            development guidance.
+          </p>
+
+          <a class="btn btn-primary" href="blog.html">
+            Explore Technical Articles ↗
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+
+    <div class="container footer-inner">
+
+      <p>
+        © <span id="currentYear"></span> Sidhuservicenow.
+        Built around ServiceNow, AI, and engineering.
+      </p>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="projects.html">Projects</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/Sidhuservicenow"
+           target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    // Update the footer year.
+    document.getElementById("currentYear").textContent =
+      new Date().getFullYear();
+
+    // Reveal elements as they enter the viewport.
+    (function () {
+      const elements = document.querySelectorAll(".reveal");
+
+      if (!("IntersectionObserver" in window)) {
+        elements.forEach(function (element) {
+          element.classList.add("visible");
+        });
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+
+      elements.forEach(function (element) {
+        observer.observe(element);
+      });
+    })();
+
+    // Filter project cards by category.
+    (function () {
+      const buttons = document.querySelectorAll(".filter-btn");
+      const cards = document.querySelectorAll(".project-card");
+
+      buttons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          const selectedFilter = button.dataset.filter;
+
+          buttons.forEach(function (item) {
+            const isActive = item === button;
+            item.classList.toggle("active", isActive);
+            item.setAttribute("aria-pressed", String(isActive));
+          });
+
+          cards.forEach(function (card) {
+            const matches =
+              selectedFilter === "all" ||
+              card.dataset.category === selectedFilter;
+
+            card.hidden = !matches;
+          });
+        });
+      });
+    })();
+  </script>
 
 </body>
 </html>
+```
