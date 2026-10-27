@@ -419,7 +419,7 @@
       position: relative;
       overflow: hidden;
       display: flex;
-      flex-direction: column;
+            flex-direction: column;
       min-width: 0;
       padding: 30px;
       background:
@@ -650,30 +650,46 @@
     .capability-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
+      gap: 20px;
     }
 
     .capability-card {
-      padding: 25px;
-      background: var(--panel);
+      padding: 27px;
       border: 1px solid var(--line);
-      border-radius: 17px;
+      border-radius: 18px;
+      background: var(--panel);
+      transition:
+        transform 0.25s ease,
+        border-color 0.25s ease;
     }
 
-    .capability-card .capability-icon {
-      margin-bottom: 18px;
-      font-size: 27px;
+    .capability-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(102, 232, 255, 0.35);
+    }
+
+    .capability-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 19px;
+      border-radius: 14px;
+      color: var(--cyan);
+      font-size: 23px;
+      background: rgba(102, 232, 255, 0.08);
+      border: 1px solid var(--line);
     }
 
     .capability-card h3 {
-      margin: 0 0 11px;
-      color: var(--text) !important;
-      font-size: 18px;
+      margin: 0 0 12px;
+      color: var(--text);
+      font-size: 19px;
     }
 
     .capability-card p {
       margin: 0;
-      color: var(--muted) !important;
+      color: var(--muted);
       font-size: 14px;
       line-height: 1.8;
     }
@@ -681,63 +697,61 @@
     /* CTA */
 
     .cta-section {
-      padding: 75px 0 95px;
+      padding: 0 0 100px;
     }
 
     .cta-box {
       position: relative;
       overflow: hidden;
-      padding: 55px 35px;
+      padding: 60px 35px;
       text-align: center;
-      border: 1px solid rgba(102, 232, 255, 0.23);
-      border-radius: 24px;
+      border: 1px solid var(--line);
+      border-radius: 25px;
       background:
         radial-gradient(
-          ellipse at 20% 0%,
-          rgba(167, 139, 250, 0.16),
-          transparent 55%
+          ellipse at 50% 0%,
+          rgba(112, 68, 242, 0.20),
+          transparent 60%
         ),
-        radial-gradient(
-          ellipse at 100% 100%,
-          rgba(35, 213, 232, 0.10),
-          transparent 55%
-        ),
-        #0d1429;
+        linear-gradient(135deg, #111a32, #0d1327);
     }
 
     .cta-box h2 {
-      margin: 0 0 15px;
-      color: var(--text) !important;
-      font-size: clamp(29px, 4vw, 43px);
+      margin: 0 0 18px;
+      color: var(--text);
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 1.2;
       letter-spacing: -1.5px;
     }
 
-    .cta-box p {
+    .cta-box > p:not(.eyebrow) {
       max-width: 650px;
       margin: 0 auto 27px;
-      color: var(--muted) !important;
+      color: var(--muted);
       font-size: 16px;
-      line-height: 1.8;
+      line-height: 1.85;
     }
 
     /* FOOTER */
 
     .site-footer {
-      padding: 27px 0;
-      background: #070a15;
       border-top: 1px solid var(--line);
+      background: #070a15;
     }
 
     .footer-inner {
+      min-height: 100px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 18px;
+      justify-content: space-between;
+      gap: 25px;
+      padding-top: 22px;
+      padding-bottom: 22px;
     }
 
     .footer-inner p {
       margin: 0;
-      color: #8e9bb7;
+      color: #8494b3;
       font-size: 13px;
       line-height: 1.7;
     }
@@ -745,54 +759,28 @@
     .footer-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 18px;
     }
 
     .footer-links a {
       color: #a9b7d4;
       font-size: 13px;
       text-decoration: none;
+      transition: color 0.2s ease;
     }
 
     .footer-links a:hover {
       color: var(--cyan);
     }
 
-    /* ANIMATIONS */
-
-    @keyframes coreFloat {
-      0%, 100% {
-        transform: translateY(0) scale(1);
-      }
-      50% {
-        transform: translateY(-12px) scale(1.025);
-      }
-    }
-
-    @keyframes orbitFloat {
-      from {
-        rotate: 0deg;
-      }
-      to {
-        rotate: 360deg;
-      }
-    }
-
-    @keyframes glowPulse {
-      from {
-        opacity: 0.17;
-        transform: scale(0.92);
-      }
-      to {
-        opacity: 0.34;
-        transform: scale(1.08);
-      }
-    }
+    /* REVEAL ANIMATION */
 
     .reveal {
       opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
+      transform: translateY(20px);
+      transition:
+        opacity 0.65s ease,
+        transform 0.65s ease;
     }
 
     .reveal.visible {
@@ -800,28 +788,58 @@
       transform: translateY(0);
     }
 
-    /* RESPONSIVE */
+    @keyframes glowPulse {
+      from {
+        opacity: 0.20;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 0.36;
+        transform: scale(1.1);
+      }
+    }
 
-    @media (max-width: 900px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
+    @keyframes orbitFloat {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes coreFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* RESPONSIVE DESIGN */
+
+    @media (max-width: 1000px) {
+      .site-header .nav {
+        flex-direction: column;
+        justify-content: center;
         gap: 15px;
+        padding-top: 17px;
+        padding-bottom: 17px;
       }
 
-      .project-hero {
-        padding: 75px 0;
+      .site-header nav {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px 22px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
       }
 
       .project-visual {
         min-height: 330px;
-      }
-
-      .project-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .capability-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .architecture-flow {
@@ -831,43 +849,22 @@
       .flow-step:not(:last-child)::after {
         display: none;
       }
+
+      .capability-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .container {
         width: min(100% - 32px, 1180px);
       }
 
-      .site-header .nav {
-        min-height: 76px;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 15px 0;
-        gap: 14px;
-      }
-
-      .site-header .logo {
-        width: 100%;
-        text-align: center;
-        font-size: 20px;
-      }
-
-      .site-header nav {
-        width: 100%;
-        justify-content: center;
-        gap: clamp(14px, 4vw, 24px);
-      }
-
-      .site-header nav a {
-        font-size: 13px;
-      }
-
       .project-hero {
-        padding: 60px 0;
+        padding: 70px 0 60px;
       }
 
       .project-hero h1 {
-        font-size: clamp(39px, 11vw, 55px);
         letter-spacing: -2px;
       }
 
@@ -875,26 +872,9 @@
         font-size: 16px;
       }
 
-      .project-visual {
-        min-height: 290px;
-        transform: scale(0.9);
-      }
-
-      .label-one {
-        left: -2px;
-      }
-
-      .label-two {
-        right: -5px;
-      }
-
       .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 5px;
-      }
-
-      .stat-item {
-        padding: 15px 5px;
       }
 
       .section {
@@ -902,45 +882,51 @@
       }
 
       .section-heading {
-        align-items: flex-start;
-        margin-bottom: 28px;
+        display: block;
+        margin-bottom: 30px;
       }
 
-      .project-card {
-        padding: 23px;
-      }
-
-      .project-card h3 {
-        font-size: 21px;
-      }
-
+      .project-grid,
       .capability-grid {
         grid-template-columns: 1fr;
       }
 
+      .project-card {
+        padding: 24px;
+      }
+
       .architecture-box {
-        padding: 17px;
+        padding: 18px;
       }
 
       .architecture-flow {
-        grid-template-columns: 1fr;
-      }
-
-      .flow-step {
-        min-height: 95px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .cta-box {
-        padding: 38px 22px;
+        padding: 42px 22px;
       }
 
       .footer-inner {
         flex-direction: column;
-        text-align: center;
+        align-items: flex-start;
       }
 
       .footer-links {
-        justify-content: center;
+        gap: 14px;
+      }
+
+      .visual-label {
+        font-size: 11px;
+        padding: 11px;
+      }
+
+      .label-one {
+        left: 0;
+      }
+
+      .label-two {
+        right: 0;
       }
     }
 
@@ -948,26 +934,19 @@
       *,
       *::before,
       *::after {
+        scroll-behavior: auto !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
-      }
-
-      .reveal {
-        opacity: 1;
-        transform: none;
       }
     }
   </style>
 </head>
-
 <body>
 
   <!-- NAVIGATION -->
   <header class="site-header">
     <div class="container nav">
-
       <a class="logo" href="index.html">
         Sidhuservicenow<span>.</span>
       </a>
@@ -976,9 +955,10 @@
         <a href="index.html">Home</a>
         <a href="blog.html">Blog</a>
         <a href="projects.html" aria-current="page">Projects</a>
+        <a href="interview-questions.html">Interview Prep</a>
+        <a href="best-practices.html">Best Practices</a>
         <a href="about.html">About</a>
       </nav>
-
     </div>
   </header>
 
@@ -989,7 +969,6 @@
       <div class="container hero-grid">
 
         <div class="reveal">
-
           <p class="eyebrow">
             HANDS-ON EXPERIENCE · SERVICENOW ENGINEERING
           </p>
@@ -1014,17 +993,13 @@
               Read Technical Blog ↗
             </a>
           </div>
-
         </div>
 
         <div class="project-visual reveal" aria-hidden="true">
-
           <div class="visual-glow"></div>
-
           <div class="visual-orbit"></div>
           <div class="visual-orbit orbit-two"></div>
           <div class="visual-orbit orbit-three"></div>
-
           <div class="visual-core"></div>
 
           <div class="visual-label label-one">
@@ -1038,7 +1013,6 @@
           <div class="visual-label label-three">
             ◎ Connected workflows
           </div>
-
         </div>
 
       </div>
@@ -1073,15 +1047,17 @@
 
     <!-- FEATURED PROJECTS -->
     <section class="section" id="featured-projects">
-
       <div class="container">
 
         <div class="section-heading reveal">
           <div>
             <p class="eyebrow">SELECTED WORK</p>
-            <h2>ServiceNow Projects &<br>
+
+            <h2>
+              ServiceNow Projects &<br>
               <span class="gradient-text">Development</span>
             </h2>
+
             <p class="section-description">
               Explore representative implementation patterns and development
               areas across the ServiceNow platform. These descriptions
@@ -1091,31 +1067,41 @@
           </div>
         </div>
 
-        <!-- FILTERS -->
+        <!-- PROJECT FILTERS -->
         <div class="project-filters reveal" aria-label="Filter projects">
 
-          <button class="filter-btn active" type="button" data-filter="all"
-            aria-pressed="true">
+          <button class="filter-btn active"
+                  type="button"
+                  data-filter="all"
+                  aria-pressed="true">
             All Projects
           </button>
 
-          <button class="filter-btn" type="button" data-filter="ai"
-            aria-pressed="false">
+          <button class="filter-btn"
+                  type="button"
+                  data-filter="ai"
+                  aria-pressed="false">
             AI & GenAI
           </button>
 
-          <button class="filter-btn" type="button" data-filter="itsm"
-            aria-pressed="false">
+          <button class="filter-btn"
+                  type="button"
+                  data-filter="itsm"
+                  aria-pressed="false">
             ITSM
           </button>
 
-          <button class="filter-btn" type="button" data-filter="itom"
-            aria-pressed="false">
+          <button class="filter-btn"
+                  type="button"
+                  data-filter="itom"
+                  aria-pressed="false">
             ITOM & CMDB
           </button>
 
-          <button class="filter-btn" type="button" data-filter="integration"
-            aria-pressed="false">
+          <button class="filter-btn"
+                  type="button"
+                  data-filter="integration"
+                  aria-pressed="false">
             Integrations
           </button>
 
@@ -1125,7 +1111,6 @@
 
           <!-- PROJECT 1 -->
           <article class="project-card reveal" data-category="ai">
-
             <div class="card-top">
               <div class="project-icon" aria-hidden="true">✧</div>
               <span class="project-number">PROJECT 01</span>
@@ -1157,12 +1142,10 @@
               <span>REST API</span>
               <span>LLM</span>
             </div>
-
           </article>
 
           <!-- PROJECT 2 -->
           <article class="project-card reveal" data-category="ai">
-
             <div class="card-top">
               <div class="project-icon" aria-hidden="true">◈</div>
               <span class="project-number">PROJECT 02</span>
@@ -1193,12 +1176,10 @@
               <span>Flow Designer</span>
               <span>Governance</span>
             </div>
-
           </article>
 
           <!-- PROJECT 3 -->
           <article class="project-card reveal" data-category="itsm">
-
             <div class="card-top">
               <div class="project-icon" aria-hidden="true">▤</div>
               <span class="project-number">PROJECT 03</span>
@@ -1228,12 +1209,10 @@
               <span>Business Rules</span>
               <span>Approvals</span>
             </div>
-
           </article>
 
           <!-- PROJECT 4 -->
           <article class="project-card reveal" data-category="itom">
-
             <div class="card-top">
               <div class="project-icon" aria-hidden="true">⌘</div>
               <span class="project-number">PROJECT 04</span>
@@ -1264,12 +1243,10 @@
               <span>Service Mapping</span>
               <span>MID Server</span>
             </div>
-
           </article>
 
           <!-- PROJECT 5 -->
           <article class="project-card reveal" data-category="integration">
-
             <div class="card-top">
               <div class="project-icon" aria-hidden="true">⤳</div>
               <span class="project-number">PROJECT 05</span>
@@ -1288,46 +1265,44 @@
             <h4>Implementation areas</h4>
 
             <ul class="project-points">
-              <li>REST and SOAP request and response handling</li>
-              <li>Authentication and credential management patterns</li>
-              <li>Reusable integration actions and subflows</li>
-              <li>Logging, retries, and failure troubleshooting</li>
+              <li>REST and SOAP communication patterns</li>
+              <li>Authentication and credential management</li>
+              <li>Payload transformation and response handling</li>
+              <li>Logging, retries, and integration error handling</li>
             </ul>
 
             <div class="tech-stack">
-              <span>REST</span>
+              <span>REST API</span>
               <span>SOAP</span>
               <span>IntegrationHub</span>
-              <span>Flow Designer</span>
+              <span>JSON</span>
             </div>
-
           </article>
 
           <!-- PROJECT 6 -->
           <article class="project-card reveal" data-category="itsm">
-
             <div class="card-top">
-              <div class="project-icon" aria-hidden="true">◎</div>
+              <div class="project-icon" aria-hidden="true">◉</div>
               <span class="project-number">PROJECT 06</span>
             </div>
 
-            <span class="project-category">ITSM & Security</span>
+            <span class="project-category">ITSM</span>
 
-            <h3>Access Controls & Process Validation</h3>
+            <h3>Case Lifecycle & Access Controls</h3>
 
             <p>
-              Server-side controls and form behavior patterns for enforcing
-              role-based actions, required information, and lifecycle
-              transitions on ServiceNow records.
+              Secure case-management patterns that apply role-based
+              restrictions, field validation, and controlled state
+              transitions to protect sensitive business processes.
             </p>
 
             <h4>Implementation areas</h4>
 
             <ul class="project-points">
-              <li>Access Control Lists and role-based permissions</li>
-              <li>Business Rules and record validation</li>
-              <li>Mandatory fields and state transition checks</li>
-              <li>Clear user feedback and negative-path testing</li>
+              <li>Role-based access and ACL design</li>
+              <li>Business Rules for server-side enforcement</li>
+              <li>Mandatory fields and state-transition validation</li>
+              <li>Clear messages and predictable user experiences</li>
             </ul>
 
             <div class="tech-stack">
@@ -1336,12 +1311,10 @@
               <span>Business Rules</span>
               <span>Security</span>
             </div>
-
           </article>
 
           <!-- PROJECT 7 -->
           <article class="project-card reveal" data-category="itom">
-
             <div class="card-top">
               <div class="project-icon" aria-hidden="true">⌁</div>
               <span class="project-number">PROJECT 07</span>
@@ -1372,12 +1345,10 @@
               <span>AIOps</span>
               <span>CMDB</span>
             </div>
-
           </article>
 
           <!-- PROJECT 8 -->
           <article class="project-card reveal" data-category="integration">
-
             <div class="card-top">
               <div class="project-icon" aria-hidden="true">▧</div>
               <span class="project-number">PROJECT 08</span>
@@ -1408,23 +1379,24 @@
               <span>Service Portal</span>
               <span>NLU</span>
             </div>
-
           </article>
 
         </div>
-
       </div>
     </section>
-
-    <!-- ARCHITECTURE -->
+        <!-- ARCHITECTURE -->
     <section class="section architecture-section">
-
       <div class="container">
 
         <div class="section-heading reveal">
           <div>
             <p class="eyebrow">SOLUTION THINKING</p>
-            <h2>From request to <span class="gradient-text">result.</span></h2>
+
+            <h2>
+              From request to
+              <span class="gradient-text">result.</span>
+            </h2>
+
             <p class="section-description">
               A simplified view of how a typical enterprise workflow can
               connect user experiences, platform logic, integrations,
@@ -1434,7 +1406,6 @@
         </div>
 
         <div class="architecture-box reveal">
-
           <div class="architecture-flow">
 
             <div class="flow-step">
@@ -1468,7 +1439,6 @@
             </div>
 
           </div>
-
         </div>
 
       </div>
@@ -1476,13 +1446,16 @@
 
     <!-- TECHNICAL CAPABILITIES -->
     <section class="section">
-
       <div class="container">
 
         <div class="section-heading reveal">
           <div>
             <p class="eyebrow">TECHNICAL TOOLKIT</p>
-            <h2>Core engineering <span class="gradient-text">capabilities.</span></h2>
+
+            <h2>
+              Core engineering
+              <span class="gradient-text">capabilities.</span>
+            </h2>
           </div>
         </div>
 
@@ -1490,7 +1463,9 @@
 
           <article class="capability-card reveal">
             <div class="capability-icon" aria-hidden="true">✧</div>
+
             <h3>AI & Generative AI</h3>
+
             <p>
               AI Agents, Now Assist, LLM integrations, prompt design,
               conversational experiences, and AI governance patterns.
@@ -1499,7 +1474,9 @@
 
           <article class="capability-card reveal">
             <div class="capability-icon" aria-hidden="true">▤</div>
+
             <h3>Platform Development</h3>
+
             <p>
               JavaScript, Glide APIs, Script Includes, Client Scripts,
               Business Rules, UI Policies, and reusable application logic.
@@ -1508,7 +1485,9 @@
 
           <article class="capability-card reveal">
             <div class="capability-icon" aria-hidden="true">⤳</div>
+
             <h3>Workflow Automation</h3>
+
             <p>
               Flow Designer, subflows, catalog requests, approvals,
               event-driven processes, and task orchestration.
@@ -1517,7 +1496,9 @@
 
           <article class="capability-card reveal">
             <div class="capability-icon" aria-hidden="true">⌘</div>
+
             <h3>ITOM & CMDB</h3>
+
             <p>
               Discovery, MID Server concepts, service mapping, configuration
               data quality, event management, and operational visibility.
@@ -1526,7 +1507,9 @@
 
           <article class="capability-card reveal">
             <div class="capability-icon" aria-hidden="true">⇄</div>
+
             <h3>Integrations</h3>
+
             <p>
               REST and SOAP APIs, IntegrationHub, authentication patterns,
               external services, data exchange, and error handling.
@@ -1535,7 +1518,9 @@
 
           <article class="capability-card reveal">
             <div class="capability-icon" aria-hidden="true">◎</div>
+
             <h3>Security & Quality</h3>
+
             <p>
               ACLs, role-based access, server-side validation, testing,
               maintainability, and responsible handling of enterprise data.
@@ -1543,13 +1528,11 @@
           </article>
 
         </div>
-
       </div>
     </section>
 
-    <!-- CTA -->
+    <!-- CALL TO ACTION -->
     <section class="cta-section">
-
       <div class="container">
 
         <div class="cta-box reveal">
@@ -1557,7 +1540,8 @@
           <p class="eyebrow">CONTINUE EXPLORING</p>
 
           <h2>
-            Ideas become better <span class="gradient-text">solutions.</span>
+            Ideas become better
+            <span class="gradient-text">solutions.</span>
           </h2>
 
           <p>
@@ -1571,7 +1555,6 @@
           </a>
 
         </div>
-
       </div>
     </section>
 
@@ -1579,7 +1562,6 @@
 
   <!-- FOOTER -->
   <footer class="site-footer">
-
     <div class="container footer-inner">
 
       <p>
@@ -1590,17 +1572,21 @@
       <div class="footer-links">
         <a href="index.html">Home</a>
         <a href="blog.html">Blog</a>
-        <a href="projects.html">Projects</a>
+        <a href="projects.html" aria-current="page">Projects</a>
+        <a href="interview-questions.html">Interview Prep</a>
+        <a href="best-practices.html">Best Practices</a>
         <a href="about.html">About</a>
+
         <a href="https://github.com/Sidhuservicenow"
-           target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+           target="_blank"
+           rel="noopener noreferrer">GitHub ↗</a>
       </div>
 
     </div>
   </footer>
 
   <script>
-    // Update the footer year.
+    // Automatically update the footer year.
     document.getElementById("currentYear").textContent =
       new Date().getFullYear();
 
@@ -1624,7 +1610,9 @@
             }
           });
         },
-        { threshold: 0.12 }
+        {
+          threshold: 0.12
+        }
       );
 
       elements.forEach(function (element) {
@@ -1643,8 +1631,13 @@
 
           buttons.forEach(function (item) {
             const isActive = item === button;
+
             item.classList.toggle("active", isActive);
-            item.setAttribute("aria-pressed", String(isActive));
+
+            item.setAttribute(
+              "aria-pressed",
+              String(isActive)
+            );
           });
 
           cards.forEach(function (card) {
@@ -1661,4 +1654,3 @@
 
 </body>
 </html>
-```
