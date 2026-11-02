@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ServiceNow Developer Learning Paths | Sidhuservicenow</title>
+<meta name="description" content="Explore ServiceNow developer learning paths from Junior Developer to Senior Developer, Technical Lead, and Architect.">
+<meta name="theme-color" content="#080b18">
+
+<style>
+:root {
+  --bg:#080b18;
+  --panel:#11172b;
+  --text:#f5f7ff;
+  --muted:#a6b0ca;
+  --purple:#a78bfa;
+  --cyan:#67e8f9;
+  --line:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  background:radial-gradient(ellipse at 85% 0%,#28204c 0,transparent 33%),var(--bg);
+  color:var(--text);
+  line-height:1.7;
+}
+a{color:inherit;text-decoration:none}
+.container{width:min(1160px,92%);margin:auto}
+header{
+  position:sticky;top:0;z-index:10;
+  background:#080b18ed;
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  min-height:76px;display:flex;align-items:center;
+  justify-content:space-between;gap:20px;
+}
+.logo{font-weight:900;font-size:1.3rem}
+.logo span{color:var(--cyan)}
+nav{display:flex;gap:25px;flex-wrap:wrap}
+nav a{font-size:.94rem;color:var(--muted)}
+nav a:hover,nav a.active{color:var(--cyan)}
+.hero{padding:85px 0 55px}
+.eyebrow{
+  color:var(--cyan);text-transform:uppercase;
+  letter-spacing:2.5px;font-size:.75rem;
+  font-weight:800;margin-bottom:15px;
+}
+h1{
+  font-size:clamp(2.7rem,6vw,4.5rem);
+  line-height:1.1;letter-spacing:-2px;margin-bottom:20px;
+}
+.gradient{
+  background:linear-gradient(100deg,#a78bfa,#67e8f9);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.lead{font-size:1.1rem;color:var(--muted);max-width:780px}
+.intro{padding-bottom:45px}
+.grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:22px;padding-bottom:65px;
+}
+.card{
+  background:linear-gradient(145deg,#151b32,#0e1325);
+  border:1px solid var(--line);border-radius:20px;
+  padding:28px;transition:.25s;
+}
+.card:hover{transform:translateY(-5px);border-color:#a78bfa88}
+.number{
+  color:var(--purple);font-size:.78rem;
+  font-weight:800;letter-spacing:1.5px;
+}
+h2{font-size:1.55rem;margin:12px 0}
+.card p{color:var(--muted);font-size:.95rem}
+h3{color:var(--cyan);font-size:1rem;margin:22px 0 8px}
+ul{padding-left:20px;color:var(--muted);font-size:.93rem}
+li{margin:5px 0}
+.next{
+  display:inline-block;margin-top:22px;
+  color:var(--cyan);font-weight:800;
+}
+.cta{
+  margin:0 0 65px;padding:35px;
+  border:1px solid #a78bfa55;border-radius:22px;
+  background:radial-gradient(ellipse at top right,#31245a,transparent 60%),#111529;
+}
+.cta p{color:var(--muted);margin-top:10px}
+.btn{
+  display:inline-block;padding:12px 20px;margin-top:20px;
+  border-radius:11px;font-weight:800;
+  background:linear-gradient(100deg,#8b5cf6,#06b6d4);
+}
+footer{
+  border-top:1px solid var(--line);
+  padding:28px 0;color:var(--muted);font-size:.9rem;
+}
+.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr}
+  .nav{padding:16px 0;align-items:flex-start;flex-direction:column}
+  nav{gap:14px}
+  .hero{padding:60px 0 40px}
+  .card{padding:23px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="container nav">
+<a class="logo" href="index.html">Sidhuservicenow<span>.</span></a>
+<nav aria-label="Main navigation">
+<a href="index.html">Home</a>
+<a href="blog.html">Blog</a>
+<a href="projects.html">Projects</a>
+<a class="active" aria-current="page" href="learning-paths.html">Learning Paths</a>
+<a href="about.html">About</a>
+</nav>
+</div>
+</header>
+
+<main>
+
+<section class="hero">
+<div class="container">
+<p class="eyebrow">Developer growth journey</p>
+<h1>From Developer to <span class="gradient">Architect.</span></h1>
+<p class="lead">
+Build your ServiceNow expertise step by step. Explore the
+technical knowledge, practical skills, and architectural
+understanding needed at each stage of your career.
+</p>
+</div>
+</section>
+
+<section class="container intro">
+<p class="eyebrow">Four learning stages</p>
+<h2>Choose your learning journey.</h2>
+<p class="lead">
+Each stage builds on the previous one. Learn the fundamentals,
+practice implementation, and gradually develop enterprise-level
+design and leadership skills.
+</p>
+</section>
+
+<section class="container grid">
+
+<article class="card">
+<span class="number">LEVEL 01 · FOUNDATION</span>
+<h2>Junior ServiceNow Developer</h2>
+<p>Build a strong foundation in the ServiceNow platform and understand how applications work.</p>
+
+<h3>Topics to learn</h3>
+<ul>
+<li>ServiceNow platform fundamentals</li>
+<li>Tables, forms, fields and relationships</li>
+<li>Lists, filters and UI policies</li>
+<li>Client Scripts and Business Rules</li>
+<li>Access Control Lists (ACLs)</li>
+<li>Basic GlideRecord scripting</li>
+<li>Update Sets and application development</li>
+</ul>
+
+<h3>Practical projects</h3>
+<ul>
+<li>Create a custom application</li>
+<li>Build a service catalog item</li>
+<li>Implement form validations</li>
+</ul>
+
+<a class="next" href="blog.html">Explore developer tutorials →</a>
+</article>
+
+<article class="card">
+<span class="number">LEVEL 02 · ADVANCED DEVELOPMENT</span>
+<h2>Senior ServiceNow Developer</h2>
+<p>Develop complex applications, integrations, reusable scripts, and automated workflows.</p>
+
+<h3>Topics to learn</h3>
+<ul>
+<li>Advanced GlideRecord and Glide APIs</li>
+<li>Script Includes and reusable logic</li>
+<li>Flow Designer and subflows</li>
+<li>REST and SOAP integrations</li>
+<li>Service Portal and Employee Center</li>
+<li>CMDB, Discovery and ITOM</li>
+<li>Performance optimization and debugging</li>
+</ul>
+
+<h3>Practical projects</h3>
+<ul>
+<li>Build a REST integration</li>
+<li>Develop reusable Script Includes</li>
+<li>Create complex approval workflows</li>
+</ul>
+
+<a class="next" href="blog.html">Explore advanced tutorials →</a>
+</article>
+
+<article class="card">
+<span class="number">LEVEL 03 · TECHNICAL LEADERSHIP</span>
+<h2>ServiceNow Technical Lead</h2>
+<p>Lead implementation decisions, review technical solutions, and guide development teams.</p>
+
+<h3>Topics to learn</h3>
+<ul>
+<li>Technical solution design</li>
+<li>Application architecture patterns</li>
+<li>Code reviews and development standards</li>
+<li>Integration design and error handling</li>
+<li>Security and platform governance</li>
+<li>Agile delivery and technical planning</li>
+<li>Team mentoring and collaboration</li>
+</ul>
+
+<h3>Practical projects</h3>
+<ul>
+<li>Lead an enterprise implementation</li>
+<li>Design integration standards</li>
+<li>Establish reusable development patterns</li>
+</ul>
+
+<a class="next" href="projects.html">Explore project examples →</a>
+</article>
+
+<article class="card">
+<span class="number">LEVEL 04 · ENTERPRISE ARCHITECTURE</span>
+<h2>ServiceNow Architect</h2>
+<p>Design scalable enterprise solutions aligned with business objectives and platform capabilities.</p>
+
+<h3>Topics to learn</h3>
+<ul>
+<li>Enterprise architecture principles</li>
+<li>Platform strategy and governance</li>
+<li>CMDB and CSDM architecture</li>
+<li>Integration architecture</li>
+<li>Security and scalability</li>
+<li>ServiceNow AI and AI Agents</li>
+<li>Now Assist and Generative AI architecture</li>
+</ul>
+
+<h3>Practical projects</h3>
+<ul>
+<li>Design an enterprise platform architecture</li>
+<li>Develop an AI integration strategy</li>
+<li>Plan scalable multi-system solutions</li>
+</ul>
+
+<a class="next" href="projects.html">Explore architecture projects →</a>
+</article>
+
+</section>
+
+<section class="container">
+<div class="cta">
+<p class="eyebrow">Keep learning</p>
+<h2>Learn. Build. Design. Lead.</h2>
+<p>Explore practical ServiceNow tutorials and projects to strengthen your technical knowledge at every stage.</p>
+<a class="btn" href="blog.html">Explore the Blog ↗</a>
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="container footer-inner">
+<span>© <span id="year"></span> Sidhuservicenow · Built for curious engineers.</span>
+<a href="index.html">Home ↑</a>
+</div>
+</footer>
+
+<script>
+document.getElementById("year").textContent =
+new Date().getFullYear();
+</script>
+
+</body>
+</html>
