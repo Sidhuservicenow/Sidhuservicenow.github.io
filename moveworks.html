@@ -4,7 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Moveworks and ServiceNow integration tutorials, architecture, implementation guides and advanced developer insights.">
+
+<meta name="description" content="Moveworks technical hub covering ServiceNow integration, AI automation, implementation guides, architecture, troubleshooting and advanced developer insights.">
+
 <title>Moveworks Hub | SidhuServiceNow</title>
 
 <style>
@@ -22,6 +24,10 @@
   --text: #edf0ff;
   --muted: #a5aec5;
   --border: rgba(155,124,255,.2);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -71,7 +77,11 @@ nav a.active {
 .hero {
   padding: 95px 8%;
   text-align: center;
-  background: radial-gradient(ellipse at top, #29205a 0%, transparent 65%);
+  background: radial-gradient(
+    ellipse at top,
+    #29205a 0%,
+    transparent 65%
+  );
 }
 
 .tag {
@@ -103,13 +113,23 @@ h1 span {
   font-size: 17px;
 }
 
-.hero-btn {
+.hero-btn,
+.article-btn {
   display: inline-block;
-  margin-top: 30px;
+  margin-top: 25px;
   padding: 12px 25px;
   border-radius: 8px;
   background: linear-gradient(90deg, #7955dc, #278da9);
+  color: white;
   font-weight: bold;
+  transition: .25s;
+}
+
+.hero-btn:hover,
+.article-btn:hover {
+  transform: translateY(-3px);
+  opacity: .9;
+  color: white;
 }
 
 section {
@@ -131,7 +151,10 @@ section {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(240px, 1fr)
+  );
   gap: 22px;
 }
 
@@ -171,8 +194,16 @@ section {
   font-size: 14px;
 }
 
+.card a:hover {
+  color: var(--cyan);
+}
+
 .highlight {
-  background: linear-gradient(120deg, #171b39, #102a37);
+  background: linear-gradient(
+    120deg,
+    #171b39,
+    #102a37
+  );
   border: 1px solid var(--border);
   border-radius: 15px;
   padding: 35px;
@@ -201,6 +232,47 @@ section {
   color: var(--cyan);
 }
 
+.featured {
+  border: 1px solid var(--purple);
+  background: linear-gradient(
+    120deg,
+    #171b39,
+    #101e32
+  );
+  border-radius: 15px;
+  padding: 30px;
+  margin-top: 25px;
+}
+
+.featured h3 {
+  color: var(--cyan);
+  margin-bottom: 10px;
+}
+
+.featured p {
+  color: var(--muted);
+}
+
+.featured-label {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--cyan);
+  border: 1px solid var(--purple);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.breadcrumb {
+  padding: 15px 8%;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.breadcrumb a {
+  color: var(--cyan);
+}
+
 footer {
   padding: 30px;
   text-align: center;
@@ -225,6 +297,10 @@ footer {
   section {
     padding: 45px 6%;
   }
+
+  .highlight {
+    padding: 24px;
+  }
 }
 </style>
 </head>
@@ -232,7 +308,9 @@ footer {
 <body>
 
 <header>
-  <a href="index.html" class="logo">SidhuServiceNow</a>
+  <a href="index.html" class="logo">
+    SidhuServiceNow
+  </a>
 
   <nav>
     <a href="index.html">Home</a>
@@ -244,82 +322,161 @@ footer {
 </header>
 
 <div class="hero">
-  <span class="tag">AI + Enterprise Automation</span>
 
-  <h1>Explore the <span>Moveworks Hub</span></h1>
+  <span class="tag">
+    AI + Enterprise Automation
+  </span>
+
+  <h1>
+    Explore the <span>Moveworks Hub</span>
+  </h1>
 
   <p>
-    Practical Moveworks implementation guides, ServiceNow integration
-    tutorials, enterprise architecture, troubleshooting and advanced
+    Practical Moveworks implementation guides,
+    ServiceNow integration tutorials, enterprise
+    architecture, troubleshooting and advanced
     developer insights beyond basic documentation.
   </p>
 
-  <a href="#learning" class="hero-btn">Explore Learning Hub →</a>
+  <a href="#learning" class="hero-btn">
+    Explore Learning Hub →
+  </a>
+
 </div>
 
 <section id="learning">
+
   <div class="section-heading">
+
     <h2>Moveworks Learning Center</h2>
-    <p>Explore implementation topics from beginner to advanced level.</p>
+
+    <p>
+      Explore implementation topics from beginner
+      to advanced level.
+    </p>
+
   </div>
 
   <div class="grid">
 
     <div class="card">
+
       <div class="icon">🚀</div>
+
       <h3>Getting Started</h3>
-      <p>Introduction to Moveworks, platform capabilities,
-      architecture and essential concepts.</p>
-      <a href="#getting-started">Explore Topics →</a>
+
+      <p>
+        Introduction to Moveworks, platform capabilities,
+        architecture and essential concepts.
+      </p>
+
+      <a href="#getting-started">
+        Explore Topics →
+      </a>
+
     </div>
 
     <div class="card">
+
       <div class="icon">🔗</div>
+
       <h3>ServiceNow Integration</h3>
-      <p>Integration architecture, authentication, API connections,
-      data exchange and configuration.</p>
-      <a href="#integration">Explore Topics →</a>
+
+      <p>
+        Integration architecture, authentication,
+        API connections, data exchange and configuration.
+      </p>
+
+      <a href="moveworks-servicenow-integration.html">
+        Read Integration Guide →
+      </a>
+
     </div>
 
     <div class="card">
+
       <div class="icon">⚙️</div>
+
       <h3>Implementation Guides</h3>
-      <p>Step-by-step implementation scenarios and
-      practical configuration examples.</p>
-      <a href="#implementation">Explore Topics →</a>
+
+      <p>
+        Step-by-step implementation scenarios
+        and practical configuration examples.
+      </p>
+
+      <a href="#implementation">
+        Explore Topics →
+      </a>
+
     </div>
 
     <div class="card">
+
       <div class="icon">🧠</div>
+
       <h3>AI & Automation</h3>
-      <p>AI-powered employee experiences, automation,
-      conversational workflows and enterprise use cases.</p>
-      <a href="#automation">Explore Topics →</a>
+
+      <p>
+        AI-powered employee experiences,
+        automation, conversational workflows
+        and enterprise use cases.
+      </p>
+
+      <a href="#automation">
+        Explore Topics →
+      </a>
+
     </div>
 
     <div class="card">
+
       <div class="icon">🛠️</div>
+
       <h3>Troubleshooting</h3>
-      <p>Integration failures, authentication issues,
-      debugging and practical resolutions.</p>
-      <a href="#troubleshooting">Explore Topics →</a>
+
+      <p>
+        Integration failures, authentication issues,
+        debugging and practical resolutions.
+      </p>
+
+      <a href="#troubleshooting">
+        Explore Topics →
+      </a>
+
     </div>
 
     <div class="card">
+
       <div class="icon">💡</div>
+
       <h3>Beyond Documentation</h3>
-      <p>Advanced developer discoveries, limitations,
-      optimization and real-world implementation lessons.</p>
-      <a href="#advanced">Explore Topics →</a>
+
+      <p>
+        Advanced developer discoveries, limitations,
+        optimization and real-world implementation lessons.
+      </p>
+
+      <a href="#advanced">
+        Explore Topics →
+      </a>
+
     </div>
 
   </div>
+
 </section>
 
 <section id="getting-started">
+
   <div class="highlight">
+
     <h2>01. Getting Started with Moveworks</h2>
-    <p>Build a strong foundation before starting enterprise implementation.</p>
+
+    <p>
+      Build a strong foundation before starting
+      enterprise implementation.
+    </p>
+
     <ul class="topics">
       <li>What is Moveworks and how does it work?</li>
       <li>Moveworks platform architecture</li>
@@ -327,13 +484,22 @@ footer {
       <li>Core Moveworks components and terminology</li>
       <li>Planning an enterprise implementation</li>
     </ul>
+
   </div>
+
 </section>
 
 <section id="integration">
+
   <div class="highlight">
+
     <h2>02. Moveworks + ServiceNow Integration</h2>
-    <p>Understand how Moveworks communicates with ServiceNow.</p>
+
+    <p>
+      Understand how Moveworks communicates
+      with ServiceNow.
+    </p>
+
     <ul class="topics">
       <li>ServiceNow integration architecture</li>
       <li>Authentication and connection setup</li>
@@ -343,13 +509,47 @@ footer {
       <li>Knowledge article discovery and access</li>
       <li>Integration security and permissions</li>
     </ul>
+
+    <div class="featured">
+
+      <span class="featured-label">
+        FEATURED TECHNICAL GUIDE
+      </span>
+
+      <h3>
+        Complete Moveworks + ServiceNow Integration Setup
+      </h3>
+
+      <p>
+        Learn the integration architecture,
+        prerequisites, update sets, account configuration,
+        connector setup, identity ingestion, bot account
+        configuration, testing and troubleshooting.
+      </p>
+
+      <a
+        href="moveworks-servicenow-integration.html"
+        class="article-btn"
+      >
+        Read Complete Integration Guide →
+      </a>
+
+    </div>
+
   </div>
+
 </section>
 
 <section id="implementation">
+
   <div class="highlight">
+
     <h2>03. Practical Implementation Guides</h2>
-    <p>Move from concepts to actual implementation scenarios.</p>
+
+    <p>
+      Move from concepts to actual implementation scenarios.
+    </p>
+
     <ul class="topics">
       <li>Connect Moveworks with a ServiceNow instance</li>
       <li>Configure and validate integration connections</li>
@@ -357,13 +557,21 @@ footer {
       <li>Implement employee self-service scenarios</li>
       <li>Test end-to-end integration workflows</li>
     </ul>
+
   </div>
+
 </section>
 
 <section id="automation">
+
   <div class="highlight">
+
     <h2>04. AI & Enterprise Automation</h2>
-    <p>Explore intelligent enterprise service management.</p>
+
+    <p>
+      Explore intelligent enterprise service management.
+    </p>
+
     <ul class="topics">
       <li>Conversational AI and employee support</li>
       <li>AI-powered IT service desk scenarios</li>
@@ -371,13 +579,21 @@ footer {
       <li>ServiceNow workflow integration patterns</li>
       <li>Enterprise knowledge discovery</li>
     </ul>
+
   </div>
+
 </section>
 
 <section id="troubleshooting">
+
   <div class="highlight">
+
     <h2>05. Troubleshooting & Debugging</h2>
-    <p>Learn how to investigate real implementation problems.</p>
+
+    <p>
+      Learn how to investigate real implementation problems.
+    </p>
+
     <ul class="topics">
       <li>Authentication and authorization failures</li>
       <li>API connection and response errors</li>
@@ -385,16 +601,22 @@ footer {
       <li>Integration data synchronization issues</li>
       <li>Debugging end-to-end request failures</li>
     </ul>
+
   </div>
+
 </section>
 
 <section id="advanced">
+
   <div class="highlight">
+
     <h2>06. Beyond Official Documentation</h2>
+
     <p>
       Our developer-focused section for practical discoveries,
       advanced patterns and lessons learned during implementation.
     </p>
+
     <ul class="topics">
       <li>Architecture decisions and integration trade-offs</li>
       <li>Advanced debugging approaches</li>
@@ -403,12 +625,27 @@ footer {
       <li>Performance and scalability considerations</li>
       <li>Real-world enterprise implementation case studies</li>
     </ul>
+
   </div>
+
 </section>
 
+<div class="breadcrumb">
+  <a href="index.html">Home</a>
+  /
+  <a href="moveworks.html">Moveworks Hub</a>
+</div>
+
 <footer>
-  <p>© 2026 SidhuServiceNow | Moveworks Learning Hub</p>
-  <p>Learn • Build • Integrate • Automate</p>
+
+  <p>
+    © 2026 SidhuServiceNow | Moveworks Learning Hub
+  </p>
+
+  <p>
+    Learn • Build • Integrate • Automate
+  </p>
+
 </footer>
 
 </body>
