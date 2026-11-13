@@ -1,0 +1,1091 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Complete Moveworks and ServiceNow integration guide covering architecture, setup, authentication, identity ingestion, configuration and troubleshooting.">
+<title>Moveworks + ServiceNow Integration | SidhuServiceNow</title>
+
+<style>
+:root {
+  --bg: #080b16;
+  --panel: #11182a;
+  --panel2: #171b39;
+  --purple: #9b7cff;
+  --cyan: #43d9ed;
+  --text: #edf0ff;
+  --muted: #a5aec5;
+  --border: rgba(155,124,255,.22);
+  --green: #4ade80;
+  --orange: #fbbf24;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--purple);
+}
+
+header {
+  padding: 20px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  border-bottom: 1px solid var(--border);
+  background: #080b16;
+}
+
+.logo {
+  font-size: 23px;
+  font-weight: bold;
+  color: var(--cyan);
+}
+
+nav {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+nav a:hover {
+  color: var(--cyan);
+}
+
+.hero {
+  padding: 85px 8%;
+  text-align: center;
+  background: radial-gradient(
+    ellipse at top,
+    #29205a 0%,
+    transparent 70%
+  );
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid var(--purple);
+  border-radius: 30px;
+  color: var(--cyan);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: clamp(34px, 5vw, 54px);
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+h1 span {
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  max-width: 850px;
+  margin: auto;
+  color: var(--muted);
+}
+
+.container {
+  width: 84%;
+  max-width: 1150px;
+  margin: auto;
+}
+
+.content {
+  padding: 55px 0;
+}
+
+h2 {
+  font-size: 27px;
+  margin-bottom: 18px;
+  color: var(--cyan);
+}
+
+h3 {
+  font-size: 19px;
+  margin: 25px 0 12px;
+  color: var(--purple);
+}
+
+p {
+  color: var(--muted);
+  margin-bottom: 15px;
+}
+
+ul, ol {
+  margin: 12px 0 20px 25px;
+  color: var(--muted);
+}
+
+li {
+  padding: 5px 0;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 25px;
+  border-radius: 13px;
+  margin: 20px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin: 25px 0;
+}
+
+.grid .card {
+  margin: 0;
+}
+
+.grid h3 {
+  margin-top: 0;
+}
+
+.step {
+  border-left: 3px solid var(--purple);
+  padding: 5px 0 5px 22px;
+  margin: 25px 0;
+}
+
+.step-number {
+  color: var(--cyan);
+  font-weight: bold;
+  font-size: 13px;
+}
+
+code {
+  color: var(--cyan);
+  background: #090e20;
+  padding: 3px 6px;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #050915;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  overflow-x: auto;
+  margin: 18px 0;
+  color: #b8e9f1;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.note {
+  border-left: 4px solid var(--cyan);
+  background: #101b2c;
+  padding: 18px 22px;
+  margin: 22px 0;
+  border-radius: 7px;
+}
+
+.warning {
+  border-left: 4px solid var(--orange);
+  background: #29200f;
+  padding: 18px 22px;
+  margin: 22px 0;
+  border-radius: 7px;
+}
+
+.success {
+  border-left: 4px solid var(--green);
+  background: #10251d;
+  padding: 18px 22px;
+  margin: 22px 0;
+  border-radius: 7px;
+}
+
+.architecture {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 25px;
+  text-align: center;
+  margin: 25px 0;
+}
+
+.arch-box {
+  background: #0c1427;
+  border: 1px solid var(--purple);
+  border-radius: 9px;
+  padding: 15px;
+  margin: 10px auto;
+  max-width: 550px;
+}
+
+.arrow {
+  color: var(--cyan);
+  font-size: 23px;
+}
+
+.toc {
+  background: var(--panel);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.toc a {
+  display: block;
+  padding: 5px 0;
+  color: var(--muted);
+}
+
+.toc a:hover {
+  color: var(--cyan);
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 30px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media(max-width:650px) {
+  header {
+    padding: 18px 5%;
+  }
+
+  nav {
+    gap: 13px;
+  }
+
+  .container {
+    width: 90%;
+  }
+
+  .hero {
+    padding: 60px 6%;
+  }
+
+  .content {
+    padding: 35px 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html" class="logo">SidhuServiceNow</a>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="blog.html">Blogs</a>
+    <a href="projects.html">Projects</a>
+    <a href="about.html">About</a>
+    <a href="moveworks.html">Moveworks</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <span class="tag">MOV EWORKS + SERVICENOW</span>
+
+  <h1>Complete <span>Integration Guide</span></h1>
+
+  <p>
+    Learn how to connect Moveworks with ServiceNow,
+    configure authentication, establish identity ingestion,
+    validate integration connectivity and troubleshoot
+    common implementation problems.
+  </p>
+</div>
+
+<div class="container">
+
+<section class="content">
+
+<div class="toc">
+  <h2>Table of Contents</h2>
+
+  <a href="#introduction">01. Introduction</a>
+  <a href="#architecture">02. Integration Architecture</a>
+  <a href="#prerequisites">03. Prerequisites</a>
+  <a href="#updatesets">04. Install ServiceNow Update Sets</a>
+  <a href="#account">05. Prepare Integration Account</a>
+  <a href="#connector">06. Create Moveworks Connector</a>
+  <a href="#identity">07. Configure User Identity Ingestion</a>
+  <a href="#botaccount">08. Configure Bot Account</a>
+  <a href="#access">09. Configure Bot Access</a>
+  <a href="#validation">10. Testing and Validation</a>
+  <a href="#troubleshooting">11. Troubleshooting</a>
+  <a href="#security">12. Security Best Practices</a>
+  <a href="#next">13. Next Configuration Steps</a>
+</div>
+
+</section>
+
+<section class="content" id="introduction">
+
+<h2>01. Introduction</h2>
+
+<p>
+Moveworks is an enterprise AI platform that helps employees
+find information, interact with enterprise applications and
+complete service requests using conversational experiences.
+</p>
+
+<p>
+ServiceNow provides the IT service management capabilities
+behind many enterprise workflows, including incidents,
+service catalog requests, approvals and knowledge management.
+</p>
+
+<p>
+Integrating the two platforms allows employees to interact
+with supported ServiceNow capabilities through Moveworks.
+</p>
+
+<div class="grid">
+
+  <div class="card">
+    <h3>Moveworks</h3>
+    <p>
+      Conversational AI, enterprise search, employee
+      experience and automation.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>ServiceNow</h3>
+    <p>
+      Incident management, service catalog,
+      knowledge management and IT workflows.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Integration</h3>
+    <p>
+      Secure connectivity, identity mapping,
+      data access and supported actions.
+    </p>
+  </div>
+
+</div>
+
+</section>
+
+<section class="content" id="architecture">
+
+<h2>02. Integration Architecture</h2>
+
+<p>
+The following is a simplified logical view of the integration.
+The exact components and data flow depend on the Moveworks
+product capabilities enabled in your tenant.
+</p>
+
+<div class="architecture">
+
+  <div class="arch-box">
+    <strong>Employee</strong>
+    <p>Asks a question or submits a request</p>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="arch-box">
+    <strong>Moveworks AI Assistant</strong>
+    <p>Understands intent and selects supported capabilities</p>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="arch-box">
+    <strong>Moveworks ServiceNow Connector</strong>
+    <p>Authentication, integration and data exchange</p>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="arch-box">
+    <strong>ServiceNow Platform</strong>
+    <p>Incidents, users, catalog items and knowledge</p>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="arch-box">
+    <strong>Response to Employee</strong>
+    <p>Supported results or request status</p>
+  </div>
+
+</div>
+
+<div class="note">
+  <strong>Important architecture distinction:</strong>
+  The standard ServiceNow connector, Tool Studio HTTP
+  connectors and ServiceNow MCP integration are different
+  integration approaches. Do not assume their configuration
+  steps or authentication requirements are interchangeable.
+</div>
+
+</section>
+
+<section class="content" id="prerequisites">
+
+<h2>03. Prerequisites</h2>
+
+<p>
+Before beginning the integration, collect the required
+information from both platforms.
+</p>
+
+<h3>ServiceNow requirements</h3>
+
+<ul>
+  <li>Access to the ServiceNow instance.</li>
+  <li>Administrator assistance for update sets and account setup.</li>
+  <li>Integration account with the required roles.</li>
+  <li>ServiceNow instance URL.</li>
+  <li>Integration account email and user ID.</li>
+  <li>Integration account sys_id.</li>
+  <li>Approved authentication and security configuration.</li>
+</ul>
+
+<h3>Moveworks requirements</h3>
+
+<ul>
+  <li>Access to Moveworks Setup in your tenant.</li>
+  <li>Permission to configure connectors.</li>
+  <li>Permission to configure user identity.</li>
+  <li>Access to Bot Account and Bot Access settings.</li>
+  <li>Knowledge of the connector naming convention.</li>
+</ul>
+
+<div class="warning">
+  <strong>Production recommendation:</strong>
+  Perform initial setup in a sub-production ServiceNow
+  instance. Follow your organization's change-management
+  and security approval procedures before production rollout.
+</div>
+
+</section>
+
+<section class="content" id="updatesets">
+
+<h2>04. Install ServiceNow Update Sets</h2>
+
+<p>
+For the Moveworks Assistant Platform ServiceNow connection
+documented in the current setup guide, the required update
+sets include the base and ACL update sets.
+</p>
+
+<div class="step">
+  <span class="step-number">STEP 01</span>
+  <h3>Install moveworks.base</h3>
+
+  <p>
+    Install the base update set first. It adds the
+    Moveworks application components, including the
+    <code>moveworks_user</code> role.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 02</span>
+  <h3>Install moveworks.acl</h3>
+
+  <p>
+    Install the ACL update set. This is required for
+    Moveworks to evaluate user criteria on knowledge
+    articles and catalog items.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 03</span>
+  <h3>Preview and Commit</h3>
+
+  <p>
+    Preview the update sets before committing them.
+    Review any customization collisions with your
+    ServiceNow administrator.
+  </p>
+</div>
+
+<div class="warning">
+  Do not blindly accept update set preview conflicts.
+  Review collisions and their impact on existing
+  customizations before committing.
+</div>
+
+</section>
+
+<section class="content" id="account">
+
+<h2>05. Prepare the Integration Account</h2>
+
+<p>
+Moveworks authenticates to ServiceNow using an integration
+account. For a shared or production instance, a dedicated
+account is recommended.
+</p>
+
+<h3>Account preparation</h3>
+
+<ol>
+  <li>Navigate to User Administration → Users.</li>
+  <li>Create or identify the integration account.</li>
+  <li>Assign the required ServiceNow roles.</li>
+  <li>Assign the Moveworks-specific role.</li>
+  <li>Populate the account email address.</li>
+  <li>Set the account time zone to GMT as specified in the setup guide.</li>
+  <li>Capture the account's 32-character sys_id.</li>
+</ol>
+
+<h3>Roles documented for the integration account</h3>
+
+<ul>
+  <li>ITIL</li>
+  <li>Approval Admin</li>
+  <li>Flow Operator</li>
+  <li>Catalog Admin</li>
+  <li>UI Policy Admin</li>
+  <li>Personalize Dictionary</li>
+  <li>moveworks_user</li>
+  <li>snc_basic_auth_api_access</li>
+</ul>
+
+<div class="note">
+  The roles above reflect the documented Assistant Platform
+  setup. Review the current ServiceNow Access Requirements
+  for the exact roles, tables and permissions needed by
+  your enabled capabilities.
+</div>
+
+<h3>Important values to capture</h3>
+
+<div class="card">
+  <p>ServiceNow instance URL</p>
+  <code>https://your-instance.service-now.com</code>
+
+  <p style="margin-top:15px">Integration account user ID</p>
+  <code>your_integration_user</code>
+
+  <p style="margin-top:15px">Integration account email</p>
+  <code>integration@example.com</code>
+
+  <p style="margin-top:15px">Integration account sys_id</p>
+  <code>32-character ServiceNow sys_id</code>
+</div>
+
+<div class="warning">
+  Never publish actual passwords, API secrets, private keys
+  or production sys_ids in a public blog. The values above
+  are examples only.
+</div>
+
+</section>
+
+<section class="content" id="connector">
+
+<h2>06. Create the Moveworks Connector</h2>
+
+<p>
+After preparing the ServiceNow integration account,
+create the ServiceNow connector in Moveworks Setup.
+</p>
+
+<div class="step">
+  <span class="step-number">STEP 01</span>
+  <h3>Open Moveworks Setup</h3>
+  <p>
+    Navigate to Connectors → Built-in Connectors.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 02</span>
+  <h3>Select ServiceNow</h3>
+  <p>
+    Choose ServiceNow and start creating the connector.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 03</span>
+  <h3>Enter Connection Details</h3>
+  <p>
+    Enter the ServiceNow instance URL and the
+    integration account credentials required by
+    the connector configuration.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 04</span>
+  <h3>Choose a Connector Name</h3>
+  <p>
+    Use a meaningful name and record it carefully.
+    The connector name cannot be changed after creation
+    in the documented setup flow.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 05</span>
+  <h3>Test the Connection</h3>
+  <p>
+    Run the connector test and confirm that Moveworks
+    can reach ServiceNow successfully.
+  </p>
+</div>
+
+<div class="warning">
+  Do not assume that a successful connection test proves
+  that every feature works. User ingestion, knowledge
+  permissions, forms and ticketing require additional
+  configuration and validation.
+</div>
+
+</section>
+
+<section class="content" id="identity">
+
+<h2>07. Configure User Identity Ingestion</h2>
+
+<p>
+User ingestion establishes the relationship between
+employees in Moveworks and their corresponding ServiceNow
+user records.
+</p>
+
+<p>
+The email address is the default joining key in the
+documented single-source setup.
+</p>
+
+<div class="step">
+  <span class="step-number">STEP 01</span>
+  <h3>Open Identity Configuration</h3>
+  <p>
+    Navigate to User Identity → Identity Configuration.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 02</span>
+  <h3>Select the ServiceNow Connector</h3>
+  <p>
+    Choose the ServiceNow connector as the primary
+    identity source and test its connectivity.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 03</span>
+  <h3>Configure Source Mapping</h3>
+  <p>
+    Review sample users and validate the returned
+    attributes.
+  </p>
+
+  <p>
+    Configure the active-user filter:
+  </p>
+
+  <pre><code>active=true</code></pre>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 04</span>
+  <h3>Configure Processors</h3>
+  <p>
+    Add and enable the documented User Timezone Processor
+    and Unified Resolve Manager Processor.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 05</span>
+  <h3>Configure Joining Keys</h3>
+  <p>
+    Confirm that the email address is used as the
+    joining key for the single-source configuration.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 06</span>
+  <h3>Test with a User</h3>
+  <p>
+    Enter your email address and use Show User Profile
+    to validate the identity attributes.
+  </p>
+</div>
+
+<div class="success">
+  After saving the configuration, check Imported Users.
+  Confirm that your user appears in the roster and that
+  Enabled Users and Bot Reachable Users have valid counts.
+</div>
+
+</section>
+
+<section class="content" id="botaccount">
+
+<h2>08. Configure the Bot Account</h2>
+
+<p>
+The Bot Account configuration connects the Moveworks
+identity configuration to the ServiceNow integration
+account.
+</p>
+
+<p>
+Navigate to:
+</p>
+
+<pre><code>User Identity
+  → Advanced Settings
+    → Bot Account</code></pre>
+
+<h3>Required fields</h3>
+
+<div class="card">
+
+<p><strong>Email Address</strong></p>
+<p>Email configured on the ServiceNow integration account.</p>
+
+<p><strong>Unique Record ID</strong></p>
+<p>The joining key value, typically the same email address.</p>
+
+<p><strong>External ID</strong></p>
+<p>The integration account's ServiceNow sys_id.</p>
+
+<p><strong>ITSM User ID</strong></p>
+<p>The integration account's ServiceNow user ID.</p>
+
+<p><strong>Integration ID</strong></p>
+<p>The exact connector name created in the previous step.</p>
+
+</div>
+
+<div class="warning">
+  These values must match the corresponding ServiceNow
+  integration account and identity configuration.
+  Incorrect values can cause authentication or identity
+  mapping failures.
+</div>
+
+</section>
+
+<section class="content" id="access">
+
+<h2>09. Configure Bot Access</h2>
+
+<p>
+Ingesting a user does not automatically mean that the
+user is permitted to access the AI Assistant.
+</p>
+
+<div class="step">
+  <span class="step-number">STEP 01</span>
+  <h3>Open Bot Access</h3>
+  <p>
+    Navigate to User Identity → Bot Access.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 02</span>
+  <h3>Configure Bot Access Rule</h3>
+  <p>
+    Define which ingested employees can access the
+    Moveworks Assistant.
+  </p>
+</div>
+
+<div class="step">
+  <span class="step-number">STEP 03</span>
+  <h3>Choose the Rollout Scope</h3>
+  <p>
+    Use a pilot group or an appropriate access rule
+    for a controlled rollout. Setting the rule to
+    TRUE grants access to all ingested users.
+  </p>
+</div>
+
+<div class="note">
+  Users also need an enabled access surface, such as
+  an integrated chat platform, My Moveworks or an
+  Embedded AI Assistant.
+</div>
+
+</section>
+
+<section class="content" id="validation">
+
+<h2>10. Testing and Validation</h2>
+
+<p>
+After configuration, validate each integration layer
+independently.
+</p>
+
+<div class="grid">
+
+  <div class="card">
+    <h3>01. Connectivity</h3>
+    <p>Confirm the ServiceNow connector test succeeds.</p>
+  </div>
+
+  <div class="card">
+    <h3>02. Identity</h3>
+    <p>Confirm users appear in the imported user roster.</p>
+  </div>
+
+  <div class="card">
+    <h3>03. Bot Account</h3>
+    <p>Verify all Bot Account values match ServiceNow.</p>
+  </div>
+
+  <div class="card">
+    <h3>04. Access</h3>
+    <p>Confirm the intended pilot users can reach the assistant.</p>
+  </div>
+
+</div>
+
+<h3>Suggested functional test cases</h3>
+
+<ol>
+  <li>Search for an accessible knowledge article.</li>
+  <li>Ask a question about an existing incident.</li>
+  <li>Test supported incident creation functionality.</li>
+  <li>Validate user identity mapping.</li>
+  <li>Test a catalog item after forms are configured.</li>
+  <li>Verify that unauthorized users cannot access restricted content.</li>
+</ol>
+
+<div class="note">
+  Incident creation, catalog submissions and ticket updates
+  are functional tests for subsequent feature configuration.
+  They are not automatically enabled just by creating
+  the initial connector.
+</div>
+
+</section>
+
+<section class="content" id="troubleshooting">
+
+<h2>11. Troubleshooting</h2>
+
+<p>
+Use the following table as an initial diagnostic guide.
+Confirm the actual error message and connector logs before
+changing configuration.
+</p>
+
+<div class="card">
+  <h3>Connector authentication failure</h3>
+  <p><strong>Possible causes:</strong></p>
+  <ul>
+    <li>Incorrect account credentials.</li>
+    <li>Missing API access role.</li>
+    <li>Inactive integration account.</li>
+    <li>Authentication configuration mismatch.</li>
+  </ul>
+  <p><strong>Investigation:</strong> Validate account status,
+  roles and connector credentials.</p>
+</div>
+
+<div class="card">
+  <h3>Users missing from Imported Users</h3>
+  <p><strong>Possible causes:</strong></p>
+  <ul>
+    <li>Incorrect identity source.</li>
+    <li>Missing or duplicate email addresses.</li>
+    <li>Incorrect source filter.</li>
+    <li>Connector cannot retrieve user records.</li>
+  </ul>
+  <p><strong>Investigation:</strong> Validate sample records,
+  email uniqueness and ingestion results.</p>
+</div>
+
+<div class="card">
+  <h3>Bot Account authentication issues</h3>
+  <p><strong>Possible causes:</strong></p>
+  <ul>
+    <li>Incorrect integration account email.</li>
+    <li>Incorrect ServiceNow sys_id.</li>
+    <li>Connector name mismatch.</li>
+    <li>Incorrect ITSM user ID.</li>
+  </ul>
+  <p><strong>Investigation:</strong> Compare all five
+  Bot Account fields with the actual integration setup.</p>
+</div>
+
+<div class="card">
+  <h3>Knowledge articles not appearing</h3>
+  <p><strong>Possible causes:</strong></p>
+  <ul>
+    <li>Knowledge Search is not configured.</li>
+    <li>Knowledge article is not published.</li>
+    <li>Incorrect access or user criteria.</li>
+    <li>Ingestion or indexing has not completed.</li>
+  </ul>
+  <p><strong>Investigation:</strong> Check knowledge access,
+  connector permissions and ingestion status.</p>
+</div>
+
+</section>
+
+<section class="content" id="security">
+
+<h2>12. Security Best Practices</h2>
+
+<ul>
+  <li>Use a dedicated integration account for production.</li>
+  <li>Follow least-privilege principles wherever supported.</li>
+  <li>Review update set collisions before committing.</li>
+  <li>Use approved authentication methods.</li>
+  <li>Protect credentials using approved secret-management mechanisms.</li>
+  <li>Validate knowledge and catalog access permissions.</li>
+  <li>Test with authorized and unauthorized user accounts.</li>
+  <li>Monitor integration activity and authentication failures.</li>
+  <li>Follow enterprise change-management requirements.</li>
+</ul>
+
+</section>
+
+<section class="content" id="next">
+
+<h2>13. Next Configuration Steps</h2>
+
+<p>
+Once the base connection and identity setup are complete,
+continue with the additional Moveworks capabilities.
+</p>
+
+<div class="grid">
+
+  <div class="card">
+    <h3>Knowledge Search</h3>
+    <p>Configure ServiceNow knowledge indexing and access.</p>
+  </div>
+
+  <div class="card">
+    <h3>Forms Integration</h3>
+    <p>Configure supported catalog item discovery and submission.</p>
+  </div>
+
+  <div class="card">
+    <h3>Ticketing</h3>
+    <p>Configure supported incident creation and ticket actions.</p>
+  </div>
+
+  <div class="card">
+    <h3>Advanced Integrations</h3>
+    <p>Explore Tool Studio, custom tools and MCP-based integration approaches.</p>
+  </div>
+
+</div>
+
+<div class="success">
+  <strong>Implementation milestone:</strong>
+  A successful initial integration means the connector
+  works, users are ingested, Bot Account details match
+  and access is configured. Additional capabilities
+  must be configured and tested separately.
+</div>
+
+</section>
+
+<section class="content">
+
+<h2>Official References</h2>
+
+<p>
+Use these vendor references to validate the exact
+screens, requirements and configuration options
+for your Moveworks tenant.
+</p>
+
+<ul>
+  <li>
+    <a href="https://help.moveworks.com/ai-assistant/employeeworks-web-app/connect-servicenow" target="_blank" rel="noopener">
+      Moveworks – Connect ServiceNow
+    </a>
+  </li>
+
+  <li>
+    <a href="https://docs.moveworks.com/service-management/access-requirements/ticketing-systems-and-itsms/servicenow-access-requirements" target="_blank" rel="noopener">
+      Moveworks – ServiceNow Access Requirements
+    </a>
+  </li>
+
+  <li>
+    <a href="https://docs.moveworks.com/tool-studio/connectors" target="_blank" rel="noopener">
+      Moveworks – Connectors
+    </a>
+  </li>
+
+  <li>
+    <a href="https://docs.moveworks.com/tool-studio/enterprise-search/configure-enterprise-search/servicenow-setup-for-enterprise-search" target="_blank" rel="noopener">
+      Moveworks – ServiceNow Enterprise Search Setup
+    </a>
+  </li>
+</ul>
+
+</section>
+
+</div>
+
+<footer>
+  <p>© 2026 SidhuServiceNow</p>
+  <p>Learn • Build • Integrate • Automate</p>
+  <p>Moveworks + ServiceNow Technical Knowledge Hub</p>
+</footer>
+
+</body>
+</html>
