@@ -1,0 +1,934 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Practical Moveworks and ServiceNow integration troubleshooting, error analysis, identity ingestion, authentication and developer debugging.">
+<title>Moveworks Troubleshooting | SidhuServiceNow</title>
+
+<style>
+:root {
+  --bg:#080b16;
+  --card:#11182a;
+  --purple:#9b7cff;
+  --cyan:#43d9ed;
+  --text:#edf0ff;
+  --muted:#a5aec5;
+  --border:rgba(155,124,255,.22);
+  --green:#4ade80;
+  --orange:#fbbf24;
+  --red:#fb7185;
+}
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.75;
+}
+
+a {
+  color:var(--cyan);
+  text-decoration:none;
+}
+
+header {
+  padding:20px 7%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:15px;
+  border-bottom:1px solid var(--border);
+}
+
+.logo {
+  font-size:23px;
+  font-weight:bold;
+  color:var(--cyan);
+}
+
+nav {
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+nav a {
+  color:var(--muted);
+  font-size:14px;
+}
+
+nav a:hover { color:var(--cyan); }
+
+.hero {
+  padding:80px 8%;
+  text-align:center;
+  background:radial-gradient(ellipse at top,#29205a,transparent 70%);
+}
+
+.tag {
+  display:inline-block;
+  border:1px solid var(--purple);
+  color:var(--cyan);
+  border-radius:25px;
+  padding:6px 15px;
+  font-size:13px;
+  margin-bottom:20px;
+}
+
+h1 {
+  font-size:clamp(34px,5vw,54px);
+  line-height:1.2;
+  margin-bottom:20px;
+}
+
+h1 span {
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p {
+  max-width:820px;
+  margin:auto;
+  color:var(--muted);
+}
+
+.container {
+  width:85%;
+  max-width:1150px;
+  margin:auto;
+}
+
+section { padding:45px 0; }
+
+h2 {
+  font-size:27px;
+  color:var(--cyan);
+  margin-bottom:18px;
+}
+
+h3 {
+  color:var(--purple);
+  margin:22px 0 10px;
+  font-size:19px;
+}
+
+p { color:var(--muted); margin-bottom:14px; }
+
+ul,ol {
+  margin:12px 0 20px 25px;
+  color:var(--muted);
+}
+
+li { padding:5px 0; }
+
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:23px;
+  margin:18px 0;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+
+.grid .card { margin:0; }
+
+.grid h3 { margin-top:0; }
+
+pre {
+  background:#050915;
+  border:1px solid var(--border);
+  padding:18px;
+  border-radius:9px;
+  overflow-x:auto;
+  color:#b8e9f1;
+  margin:15px 0;
+  font-size:13px;
+  line-height:1.7;
+}
+
+code {
+  color:var(--cyan);
+  background:#090e20;
+  padding:3px 5px;
+  border-radius:4px;
+}
+
+pre code {
+  background:none;
+  padding:0;
+}
+
+.note,.warning,.success {
+  padding:18px 22px;
+  border-radius:8px;
+  margin:20px 0;
+}
+
+.note {
+  background:#101b2c;
+  border-left:4px solid var(--cyan);
+}
+
+.warning {
+  background:#29200f;
+  border-left:4px solid var(--orange);
+}
+
+.success {
+  background:#10251d;
+  border-left:4px solid var(--green);
+}
+
+.error {
+  background:#29151e;
+  border-left:4px solid var(--red);
+  padding:18px;
+  border-radius:8px;
+  margin:18px 0;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+  font-size:14px;
+}
+
+th,td {
+  padding:13px;
+  border:1px solid var(--border);
+  text-align:left;
+  vertical-align:top;
+}
+
+th {
+  background:#171b39;
+  color:var(--cyan);
+}
+
+td { color:var(--muted); }
+
+.toc {
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:25px;
+  border-radius:12px;
+}
+
+.toc a {
+  display:block;
+  padding:5px 0;
+  color:var(--muted);
+}
+
+.toc a:hover { color:var(--cyan); }
+
+footer {
+  padding:30px;
+  text-align:center;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:13px;
+}
+
+@media(max-width:650px) {
+  header { padding:18px 5%; }
+  nav { gap:12px; }
+  .container { width:92%; }
+  .hero { padding:60px 6%; }
+  table { font-size:12px; }
+  th,td { padding:8px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html" class="logo">SidhuServiceNow</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="blog.html">Blogs</a>
+    <a href="projects.html">Projects</a>
+    <a href="about.html">About</a>
+    <a href="moveworks.html">Moveworks</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <span class="tag">ADVANCED DEVELOPER SERIES</span>
+  <h1>Moveworks <span>Troubleshooting</span> Guide</h1>
+  <p>
+    Diagnose, investigate and resolve common Moveworks
+    and ServiceNow integration problems with practical
+    debugging approaches and implementation scenarios.
+  </p>
+</div>
+
+<div class="container">
+
+<section>
+<div class="toc">
+<h2>Table of Contents</h2>
+<a href="#approach">01. Troubleshooting Approach</a>
+<a href="#http">02. HTTP Error Investigation</a>
+<a href="#authentication">03. Authentication Failures</a>
+<a href="#identity">04. User Identity Ingestion</a>
+<a href="#bot">05. Bot Account Issues</a>
+<a href="#knowledge">06. Knowledge Search Issues</a>
+<a href="#permissions">07. Access and ACL Problems</a>
+<a href="#connector">08. Connector Diagnostics</a>
+<a href="#api">09. ServiceNow API Debugging</a>
+<a href="#alerts">10. Moveworks Alerts</a>
+<a href="#advanced">11. Advanced Developer Techniques</a>
+<a href="#checklist">12. Production Checklist</a>
+<a href="#references">13. Official References</a>
+</div>
+</section>
+
+<section id="approach">
+<h2>01. Troubleshooting Approach</h2>
+
+<p>
+When an integration fails, avoid immediately changing
+roles, credentials or configurations. First identify
+which integration layer is failing.
+</p>
+
+<div class="grid">
+<div class="card">
+<h3>Connector</h3>
+<p>Can Moveworks authenticate and communicate with ServiceNow?</p>
+</div>
+<div class="card">
+<h3>Identity</h3>
+<p>Are users imported and correctly matched across systems?</p>
+</div>
+<div class="card">
+<h3>Authorization</h3>
+<p>Does the integration account have the required permissions?</p>
+</div>
+<div class="card">
+<h3>Functionality</h3>
+<p>Does the intended knowledge, ticketing or catalog capability work?</p>
+</div>
+</div>
+
+<h3>Recommended investigation sequence</h3>
+<ol>
+<li>Capture the exact error message and timestamp.</li>
+<li>Identify the affected user and operation.</li>
+<li>Check Moveworks connector status.</li>
+<li>Review ServiceNow authentication and transaction logs.</li>
+<li>Validate account roles and access controls.</li>
+<li>Reproduce the issue in a controlled test environment.</li>
+<li>Document the root cause and verified resolution.</li>
+</ol>
+
+<div class="note">
+<strong>Developer tip:</strong> Separate connectivity,
+authentication, authorization, identity mapping and
+business logic. A successful connector test does not
+prove that all downstream functionality works.
+</div>
+</section>
+
+<section id="http">
+<h2>02. HTTP Error Investigation</h2>
+
+<p>
+HTTP status codes are useful diagnostic signals.
+The following table describes general HTTP meanings,
+not guaranteed Moveworks-specific error messages.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>General meaning</th>
+<th>Investigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td>Bad Request</td>
+<td>Inspect request parameters, query syntax and payload.</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Unauthorized</td>
+<td>Check credentials, authentication method and token validity.</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden</td>
+<td>Check roles, ACLs, scopes and record permissions.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found</td>
+<td>Check endpoint, table name, record ID and instance URL.</td>
+</tr>
+<tr>
+<td>405</td>
+<td>Method Not Allowed</td>
+<td>Verify whether the endpoint supports the HTTP method.</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Too Many Requests</td>
+<td>Investigate rate limits and request frequency.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Internal Server Error</td>
+<td>Inspect server-side logs and application errors.</td>
+</tr>
+<tr>
+<td>502 / 503 / 504</td>
+<td>Gateway or availability errors</td>
+<td>Check service availability, network and upstream timeouts.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="warning">
+Do not assume that every 401 or 403 originates from
+ServiceNow. Determine which component generated the
+response before changing configuration.
+</div>
+</section>
+
+<section id="authentication">
+<h2>03. Authentication Failures</h2>
+
+<div class="error">
+<strong>Scenario:</strong> The ServiceNow connector test
+fails with an authentication error.
+</div>
+
+<h3>Possible causes</h3>
+<ul>
+<li>Incorrect integration account credentials.</li>
+<li>Inactive or locked ServiceNow account.</li>
+<li>Authentication method mismatch.</li>
+<li>Missing API access permissions.</li>
+<li>OAuth token or credential configuration problems.</li>
+</ul>
+
+<h3>Investigation steps</h3>
+<ol>
+<li>Open the ServiceNow integration account.</li>
+<li>Verify that the account is active.</li>
+<li>Confirm the configured authentication method.</li>
+<li>Check the account's required roles.</li>
+<li>Test the approved API endpoint independently.</li>
+<li>Review the connector's latest error details.</li>
+</ol>
+
+<h3>Example REST API connectivity test</h3>
+
+<pre><code>GET https://YOUR_INSTANCE.service-now.com/api/now/table/sys_user?sysparm_limit=1
+
+Accept: application/json</code></pre>
+
+<p>
+Use an approved API client and the same authentication
+method configured for the connector. This example tests
+basic API access; it does not reproduce the entire
+Moveworks integration flow.
+</p>
+
+<div class="success">
+<strong>Expected investigation result:</strong>
+Confirm whether the API request succeeds and whether
+the integration account can access the requested resource.
+</div>
+</section>
+
+<section id="identity">
+<h2>04. User Identity Ingestion Issues</h2>
+
+<div class="error">
+<strong>Scenario:</strong> The connector works, but users
+are missing from the Moveworks user roster.
+</div>
+
+<h3>Possible causes</h3>
+<ul>
+<li>Incorrect identity source configuration.</li>
+<li>Incorrect joining key.</li>
+<li>Missing or duplicate email addresses.</li>
+<li>Incorrect active-user filter.</li>
+<li>Connector cannot read ServiceNow user records.</li>
+<li>Identity validation failures.</li>
+</ul>
+
+<h3>Example ServiceNow user query</h3>
+
+<pre><code>GET /api/now/table/sys_user
+
+Query:
+active=true^emailISNOTEMPTY
+
+Parameters:
+sysparm_limit=10
+sysparm_fields=sys_id,user_name,email,active</code></pre>
+
+<p>
+This is an example diagnostic query. Confirm the actual
+filter and joining key configured in your Moveworks tenant.
+</p>
+
+<h3>Validation checklist</h3>
+<ul>
+<li>Verify the user exists in ServiceNow.</li>
+<li>Check that the user is active.</li>
+<li>Confirm the email is populated.</li>
+<li>Check that the joining key matches the configured source.</li>
+<li>Inspect duplicate or dropped records.</li>
+<li>Review user ingestion logs.</li>
+</ul>
+
+<div class="note">
+Moveworks identity ingestion uses joining keys to
+match records. A duplicate Unique Record ID can cause
+a record to be dropped. Investigate the roster and
+joining-key configuration before changing the source data.
+</div>
+</section>
+
+<section id="bot">
+<h2>05. Bot Account Configuration Problems</h2>
+
+<div class="error">
+<strong>Scenario:</strong> User ingestion is configured,
+but automated actions fail because the Bot Account
+cannot be mapped correctly.
+</div>
+
+<h3>Verify these fields</h3>
+
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What to verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Email Address</td>
+<td>Matches the integration account email.</td>
+</tr>
+<tr>
+<td>Unique Record ID</td>
+<td>Matches the identity joining key and is unique.</td>
+</tr>
+<tr>
+<td>External ID</td>
+<td>Matches the ServiceNow account sys_id.</td>
+</tr>
+<tr>
+<td>ITSM User ID</td>
+<td>Matches the ServiceNow user ID.</td>
+</tr>
+<tr>
+<td>Integration ID</td>
+<td>Matches the configured connector name.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Investigation procedure</h3>
+<ol>
+<li>Open the integration account in ServiceNow.</li>
+<li>Copy its email, user ID and sys_id.</li>
+<li>Open Moveworks Bot Account settings.</li>
+<li>Compare each corresponding field.</li>
+<li>Validate the connector association.</li>
+<li>Run the relevant identity and action tests.</li>
+</ol>
+
+<div class="warning">
+Never copy production credentials or actual account
+identifiers into public troubleshooting articles.
+Use placeholders in examples.
+</div>
+</section>
+
+<section id="knowledge">
+<h2>06. Knowledge Search Issues</h2>
+
+<div class="error">
+<strong>Scenario:</strong> An employee asks a question,
+but the assistant does not return an expected
+ServiceNow knowledge article.
+</div>
+
+<h3>Possible causes</h3>
+<ul>
+<li>Knowledge Search has not been configured.</li>
+<li>The article is not published.</li>
+<li>The integration account cannot read the knowledge base.</li>
+<li>User criteria prevent access.</li>
+<li>Permission mirroring is not working.</li>
+<li>Initial ingestion or incremental synchronization is incomplete.</li>
+</ul>
+
+<h3>Investigation procedure</h3>
+<ol>
+<li>Verify that ServiceNow Knowledge Search is configured.</li>
+<li>Check whether the article is published.</li>
+<li>Verify the knowledge base permissions.</li>
+<li>Check whether the integration account can read the article.</li>
+<li>Validate Moveworks ACL update set installation.</li>
+<li>Review ingestion validation and error summaries.</li>
+<li>Test the article with an authorized employee account.</li>
+</ol>
+
+<div class="note">
+Moveworks documents an initial content-and-permissions
+ingestion window of approximately 12 hours for its
+Assistant Platform knowledge setup. Subsequent incremental
+syncs are documented at 15–30 minute intervals. Check
+your tenant's current ingestion status before concluding
+that an article is missing permanently.
+</div>
+
+</section>
+
+<section id="permissions">
+<h2>07. Access and ACL Problems</h2>
+
+<div class="error">
+<strong>Scenario:</strong> The integration account can
+authenticate, but a particular table or record cannot
+be accessed.
+</div>
+
+<h3>What to investigate</h3>
+<ul>
+<li>Table-level read or write ACLs.</li>
+<li>Field-level ACLs.</li>
+<li>Required ServiceNow roles.</li>
+<li>Record-level restrictions.</li>
+<li>Knowledge user criteria.</li>
+<li>Catalog item user criteria.</li>
+<li>Domain separation where applicable.</li>
+</ul>
+
+<h3>Useful ServiceNow diagnostic tools</h3>
+<ul>
+<li>System Security → Debugging → Debug Security Rules.</li>
+<li>System Logs → Transactions.</li>
+<li>System Logs → All.</li>
+<li>System Definition → Tables.</li>
+<li>User Administration → Users.</li>
+</ul>
+
+<div class="warning">
+Do not resolve a 403 by granting admin access automatically.
+Identify the exact table, operation, ACL and required
+permission first.
+</div>
+</section>
+
+<section id="connector">
+<h2>08. Connector Diagnostics</h2>
+
+<p>
+Moveworks connectors contain the external system's
+connection details and authentication configuration.
+</p>
+
+<h3>Diagnostic sequence</h3>
+<ol>
+<li>Confirm the correct ServiceNow instance URL.</li>
+<li>Confirm the correct connector is selected.</li>
+<li>Validate authentication configuration.</li>
+<li>Check whether credentials have expired or changed.</li>
+<li>Review connector test results.</li>
+<li>Check Moveworks alerts for integration failures.</li>
+</ol>
+
+<div class="card">
+<h3>Important distinction</h3>
+<p>
+A built-in ServiceNow connector and a custom HTTP
+connector are not necessarily interchangeable.
+Confirm which integration approach your feature uses
+before troubleshooting its authentication settings.
+</p>
+</div>
+</section>
+
+<section id="api">
+<h2>09. ServiceNow API Debugging</h2>
+
+<p>
+When a connector reports an API error, isolate the
+request before investigating the full conversation.
+</p>
+
+<h3>Example: Query a ServiceNow incident</h3>
+
+<pre><code>GET /api/now/table/incident
+
+Parameters:
+sysparm_query=number=INC0010001
+sysparm_fields=number,short_description,state,priority
+sysparm_limit=1</code></pre>
+
+<h3>Example: Create a diagnostic incident payload</h3>
+
+<pre><code>{
+  "short_description": "Moveworks integration test",
+  "description": "Test incident created in a non-production environment",
+  "category": "inquiry"
+}</code></pre>
+
+<p>
+The payload is illustrative. Verify mandatory fields,
+choice values, table permissions and your instance's
+business rules before using it.
+</p>
+
+<h3>Example: JavaScript response inspection</h3>
+
+<pre><code>function inspectResponse(response) {
+
+    var result = {
+        status: response.status,
+        success: response.status >= 200 &&
+                 response.status < 300
+    };
+
+    if (!result.success) {
+        gs.error(
+            "Integration request failed. HTTP Status: " +
+            result.status
+        );
+    }
+
+    return result;
+}</code></pre>
+
+<div class="warning">
+This is a generic response-inspection example, not a
+drop-in Moveworks Script Include. Do not log passwords,
+access tokens, personal information or sensitive payloads.
+</div>
+
+</section>
+
+<section id="alerts">
+<h2>10. Moveworks Alerts</h2>
+
+<p>
+Moveworks Setup includes alerts that can help identify
+issues affecting integration components.
+</p>
+
+<h3>Alerts worth investigating</h3>
+
+<div class="card">
+<h3>Integration Failure</h3>
+<p>
+Indicates a system connection failure. Check connector
+configuration, credentials and authentication.
+</p>
+</div>
+
+<div class="card">
+<h3>User Validation Failed</h3>
+<p>
+Investigate identity validation and joining-key
+configuration.
+</p>
+</div>
+
+<div class="card">
+<h3>Knowledge Ingestion Failure</h3>
+<p>
+Check connector permissions, knowledge ingestion
+logs and possible ingestion restrictions.
+</p>
+</div>
+
+<div class="card">
+<h3>Ticket Filter Alert</h3>
+<p>
+Investigate universal ticket fetching filters
+when tickets are not passing the configured criteria.
+</p>
+</div>
+
+<h3>Recommended investigation</h3>
+<ol>
+<li>Open Moveworks Setup Alerts.</li>
+<li>Identify the affected integration module.</li>
+<li>Review the alert description and downstream impact.</li>
+<li>Follow the recommended troubleshooting procedure.</li>
+<li>Check the relevant connector or ingestion logs.</li>
+<li>Escalate unresolved platform-side issues to Moveworks Support.</li>
+</ol>
+
+</section>
+
+<section id="advanced">
+<h2>11. Advanced Developer Techniques</h2>
+
+<h3>Technique 1: Compare successful and failed requests</h3>
+
+<p>
+Capture a successful request and a failed request.
+Compare their endpoint, authentication method,
+query parameters, response status and execution time.
+</p>
+
+<h3>Technique 2: Test the same request independently</h3>
+
+<p>
+Use an approved REST client to isolate ServiceNow
+from the Moveworks application flow. If the request
+works independently but fails through Moveworks,
+investigate the connector configuration and integration
+path.
+</p>
+
+<h3>Technique 3: Build a correlation timeline</h3>
+
+<p>
+Record the timestamps of the employee request,
+Moveworks event, ServiceNow transaction and resulting
+record update. Use available request or correlation IDs
+where supported.
+</p>
+
+<h3>Technique 4: Validate permissions with two users</h3>
+
+<p>
+Test with one user who should have access and another
+who should not. This helps identify permission-mirroring
+problems without weakening production security.
+</p>
+
+<h3>Technique 5: Test changes in sub-production</h3>
+
+<p>
+Reproduce the issue in a test instance before changing
+production roles, update sets, ACLs or integration
+credentials.
+</p>
+
+<div class="success">
+<strong>Advanced debugging principle:</strong>
+Change one variable at a time, preserve the original
+error evidence and document the verified result.
+</div>
+
+</section>
+
+<section id="checklist">
+<h2>12. Production Troubleshooting Checklist</h2>
+
+<div class="card">
+<ul>
+<li>ServiceNow instance is reachable.</li>
+<li>Connector configuration is correct.</li>
+<li>Authentication succeeds.</li>
+<li>Integration account is active.</li>
+<li>Required roles and ACLs are verified.</li>
+<li>moveworks.base update set is installed.</li>
+<li>moveworks.acl update set is installed where required.</li>
+<li>moveworks_user role is assigned.</li>
+<li>Identity joining keys match.</li>
+<li>Bot Account fields are validated.</li>
+<li>Bot Access Rule is configured.</li>
+<li>Knowledge ingestion is successful.</li>
+<li>Ticketing and catalog features are tested separately.</li>
+<li>Unauthorized access is tested.</li>
+<li>Monitoring and escalation procedures are documented.</li>
+</ul>
+</div>
+
+</section>
+
+<section id="references">
+<h2>13. Official References</h2>
+
+<p>
+Use the following vendor documentation to validate
+product-specific procedures and requirements.
+</p>
+
+<ul>
+<li>
+<a href="https://docs.moveworks.com/platform-management/moveworks-setup/moveworks-setup-alerts" target="_blank" rel="noopener">
+Moveworks Setup Alerts
+</a>
+</li>
+
+<li>
+<a href="https://docs.moveworks.com/platform-management/moveworks-setup/moveworks-setup-alerts/alerts-troubleshooting-guide" target="_blank" rel="noopener">
+Moveworks Alerts Troubleshooting Guide
+</a>
+</li>
+
+<li>
+<a href="https://docs.moveworks.com/ai-assistant/employeeworks-web-app/connect-servicenow" target="_blank" rel="noopener">
+Connect ServiceNow
+</a>
+</li>
+
+<li>
+<a href="https://docs.moveworks.com/service-management/access-requirements/ticketing-systems-and-itsms/servicenow-access-requirements" target="_blank" rel="noopener">
+ServiceNow Access Requirements
+</a>
+</li>
+
+<li>
+<a href="https://docs.moveworks.com/ai-assistant/employeeworks-web-app/configure-enterprise-search" target="_blank" rel="noopener">
+Configure ServiceNow Knowledge Search
+</a>
+</li>
+
+<li>
+<a href="https://docs.moveworks.com/platform-management/user-identity/service-account-configuration-guide" target="_blank" rel="noopener">
+Service Account Configuration Guide
+</a>
+</li>
+</ul>
+
+</section>
+
+</div>
+
+<footer>
+<p>© 2026 SidhuServiceNow</p>
+<p>Moveworks + ServiceNow Developer Knowledge Hub</p>
+<p>Learn • Build • Integrate • Troubleshoot</p>
+</footer>
+
+</body>
+</html>
